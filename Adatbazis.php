@@ -19,13 +19,13 @@ class Adatbazis
     {
         if ($param === null) {
             $result = $this->conn->query($sor);
-            return $result->fetch_all(MYSQLI_ASSOC);
+            return json_encode($result->fetch_all(MYSQLI_ASSOC));
         } else {
             $stmt = $this->conn->prepare($sor);
             foreach ($param as $key => $value) {
                 $stmt->bind_param($key, $value);
             }
-            return $stmt->execute();
+            return json_encode($stmt->execute());
         }
     }
 
