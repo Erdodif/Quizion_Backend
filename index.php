@@ -3,17 +3,23 @@ require_once "Adatbazis.php";
 $db = new Adatbazis();
 $response = array();
 $response["error"] = false;
-switch ($_GET["method"] ?? "empty") {
-    case 'listaz':
-        if (isset($_GET["tabla"]) || isset($_POST["tabla"])) {
-            echo var_dump($db->listazas($_GET["tabla"] ?? $_POST["tabla"]));
+switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
+    case "create":
+        
+        break;
+    case "read":
+        if (isset($_GET["table"]) || isset($_POST["table"])) {
+            echo var_dump($db->listazas($_GET["table"] ?? $_POST["table"]));
         }
         else{
             $response["error"] = true;
             $response["message"] = "Nincs kiválasztott tábla!";
         }
         break;
-    case "felvesz":
+    case "update":
+
+        break;
+    case "delete":
 
         break;
     default:
