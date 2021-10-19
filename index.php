@@ -9,7 +9,7 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
         break;
     case "read":
         if (isset($_GET["table"]) || isset($_POST["table"])) {
-            echo var_dump($db->listazas($_GET["table"] ?? $_POST["table"]));
+            echo $db->listazas($_GET["table"] ?? $_POST["table"]);
         }
         else{
             $response["error"] = true;
