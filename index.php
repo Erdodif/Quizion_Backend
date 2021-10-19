@@ -1,4 +1,5 @@
 <?php
+header("Content-type: application/json");
 require_once "Adatbazis.php";
 $db = new Adatbazis();
 $response = array();
@@ -9,7 +10,7 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
         break;
     case "read":
         if (isset($_GET["table"]) || isset($_POST["table"])) {
-            echo $db->listazas($_GET["table"] ?? $_POST["table"]);
+            $response["data"] = $db->listazas($_GET["table"] ?? $_POST["table"]);
         }
         else{
             $response["error"] = true;
