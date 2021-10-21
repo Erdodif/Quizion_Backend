@@ -19,13 +19,13 @@ class Adatbazis
     {
         if ($param === null) {
             $result = $this->conn->query($sor);
-            return json_encode($result->fetch_all(MYSQLI_ASSOC), JSON_UNESCAPED_UNICODE);
+            return $result->fetch_all(MYSQLI_ASSOC);
         } else {
             $stmt = $this->conn->prepare($sor);
             foreach ($param as $key => $value) {
                 $stmt->bind_param($key, $value);
             }
-            return json_encode($stmt->execute(), JSON_UNESCAPED_UNICODE);
+            return $stmt->execute();
         }
     }
 
@@ -35,8 +35,25 @@ class Adatbazis
         return $this->muvelet($sql);
     }
 
-    public function listazasHa($tabla, array $egyezes)
+    public function listazasHaEgyenlo($tabla, object $feltetelek)
     {
+        $feltetel = "";
+        $meret = 0;
+        foreach ($feltetelek as $key) {
+            $meret++;
+        }
+        $i = 0;
+        foreach ($feltetelek as $key => $value) {
+            $i++;
+            $key = mysqli_real_escape_string($this->conn, $key);
+            $value = mysqli_real_escape_string($this->conn, $value);
+            $feltetel .= $key . "=" . $value;
+            if ($i < $meret) {
+                $feltetel .= " & ";
+            }
+        }
+        $sql = "SELECT * FROM $tabla WHERE $feltetel";
+        return $this->muvelet($sql);
     }
 
     public function felvetel($tabla, $objektum)

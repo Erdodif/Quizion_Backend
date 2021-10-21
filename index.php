@@ -9,8 +9,15 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
         
         break;
     case "read":
-        if (isset($_GET["table"]) || isset($_POST["table"])) {
-            $response["data"] = $db->listazas($_GET["table"] ?? $_POST["table"]);
+        $tabla = $_GET["table"] ?? $_POST["table"] ?? null;
+        if (!empty($tabla)) {
+            if (isset($_GET["id"]) || isset($_POST["id"])){
+                $egyezes = (object) array("id"=> $_GET["id"]??$_POST["id"]);
+                $response["data"] = $db->listazasHaEgyenlo($tabla,$egyezes);
+            }
+            else{
+                $response["data"] = $db->listazas($tabla);
+            }
         }
         else{
             $response["error"] = true;
