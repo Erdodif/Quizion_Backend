@@ -2,14 +2,14 @@
 class Adatbazis
 {
     private $host = "localhost";
-    private $user = "mobile_user";
-    private $password = "averagemobileenjoyer";
-    private $dbname = "quizion_temp";
+    private $user = "user";
+    private $password = "averagequizionenjoyer";
+    private $dbname = "quizion";
     private $conn;
     public function __construct()
     {
         $this->conn = new mysqli($this->host, $this->user, $this->password, $this->dbname);
-        $this->conn->set_charset("utf8");
+        mysqli_set_charset($this->conn, "utf8mb4");
         if ($this->conn->connect_error) {
             die("Sikertelen kapcsolódás az adatbázissal: " . $this->conn->connect_error);
         }
@@ -19,13 +19,13 @@ class Adatbazis
     {
         if ($param === null) {
             $result = $this->conn->query($sor);
-            return json_encode($result->fetch_all(MYSQLI_ASSOC));
+            return json_encode($result->fetch_all(MYSQLI_ASSOC), JSON_UNESCAPED_UNICODE);
         } else {
             $stmt = $this->conn->prepare($sor);
             foreach ($param as $key => $value) {
                 $stmt->bind_param($key, $value);
             }
-            return json_encode($stmt->execute());
+            return json_encode($stmt->execute(), JSON_UNESCAPED_UNICODE);
         }
     }
 
@@ -33,6 +33,10 @@ class Adatbazis
     {
         $sql = "SELECT * FROM $tabla";
         return $this->muvelet($sql);
+    }
+
+    public function listazasHa($tabla, array $egyezes)
+    {
     }
 
     public function felvetel($tabla, $objektum)
