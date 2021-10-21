@@ -14,6 +14,9 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
             if (isset($_GET["id"]) || isset($_POST["id"])){
                 $egyezes = (object) array("id"=> $_GET["id"]??$_POST["id"]);
                 $response["data"] = $db->listazasHaEgyenlo($tabla,$egyezes);
+                //TODO osztályhoz párosítás, majd kulcs/érték szerint
+                //megkeresni az összes beállított paramétert, majd
+                //mehet a buli
             }
             else{
                 $response["data"] = $db->listazas($tabla);
