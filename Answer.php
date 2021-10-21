@@ -1,9 +1,9 @@
 <?php
 class Answer{
-    private $id;
-    private $question_id;
-    private $content;
-    private $is_right;
+    private ?int $id;
+    private int $question_id;
+    private string $content;
+    private bool $is_right;
 
     public function __construct($id, $question_id, $content, $is_right) {
         $this->id = $id;

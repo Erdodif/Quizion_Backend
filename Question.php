@@ -1,10 +1,10 @@
 <?php
     class Question {
-        private $id;
-        private $quiz_id;
-        private $content;
-        private $no_right_answers;
-        private $point;
+        private ?int $id;
+        private int $quiz_id;
+        private string $content;
+        private int $no_right_answers;
+        private int $point;
 
         public function __construct($id, $quiz_id, $content, $no_right_answers, $point)
         {

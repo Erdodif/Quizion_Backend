@@ -1,9 +1,9 @@
 <?php
 class Quiz{
-    private $id;
-    private $header;
-    private $description;
-    private $active;
+    private ?int $id;
+    private string $header;
+    private string $description;
+    private bool $active;
 
     public function __construct($id, $header, $description, $active){
         $this->id = $id;
