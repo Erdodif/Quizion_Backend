@@ -1,11 +1,11 @@
 <?php
 class Quiz{
-    private ?int $id;
-    private string $header;
-    private string $description;
-    private bool $active;
+    private $id;
+    private $header;
+    private $description;
+    private $active;
 
-    public function __construct($id, $header, $description, $active){
+    public function __construct(?int $id, string $header, string $description, bool $active){
         $this->id = $id;
         $this->header = $header;
         $this->description = $description;

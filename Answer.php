@@ -1,11 +1,11 @@
 <?php
 class Answer{
-    private ?int $id;
-    private int $question_id;
-    private string $content;
-    private bool $is_right;
+    private $id;
+    private $question_id;
+    private $content;
+    private $is_right;
 
-    public function __construct($id, $question_id, $content, $is_right) {
+    public function __construct(?int $id,int $question_id,string $content,bool $is_right) {
         $this->id = $id;
         $this->id = $question_id;
         $this->id = $content;

@@ -1,12 +1,12 @@
 <?php
     class Question {
-        private ?int $id;
-        private int $quiz_id;
-        private string $content;
-        private int $no_right_answers;
-        private int $point;
+        private $id;
+        private $quiz_id;
+        private $content;
+        private $no_right_answers;
+        private $point;
 
-        public function __construct($id, $quiz_id, $content, $no_right_answers, $point)
+        public function __construct(?int $id, int $quiz_id, string $content, int $no_right_answers, int $point)
         {
             $this->id = $id;
             $this->quiz_id = $quiz_id;
