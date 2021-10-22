@@ -6,6 +6,7 @@ class Adatbazis
     private $password = "averagequizionenjoyer";
     private $dbname = "quizion";
     private $conn;
+    private $allowedTables= ["quiz","question","answer"];
     public function __construct()
     {
         $this->conn = new mysqli($this->host, $this->user, $this->password, $this->dbname);
@@ -14,25 +15,52 @@ class Adatbazis
             die("Sikertelen kapcsolódás az adatbázissal: " . $this->conn->connect_error);
         }
     }
-
-    private function muvelet($sor, $param = null)
+    public function info($tabla)
     {
+        $sql = "SHOW COLUMNS FROM $tabla";
+        if (!in_array($tabla,$this->allowedTables)){
+            throw new Error("Nem található tábla");
+        }
+        $result = $this->conn->query($sql);
+        $columns = [];
+        while($row = $result->fetch_assoc()){
+            $columns[]=$row["Field"];
+        }
+        return $columns;
+    }
+
+    private function muvelet($sor,$tabla, $param = null, $kellvissza = false)
+    {
+        if (!in_array($tabla,$this->allowedTables)){
+            throw new Error("Nem található tábla");
+        }
         if ($param === null) {
             $result = $this->conn->query($sor);
             return $result->fetch_all(MYSQLI_ASSOC);
         } else {
             $stmt = $this->conn->prepare($sor);
+            echo $stmt;
+            echo var_dump($param);
             foreach ($param as $key => $value) {
-                $stmt->bind_param($key, $value);
+                $tipus = "s";
+                if (is_numeric($value)){
+                    $tipus = "d";
+                }
+                echo $value;
+                $stmt->bind_param($tipus,$value);
             }
-            return $stmt->execute();
+            $siker = $stmt->execute();
+            if ($kellvissza) {
+                $siker = $stmt->get_result();
+            }
+            return $siker;
         }
     }
 
     public function listazas($tabla)
     {
         $sql = "SELECT * FROM $tabla";
-        return $this->muvelet($sql);
+        return $this->muvelet($sql, $tabla);
     }
 
     public function listazasHaEgyenlo($tabla, object $feltetelek)
@@ -53,7 +81,7 @@ class Adatbazis
             }
         }
         $sql = "SELECT * FROM $tabla WHERE $feltetel";
-        return $this->muvelet($sql);
+        return $this->muvelet($sql,$tabla);
     }
 
     public function felvetel($tabla, $objektum)
