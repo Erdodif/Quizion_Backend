@@ -16,30 +16,39 @@ class Adatbazis
         }
     }
 
-    public function info($tabla)
+    public function info($table)
     {
-        $sql = "SHOW COLUMNS FROM $tabla";
-        if (!in_array($tabla, $this->allowedTables)) {
+        $sql = "SHOW COLUMNS FROM $table";
+        $out = [];
+        if (in_array($table, $this->allowedTables)) {
+            $result = $this->conn->query($sql);
+            while ($row = $result->fetch_assoc()) {
+                $out[] = $row["Field"];
+            }
+        }
+        else if($table === "*"){
+            $sql = "SHOW TABLES FROM quizion";
+            $result = $this->conn->query($sql);
+            while ($row = $result->fetch_assoc()) {
+                $out[] = $row["Tables_in_quizion"];
+            }
+        }
+        else{
             throw new Error("Nem található tábla");
         }
-        $result = $this->conn->query($sql);
-        $columns = [];
-        while ($row = $result->fetch_assoc()) {
-            $columns[] = $row["Field"];
-        }
-        return $columns;
+        return $out;
     }
 
-    private function muvelet($sor, $tabla, $param = null, $kellvissza = false)
+    private function muvelet($row, $table, $param = null, $kellvissza = false)
     {
-        if (!in_array($tabla, $this->allowedTables)) {
+        if (!in_array($table, $this->allowedTables)) {
             throw new Error("Nem található tábla");
         }
         if ($param === null) {
-            $result = $this->conn->query($sor);
+            $result = $this->conn->query($row);
             return $result->fetch_all(MYSQLI_ASSOC);
         } else {
-            $stmt = $this->conn->prepare($sor);
+            $stmt = $this->conn->prepare($row);
             echo $stmt;
             echo var_dump($param);
             foreach ($param as $key => $value) {
@@ -58,21 +67,21 @@ class Adatbazis
         }
     }
 
-    public function listazas($tabla)
+    public function listazas($table)
     {
-        $sql = "SELECT * FROM $tabla";
-        return $this->muvelet($sql, $tabla);
+        $sql = "SELECT * FROM $table";
+        return $this->muvelet($sql, $table);
     }
 
-    public function listazasHaEgyenlo($tabla, object $feltetelek)
+    public function listazasHaEgyenlo($table, object $clause)
     {
         $feltetel = "";
         $meret = 0;
-        foreach ($feltetelek as $key) {
+        foreach ($clause as $key) {
             $meret++;
         }
         $i = 0;
-        foreach ($feltetelek as $key => $value) {
+        foreach ($clause as $key => $value) {
             $i++;
             $key = mysqli_real_escape_string($this->conn, $key);
             $value = mysqli_real_escape_string($this->conn, $value);
@@ -81,18 +90,18 @@ class Adatbazis
                 $feltetel .= " & ";
             }
         }
-        $sql = "SELECT * FROM $tabla WHERE $feltetel";
-        return $this->muvelet($sql, $tabla);
+        $sql = "SELECT * FROM $table WHERE $feltetel";
+        return $this->muvelet($sql, $table);
     }
 
-    public function felvetel($tabla, $objektum)
+    public function felvetel($table, $object)
     {
         $values = "(";
-        foreach ($objektum as $key) {
+        foreach ($object as $key) {
             $values = "?,";
         }
         $values = mb_strcut($values, 0, mb_strlen($values) - 1) . ")";
-        $sql = "INSERT INTO $tabla (header,description,active) VALUES $values";
-        return $this->muvelet($sql, $objektum);
+        $sql = "INSERT INTO $table (header,description,active) VALUES $values";
+        return $this->muvelet($sql, $object);
     }
 }

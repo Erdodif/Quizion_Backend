@@ -9,8 +9,13 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
         try{
             $tabla = $_GET["table"] ?? $_POST["table"] ?? null;
             if (!empty($tabla)) {
-                $response["table"] = $tabla;
-                $response["columns"] = $db->info($tabla);
+                if ($tabla==="*"){
+                    $response["tables"] = $db->info($tabla);
+                }
+                else{
+                    $response["table"] = $tabla;
+                    $response["columns"] = $db->info($tabla);
+                }
             }
             else{
                 $response["error"] = true;
