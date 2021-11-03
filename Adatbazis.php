@@ -1,4 +1,5 @@
 <?php
+require_once "tables/Table.php";
 class Adatbazis
 {
     private $host = "localhost";

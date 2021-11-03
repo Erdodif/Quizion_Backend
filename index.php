@@ -4,10 +4,11 @@ require_once "Adatbazis.php";
 $db = new Adatbazis();
 $response = array();
 $response["error"] = false;
-switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
-    case "info":
+$method = $_SERVER["REQUEST_METHOD"];
+switch ($method) {
+    case "OPTIONS":
         try{
-            $tabla = $_GET["table"] ?? $_POST["table"] ?? null;
+            $tabla = $_GET["table"] ?? null;
             if (!empty($tabla)) {
                 if ($tabla==="*"){
                     $response["tables"] = $db->info($tabla);
@@ -27,15 +28,17 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
             $response["message"] = $e->getMessage();
         }
         break;
-    case "create":
-        
+    case "POST":
+        //create
         break;
-    case "read":
+    case "GET":
+        //read
         try{
-            $tabla = $_GET["table"] ?? $_POST["table"] ?? null;
+            $tabla = $_GET["table"] ?? null;
             if (!empty($tabla)) {
-                if (isset($_GET["id"]) || isset($_POST["id"])){
-                    $egyezes = (object) array("id"=> $_GET["id"]??$_POST["id"]);
+                $id = $_GET["id"] ?? null;
+                if (isset($id)){
+                    $egyezes = (object) array("id"=>$id);
                     $response["data"] = $db->listazasHaEgyenlo($tabla,$egyezes);
                     //TODO osztályhoz párosítás, majd kulcs/érték szerint
                     //megkeresni az összes beállított paramétert, majd
@@ -55,15 +58,17 @@ switch ($_GET["method"] ?? $_POST["method"] ?? "empty") {
             $response["message"] = $e->getMessage();
         }
         break;
-    case "update":
-
+    case "PUT":
+        //update
         break;
-    case "delete":
-
+    case "DELETE":
+        //delete
+        $id = $_GET["id"] ?? null;
+        $table = $_GET["table"] ?? null;
         break;
     default:
         $response["error"] = true;
-        $response["message"] = "Nem megfelelő paraméterek!";
+        $response["message"] = "Nem deffiniált kérési metódus!";
         break;
 }
 echo json_encode($response, JSON_UNESCAPED_UNICODE);

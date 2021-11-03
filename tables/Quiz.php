@@ -1,5 +1,5 @@
 <?php
-class Quiz{
+class Quiz extends Table{
     private ?int $id;
     private string $header;
     private string $description;

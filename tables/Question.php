@@ -1,5 +1,5 @@
 <?php
-    class Question {
+    class Question extends Table{
         private ?int $id;
         private int $quiz_id;
         private string $content;

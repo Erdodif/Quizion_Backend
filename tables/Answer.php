@@ -1,5 +1,5 @@
 <?php
-class Answer{
+class Answer extends Table{
     private ?int $id;
     private int $question_id;
     private string $content;
