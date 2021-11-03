@@ -5,7 +5,7 @@ class Quiz extends Table{
     private string $description;
     private bool $active;
 
-    public function __construct($id, $header, $description, $active){
+    public function __construct(?int $id, string $header, string $description, bool $active){
         $this->id = $id;
         $this->header = $header;
         $this->description = $description;
