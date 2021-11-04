@@ -31,7 +31,7 @@ switch ($method) {
         break;
     case "GET":
         //read
-        try {
+        /*try {*/
             $tabla = $_GET["table"] ?? null;
             if (!empty($tabla)) {
                 $aktualis = Tables::getClassByName($tabla, $_GET);
@@ -48,10 +48,10 @@ switch ($method) {
                 $response["error"] = true;
                 $response["message"] = "Nincs kiválasztott tábla!";
             }
-        } catch (Error $e) {
+        /*} catch (Error $e) {
             $response["error"] = true;
             $response["message"] = $e->getMessage();
-        }
+        }*/
         break;
     case "PUT":
         $table = $_GET["table"] ?? null;

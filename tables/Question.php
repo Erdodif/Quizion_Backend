@@ -9,7 +9,7 @@ class Question extends Tables
 
     public function __construct(?array $id = null, ?int $quiz_id = null, ?string $content = null, ?int $no_right_answers = null, ?int $point = null)
     {
-        if(!(is_int($id) || $id ===null)){
+        if (!(is_int($id) || $id === null)) {
             $quiz_id = $id["quiz_id"] ?? null;
             $content = $id["content"] ?? null;
             $no_right_answers = $id["no_right_answers"] ?? null;

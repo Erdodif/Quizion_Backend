@@ -8,7 +8,7 @@ class Quiz extends Tables
 
     public function __construct(?array $id = null, ?string $header = null, ?string $description = null, ?bool $active = null)
     {
-        if(!(is_int($id) || $id ===null)){
+        if (!(is_int($id) || $id === null)) {
             $header = $id["header"] ?? null;
             $description = $id["description"] ?? null;
             $active = $id["active"] ?? null;

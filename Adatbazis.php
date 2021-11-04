@@ -74,7 +74,6 @@ class Adatbazis
             }
             $stmt->bindParam($key,$value,$type);
         }
-        $stmt->execute();
         return $stmt->fetchAll();
     }
 
