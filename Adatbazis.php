@@ -1,20 +1,26 @@
 <?php
-require_once "tables/Table.php";
+require_once "tables/Tables.php";
 class Adatbazis
 {
-    private $host = "localhost";
+    private static $host = "localhost";
+    private static $dbname = "quizion";
+    private static $allowedTables = ["quiz", "question", "answer"];
+
+    private $conn;
     private $user = "user";
     private $password = "averagequizionenjoyer";
-    private $dbname = "quizion";
-    private $conn;
-    private $allowedTables = ["quiz", "question", "answer"];
+
     public function __construct()
     {
-        $this->conn = new mysqli($this->host, $this->user, $this->password, $this->dbname);
-        mysqli_set_charset($this->conn, "utf8mb4");
-        if ($this->conn->connect_error) {
-            die("Sikertelen kapcsolódás az adatbázissal: " . $this->conn->connect_error);
-        }
+        $host = Adatbazis::$host;
+        $dbname = Adatbazis::$dbname;
+        $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+        $options = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
+        $this->conn = new PDO($dsn, $this->user, $this->password, $options);
     }
 
     public function info($table)
@@ -23,76 +29,34 @@ class Adatbazis
         $out = [];
         if (in_array($table, $this->allowedTables)) {
             $result = $this->conn->query($sql);
-            while ($row = $result->fetch_assoc()) {
+            while ($row = $result->fetch()) {
                 $out[] = $row["Field"];
             }
-        }
-        else if($table === "*"){
+        } else if ($table === "*") {
             $sql = "SHOW TABLES FROM quizion";
             $result = $this->conn->query($sql);
-            while ($row = $result->fetch_assoc()) {
+            while ($row = $result->fetch()) {
                 $out[] = $row["Tables_in_quizion"];
             }
-        }
-        else{
+        } else {
             throw new Error("Nem található tábla");
         }
         return $out;
     }
 
-    private function muvelet($row, $table, $param = null, $kellvissza = false)
-    {
-        if (!in_array($table, $this->allowedTables)) {
-            throw new Error("Nem található tábla");
-        }
-        if ($param === null) {
-            $result = $this->conn->query($row);
-            return $result->fetch_all(MYSQLI_ASSOC);
-        } else {
-            $stmt = $this->conn->prepare($row);
-            echo $stmt;
-            echo var_dump($param);
-            foreach ($param as $key => $value) {
-                $tipus = "s";
-                if (is_numeric($value)) {
-                    $tipus = "d";
-                }
-                echo $value;
-                $stmt->bind_param($tipus, $value);
-            }
-            $siker = $stmt->execute();
-            if ($kellvissza) {
-                $siker = $stmt->get_result();
-            }
-            return $siker;
-        }
-    }
-
     public function listazas($table)
     {
         $sql = "SELECT * FROM $table";
-        return $this->muvelet($sql, $table);
+        $result = $this->conn->query($sql);
+        return $result->fetchAll();
     }
 
-    public function listazasHaEgyenlo($table, object $clause)
+    public function listazasHaEgyenlo($table, $params)
     {
         $feltetel = "";
-        $meret = 0;
-        foreach ($clause as $key) {
-            $meret++;
-        }
-        $i = 0;
-        foreach ($clause as $key => $value) {
-            $i++;
-            $key = mysqli_real_escape_string($this->conn, $key);
-            $value = mysqli_real_escape_string($this->conn, $value);
-            $feltetel .= $key . "=" . $value;
-            if ($i < $meret) {
-                $feltetel .= " & ";
-            }
-        }
+        $kulcsok = Tables::getClassByName($table)->getKeys();
         $sql = "SELECT * FROM $table WHERE $feltetel";
-        return $this->muvelet($sql, $table);
+        return /*TODO*/;
     }
 
     public function felvetel($table, $object)
@@ -103,6 +67,15 @@ class Adatbazis
         }
         $values = mb_strcut($values, 0, mb_strlen($values) - 1) . ")";
         $sql = "INSERT INTO $table (header,description,active) VALUES $values";
-        return $this->muvelet($sql, $object);
+        $stmt = $this->conn->prepare($sql);
+        foreach ($object as $key => $value) {
+            $stmt->bindParam($key, $value);
+        }
+        $siker = $stmt->execute();
+    }
+
+    public function getObject(string $name, object $content)
+    {
+        return Tables::getClassByName($name, $content);
     }
 }
