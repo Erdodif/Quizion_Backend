@@ -34,17 +34,16 @@ switch ($method) {
         try {
             $tabla = $_GET["table"] ?? null;
             if (!empty($tabla)) {
-                $vanextra = false;
-                $id = $_GET["id"] ?? null;
-                if (isset($id)) {
-                    $egyezes = (object) array("id" => $id);
-                    $response["data"] = $db->listazasHaEgyenlo($tabla, $egyezes);
-                    //TODO osztályhoz párosítás, majd kulcs/érték szerint
-                    //megkeresni az összes beállított paramétert, majd
-                    //mehet a buli
-                } else {
+                $aktualis = Tables::getClassByName($tabla, $_GET);
+                if (count($aktualis->getNotNulls()) !== 0) {
+                    $response["data"] = $db->listazasHaEgyenlo($tabla, $aktualis);
+                }
+                else{
                     $response["data"] = $db->listazas($tabla);
                 }
+                //TODO osztályhoz párosítás, majd kulcs/érték szerint
+                //megkeresni az összes beállított paramétert, majd
+                //mehet a buli
             } else {
                 $response["error"] = true;
                 $response["message"] = "Nincs kiválasztott tábla!";
@@ -56,7 +55,7 @@ switch ($method) {
         break;
     case "PUT":
         $table = $_GET["table"] ?? null;
-        if($table !== null){
+        if ($table !== null) {
             $response["error"] = false;
             $response["message"] = Tables::getClassByName($table)->getKeys();
         }

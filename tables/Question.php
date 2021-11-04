@@ -7,14 +7,14 @@ class Question extends Tables
     protected ?int $no_right_answers;
     protected ?int $point;
 
-    public function __construct(?object $id = null, ?int $quiz_id = null, ?string $content = null, ?int $no_right_answers = null, ?int $point = null)
+    public function __construct(?array $id = null, ?int $quiz_id = null, ?string $content = null, ?int $no_right_answers = null, ?int $point = null)
     {
         if(!(is_int($id) || $id ===null)){
-            $quiz_id = $id["quiz_id"];
-            $content = $id["content"];
-            $no_right_answers = $id["no_right_answers"];
-            $point = $id["point"];
-            $id = $id["id"];
+            $quiz_id = $id["quiz_id"] ?? null;
+            $content = $id["content"] ?? null;
+            $no_right_answers = $id["no_right_answers"] ?? null;
+            $point = $id["point"] ?? null;
+            $id = $id["id"] ?? null;
         }
         $this->id = $id;
         $this->quiz_id = $quiz_id;

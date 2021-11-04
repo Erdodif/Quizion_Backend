@@ -6,13 +6,13 @@ class Quiz extends Tables
     protected ?string $description;
     protected ?bool $active;
 
-    public function __construct(?object $id = null, ?string $header = null, ?string $description = null, ?bool $active = null)
+    public function __construct(?array $id = null, ?string $header = null, ?string $description = null, ?bool $active = null)
     {
         if(!(is_int($id) || $id ===null)){
-            $header = $id["header"];
-            $description = $id["description"];
-            $active = $id["active"];
-            $id = $id["id"];
+            $header = $id["header"] ?? null;
+            $description = $id["description"] ?? null;
+            $active = $id["active"] ?? null;
+            $id = $id["id"] ?? null;
         }
         $this->id = $id;
         $this->header = $header;

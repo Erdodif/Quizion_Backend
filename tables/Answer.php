@@ -6,13 +6,13 @@ class Answer extends Tables
     protected ?string $content;
     protected ?bool $is_right;
 
-    public function __construct(?object $id = null, ?int $question_id = null, ?string $content = null, ?bool $is_right = null)
+    public function __construct(?array $id = null, ?int $question_id = null, ?string $content = null, ?bool $is_right = null)
     {
         if(!(is_int($id) || $id === null)){
-            $question_id = $id["question_id"];
-            $content = $id["content"];
-            $is_right = $id["is_right"];
-            $id = $id["id"];
+            $question_id = $id["question_id"] ?? null;
+            $content = $id["content"] ?? null;
+            $is_right = $id["is_right"] ?? null;
+            $id = $id["id"] ?? null;
         }
         $this->id = $id;
         $this->question_id = $question_id;

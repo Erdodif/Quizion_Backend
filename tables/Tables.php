@@ -4,7 +4,7 @@ require_once "Question.php";
 require_once "Answer.php";
 class Tables
 {
-    static public function getClassByName(string $name, object $o = null): object
+    static public function getClassByName(string $name, array $o = null): object
     {
         if (empty($name)) {
             throw new Exception("Nincs megadva táblanév!");
@@ -40,6 +40,17 @@ class Tables
         foreach (get_object_vars($this) as $key => $value) {
             if ($value !== null) {
                 $ki += array($key => $value);
+            }
+        }
+        return $ki;
+    }
+
+    public function getNullKeys(): array
+    {
+        $ki = [];
+        foreach (get_object_vars($this) as $key => $value) {
+            if ($value === null) {
+                $ki []= $key;
             }
         }
         return $ki;

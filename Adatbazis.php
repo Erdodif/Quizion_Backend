@@ -51,12 +51,31 @@ class Adatbazis
         return $result->fetchAll();
     }
 
-    public function listazasHaEgyenlo($table, $params)
+    public function listazasHaEgyenlo($table,Tables $object)
     {
         $feltetel = "";
-        $kulcsok = Tables::getClassByName($table)->getKeys();
-        $sql = "SELECT * FROM $table WHERE $feltetel";
-        return /*TODO*/;
+        $keresendo = $object->getNotNulls();
+        foreach($keresendo as $key => $value){
+            $feltetel.="`$key` = :$key AND ";
+        }
+        $feltetel = mb_substr($feltetel,0,mb_strlen($feltetel)-4);
+        $sql = "SELECT * FROM `$table` WHERE $feltetel;";
+        /*
+        echo var_dump($sql);
+        echo var_dump($object);
+        echo var_dump($keresendo);*/
+        $stmt = $this->conn->prepare($sql);
+        foreach($keresendo as $key => $value){
+            if(is_numeric($value)){
+                $type = PDO::PARAM_INT;
+            }
+            else{
+                $type = PDO::PARAM_STR;
+            }
+            $stmt->bindParam($key,$value,$type);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 
     public function felvetel($table, $object)
@@ -74,7 +93,7 @@ class Adatbazis
         $siker = $stmt->execute();
     }
 
-    public function getObject(string $name, object $content)
+    public function getObject(string $name, array $content)
     {
         return Tables::getClassByName($name, $content);
     }
