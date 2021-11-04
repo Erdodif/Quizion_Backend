@@ -27,7 +27,7 @@ class Adatbazis
     {
         $sql = "SHOW COLUMNS FROM $table";
         $out = [];
-        if (in_array($table, $this->allowedTables)) {
+        if (in_array($table, Adatbazis::$allowedTables)) {
             $result = $this->conn->query($sql);
             while ($row = $result->fetch()) {
                 $out[] = $row["Field"];
