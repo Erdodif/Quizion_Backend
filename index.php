@@ -32,22 +32,27 @@ switch ($method) {
     case "GET":
         //read
         /*try {*/
-            $tabla = $_GET["table"] ?? null;
-            if (!empty($tabla)) {
-                $aktualis = Tables::getClassByName($tabla, $_GET);
-                if (count($aktualis->getNotNulls()) !== 0) {
-                    $response["data"] = $db->listazasHaEgyenlo($tabla, $aktualis);
-                }
-                else{
-                    $response["data"] = $db->listazas($tabla);
-                }
-                //TODO osztályhoz párosítás, majd kulcs/érték szerint
-                //megkeresni az összes beállított paramétert, majd
-                //mehet a buli
+        $tabla = $_GET["table"] ?? null;
+        if (!empty($tabla)) {
+            $aktualis = Tables::getClassByName($tabla, $_GET);
+            if (count($aktualis->getNotNulls()) !== 0) {
+                $ki = $db->listazasHaEgyenlo($tabla, $aktualis);
             } else {
-                $response["error"] = true;
-                $response["message"] = "Nincs kiválasztott tábla!";
+                $ki = $db->listazas($tabla);
             }
+            if (count($ki) === 0) {
+                $response["error"] = true;
+                $response["message"] = "Üres találat!";
+            } else {
+                $response["data"] = $ki;
+            }
+            //TODO osztályhoz párosítás, majd kulcs/érték szerint
+            //megkeresni az összes beállított paramétert, majd
+            //mehet a buli
+        } else {
+            $response["error"] = true;
+            $response["message"] = "Nincs kiválasztott tábla!";
+        }
         /*} catch (Error $e) {
             $response["error"] = true;
             $response["message"] = $e->getMessage();

@@ -80,6 +80,7 @@ class Adatbazis
 
     public function felvetel($table, $object)
     {
+        //TODO
         $values = "(";
         foreach ($object as $key) {
             $values = "?,";
