@@ -2,7 +2,7 @@
 require_once "tables/Tables.php";
 class Adatbazis
 {
-    private static $host = "localhost";
+    private static $host = "quizion.hu";//localhost vagy 127.0.0.1
     private static $dbname = "quizion";
     private static $allowedTables = ["quiz", "question", "answer"];
 
