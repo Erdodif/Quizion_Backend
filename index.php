@@ -1,29 +1,27 @@
 <?php
 header("Content-type: application/json");
 require_once "Adatbazis.php";
+require_once "tables/Tables.php";
 $db = new Adatbazis();
 $response = array();
 $response["error"] = false;
 $method = $_SERVER["REQUEST_METHOD"];
 switch ($method) {
     case "OPTIONS":
-        try{
+        try {
             $tabla = $_GET["table"] ?? null;
             if (!empty($tabla)) {
-                if ($tabla==="*"){
+                if ($tabla === "*") {
                     $response["tables"] = $db->info($tabla);
-                }
-                else{
+                } else {
                     $response["table"] = $tabla;
                     $response["columns"] = $db->info($tabla);
                 }
-            }
-            else{
+            } else {
                 $response["error"] = true;
                 $response["message"] = "Nincs kiválasztott tábla!";
             }
-        }
-        catch (Error $e){
+        } catch (Error $e) {
             $response["error"] = true;
             $response["message"] = $e->getMessage();
         }
@@ -33,32 +31,35 @@ switch ($method) {
         break;
     case "GET":
         //read
-        try{
+        try {
             $tabla = $_GET["table"] ?? null;
             if (!empty($tabla)) {
+                $vanextra = false;
                 $id = $_GET["id"] ?? null;
-                if (isset($id)){
-                    $egyezes = (object) array("id"=>$id);
-                    $response["data"] = $db->listazasHaEgyenlo($tabla,$egyezes);
+                if (isset($id)) {
+                    $egyezes = (object) array("id" => $id);
+                    $response["data"] = $db->listazasHaEgyenlo($tabla, $egyezes);
                     //TODO osztályhoz párosítás, majd kulcs/érték szerint
                     //megkeresni az összes beállított paramétert, majd
                     //mehet a buli
-                }
-                else{
+                } else {
                     $response["data"] = $db->listazas($tabla);
                 }
-            }
-            else{
+            } else {
                 $response["error"] = true;
                 $response["message"] = "Nincs kiválasztott tábla!";
             }
-        }
-        catch (Error $e){
+        } catch (Error $e) {
             $response["error"] = true;
             $response["message"] = $e->getMessage();
         }
         break;
     case "PUT":
+        $table = $_GET["table"] ?? null;
+        if($table !== null){
+            $response["error"] = false;
+            $response["message"] = Tables::getClassByName($table)->getKeys();
+        }
         //update
         break;
     case "DELETE":
