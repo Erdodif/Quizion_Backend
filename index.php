@@ -25,29 +25,29 @@ switch ($method) {
         //create
         $tabla = $_POST["table"] ?? null;
         $aktualis = Tables::getClassByName($tabla, $_POST);
-        $db->felvetel($tabla,$aktualis);
+        $db->felvetel($tabla, $aktualis);
         break;
     case "GET":
         //read
         try {
-        $tabla = $_GET["table"] ?? null;
-        if (!empty($tabla)) {
-            $aktualis = Tables::getClassByName($tabla, $_GET);
-            if (count($aktualis->getNotNulls()) !== 0) {
-                $ki = $db->listazasHaEgyenlo($tabla, $aktualis);
+            $tabla = $_GET["table"] ?? null;
+            if (!empty($tabla)) {
+                $aktualis = Tables::getClassByName($tabla, $_GET);
+                if (count($aktualis->getNotNulls()) !== 0) {
+                    $ki = $db->listazasHaEgyenlo($tabla, $aktualis);
+                } else {
+                    $ki = $db->listazas($tabla);
+                }
+                if (count($ki) === 0) {
+                    $response["error"] = true;
+                    $response["message"] = "Üres találat!";
+                } else {
+                    $response["data"] = $ki;
+                }
             } else {
-                $ki = $db->listazas($tabla);
-            }
-            if (count($ki) === 0) {
                 $response["error"] = true;
-                $response["message"] = "Üres találat!";
-            } else {
-                $response["data"] = $ki;
+                $response["message"] = "Nincs kiválasztott tábla!";
             }
-        } else {
-            $response["error"] = true;
-            $response["message"] = "Nincs kiválasztott tábla!";
-        }
         } catch (Error $e) {
             //throw $e; //debug céljából
             $response["error"] = true;
@@ -64,8 +64,9 @@ switch ($method) {
         break;
     case "DELETE":
         //delete
-        $id = $_GET["id"] ?? null;
-        $table = $_GET["table"] ?? null;
+        $tabla = $_POST["table"] ?? null;
+        $aktualis = Tables::getClassByName($tabla, $_GET);
+        $db->torolHaEgyenlo($tabla, $aktualis);
         break;
     default:
         $response["error"] = true;
