@@ -64,7 +64,7 @@ switch ($method) {
         break;
     case "DELETE":
         //delete
-        $tabla = $_POST["table"] ?? null;
+        $tabla = $_GET["table"] ?? null;
         $aktualis = Tables::getClassByName($tabla, $_GET);
         $response["error"] = $db->torolHaEgyenlo($tabla, $aktualis);
         break;
