@@ -4,7 +4,7 @@ require_once "Question.php";
 require_once "Answer.php";
 class Tables
 {
-    static public function getClassByName(string $name, array $o = null): object
+    static public function getClassByName(?string $name, array $o = null): object
     {
         if (empty($name)) {
             throw new Exception("Nincs megadva táblanév!");
@@ -16,7 +16,7 @@ class Tables
                 return new Question($o);
             case "answer":
                 return new Answer($o);
-            //case... 
+                //case... 
             default:
                 throw new Exception("Nem megfelelő táblanév!");
         }
@@ -24,6 +24,11 @@ class Tables
     static public function getClassKeysByName(string $name): array
     {
         return Tables::getClassByName($name)->getKeys();
+    }
+
+    public function getAll(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getKeys(): array
@@ -51,7 +56,7 @@ class Tables
         $ki = [];
         foreach (get_object_vars($this) as $key => $value) {
             if ($value === null) {
-                $ki []= $key;
+                $ki[] = $key;
             }
         }
         return $ki;

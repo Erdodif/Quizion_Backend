@@ -23,6 +23,9 @@ switch ($method) {
         break;
     case "POST":
         //create
+        $tabla = $_POST["table"] ?? null;
+        $aktualis = Tables::getClassByName($tabla, $_POST);
+        $db->felvetel($tabla,$aktualis);
         break;
     case "GET":
         //read
