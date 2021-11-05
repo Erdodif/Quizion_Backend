@@ -66,7 +66,7 @@ switch ($method) {
         //delete
         $tabla = $_POST["table"] ?? null;
         $aktualis = Tables::getClassByName($tabla, $_GET);
-        $db->torolHaEgyenlo($tabla, $aktualis);
+        $response["error"] = $db->torolHaEgyenlo($tabla, $aktualis);
         break;
     default:
         $response["error"] = true;
