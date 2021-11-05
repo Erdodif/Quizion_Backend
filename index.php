@@ -25,7 +25,10 @@ switch ($method) {
         //create
         $tabla = $_POST["table"] ?? null;
         $aktualis = Tables::getClassByName($tabla, $_POST);
-        $db->felvetel($tabla, $aktualis);
+        $response["error"] = !$db->felvetel($tabla, $aktualis);
+        if ($response["error"]) {
+            $response["message"] = "Hozzáadás sikertelen";
+        }
         break;
     case "GET":
         //read
@@ -55,18 +58,22 @@ switch ($method) {
         }
         break;
     case "PUT":
-        $table = $_GET["table"] ?? null;
-        if ($table !== null) {
-            $response["error"] = false;
-            $response["message"] = Tables::getClassByName($table)->getKeys();
-        }
         //update
+        $tabla = $_GET["table"] ?? null;
+        $aktualis = Tables::getClassByName($tabla, $_GET);
+        $response["error"] = !$db->frissit($tabla, $aktualis);
+        if ($response["error"]) {
+            $response["message"] = "Frissítés sikertelen";
+        }
         break;
     case "DELETE":
         //delete
         $tabla = $_GET["table"] ?? null;
         $aktualis = Tables::getClassByName($tabla, $_GET);
-        $response["error"] = $db->torolHaEgyenlo($tabla, $aktualis);
+        $response["error"] = !$db->torolHaEgyenlo($tabla, $aktualis);
+        if ($response["error"]) {
+            $response["message"] = "Törlés sikertelen";
+        }
         break;
     default:
         $response["error"] = true;

@@ -98,12 +98,45 @@ class Adatbazis
             $oszlopok .= "`$key`, ";
             $values .= ":$key, ";
         }
+        //trim talán
         $values = mb_strcut($values, 0, mb_strlen($values) - 2) . ")";
         $oszlopok = mb_strcut($oszlopok, 0, mb_strlen($oszlopok) - 2) . ")";
         $sql = "INSERT INTO `$table` $oszlopok VALUES $values;";
         $stmt = $this->conn->prepare($sql);
         foreach ($keresendo as $key => $value) {
             $stmt->bindParam($key, $value, Adatbazis::getParamType($value));
+        }
+        if (Adatbazis::$logMode) {
+            echo "felvetel->kapott object:\n";
+            echo var_dump($object) . "\n";
+            echo "felvetel->kivett értékek:\n";
+            echo var_dump($keresendo) . "\n";
+            echo "felvetel->sql parancs:\n";
+            echo var_dump($sql) . "\n";
+            echo "felvetel->átadott PDOStatement:\n";
+            echo var_dump($stmt) . "\n";
+        }
+        return $stmt->execute();
+    }
+
+    public function frissit($table, $object)
+    {
+        $values = "";
+        $keresendo = $object->getNotNulls();
+        $id = $object->getNotNulls()["id"];
+        foreach ($keresendo as $key => $value) {
+            if ($key !== "id") {
+                $values .= "`$key` = :$key, ";
+            }
+        }
+        //trim esetleg
+        $values = mb_strcut($values, 0, mb_strlen($values) - 2);
+        $sql = "UPDATE `$table` SET $values WHERE `id` = $id;";
+        $stmt = $this->conn->prepare($sql);
+        foreach ($keresendo as $key => $value) {
+            if ($key !== "id") {
+                $stmt->bindValue($key, $value, Adatbazis::getParamType($value));
+            }
         }
         if (Adatbazis::$logMode) {
             echo "felvetel->kapott object:\n";
