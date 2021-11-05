@@ -16,6 +16,7 @@ class Tables
                 return new Question($o);
             case "answer":
                 return new Answer($o);
+            //case... 
             default:
                 throw new Exception("Nem megfelelő táblanév!");
         }
