@@ -1,9 +1,10 @@
 <?php
-require "vendor/autoload.php";
+require_once "vendor/autoload.php";
 use Illuminate\Database\Capsule\Manager;
 use Slim\Factory\AppFactory;
 
 $app = AppFactory::create();
+$app->setBasePath("/api");
 
 $dbManager = new Manager();
 $dbManager->addConnection([
@@ -20,7 +21,7 @@ $dbManager->addConnection([
 $dbManager->setAsGlobal();
 $dbManager->bootEloquent();
 
-$routes = require "src/routes.php";
+$routes = require_once "src/routes.php";
 
 $routes($app);
 
