@@ -22,7 +22,5 @@ $dbManager->setAsGlobal();
 $dbManager->bootEloquent();
 
 $routes = require_once "src/routes.php";
-
 $routes($app);
-
 $app->run();
