@@ -7,25 +7,31 @@ use Quizion\Backend\Question;
 use Quizion\Backend\Answer;
 
 return function(Slim\App $app) {
+    // GET quizes questions answers
     $app->get("/quizes", function(Request $request, Response $response) {
         $quizes = Quiz::all();
         $out = $quizes->toJson();
         $response->getBody()->write($out);
         return $response->withHeader("Content-Type", "application/json");
     });
-
     $app->get("/questions", function(Request $request, Response $response) {
         $question = Question::all();
         $out = $question->toJson();
         $response->getBody()->write($out);
         return $response->withHeader("Content-Type", "application/json");
     });
-
     $app->get("/answers", function(Request $request, Response $response) {
         $answers = Answer::all();
         $out = $answers->toJson();
         $response->getBody()->write($out);
         return $response->withHeader("Content-Type", "application/json");
+    });
+
+    // GET ID quizes questions answers
+    $app->get("/quiz/{id}", function(Request $request, Response $response, array $args) {
+        $quiz = Quiz::find($args["id"]);
+        $response->getBody()->write($quiz->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus(201);
     });
 
     $app->get("/question/{id}", function(Request $request, Response $response, array $args) {
@@ -40,6 +46,7 @@ return function(Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus(201);
     });
 
+    // POST quizes
     $app->post("/quizes", function(Request $request, Response $response) {
         $input = json_decode($request->getBody(), true);
         $quiz = Quiz::create($input);
