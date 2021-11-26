@@ -61,14 +61,14 @@ return function(Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
     $app->get("/question/{id}", function(Request $request, Response $response, array $args) {
-        $question = Question::find($args["id"]);
-        $response->getBody()->write($question->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(201);
+        $results = resultFromId($args["id"],Question::class);
+        $response->getBody()->write($results["out"]);
+        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
-    $app->get("/answers/{id}", function(Request $request, Response $response, array $args) {
-        $answer = Answer::find($args["id"]);
-        $response->getBody()->write($answer->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(201);
+    $app->get("/answer/{id}", function(Request $request, Response $response, array $args) {
+        $results = resultFromId($args["id"],Answer::class);
+        $response->getBody()->write($results["out"]);
+        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 
     // POST quizes questions answers
