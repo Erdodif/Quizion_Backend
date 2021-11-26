@@ -19,4 +19,13 @@ return function(Slim\App $app) {
         $response->getBody()->write($out);
         return $response->withHeader("Content-Type", "application/json");
     });
+
+    $app->post("/quizes", function(Request $request, Response $response) {
+        $input = json_decode($request->getBody(), true);
+        $quiz = Quiz::create($input);
+        $quiz->save();
+        $kimenet = $quiz->toJson();
+        $response->getBody()->write($kimenet);
+        return $response->withStatus(201)->withHeader("Content-Type", "application/json");
+    });
 };
