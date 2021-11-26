@@ -6,6 +6,33 @@ use Quizion\Backend\Quiz;
 use Quizion\Backend\Question;
 use Quizion\Backend\Answer;
 
+function resultFromId($id,$class) :array{
+    try{
+        if(!is_numeric($id) || $id < 1){
+            $code = 400;
+            $message = "['Invalid id reference!']";
+        }
+        else{
+            $element = $class::find($id);
+            if($element === null){
+                $code = 404;
+                $message = "['Resource not found!']";
+            }
+            else{
+                $code = 200;
+                $message = json_encode($element);
+            }
+        }
+    }
+    catch (Error $e){
+        $code = 500;
+        $message = "['An error occured!']";
+    }
+    finally{
+        return array("code"=>$code,"out"=>$message);
+    }
+}
+
 return function(Slim\App $app) {
     // GET quizes questions answers
     $app->get("/quizes", function(Request $request, Response $response) {
@@ -29,9 +56,9 @@ return function(Slim\App $app) {
 
     // GET ID quizes questions answers
     $app->get("/quiz/{id}", function(Request $request, Response $response, array $args) {
-        $quiz = Quiz::find($args["id"]);
-        $response->getBody()->write($quiz->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(201);
+        $results = resultFromId($args["id"],Quiz::class);
+        $response->getBody()->write($results["out"]);
+        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 
     $app->get("/question/{id}", function(Request $request, Response $response, array $args) {
