@@ -6,6 +6,8 @@ use Quizion\Backend\Quiz;
 use Quizion\Backend\Question;
 use Quizion\Backend\Answer;
 
+require_once "responseCodes.php";
+
 function idIsValid($id):bool{
     return is_numeric($id) && $id > 0;
 }
@@ -13,23 +15,23 @@ function idIsValid($id):bool{
 function resultFromId($id,$class) :array{
     try{
         if(!idIsValid($id)){
-            $code = 400;
+            $code = ERROR_BAD_REQUEST;
             $message = '{"message":"Invalid id reference!"}';
         }
         else{
             $element = $class::find($id);
             if($element === null){
-                $code = 404;
+                $code = ERROR_NOT_FOUND;
                 $message = '{"message":"Resource not found!"}';
             }
             else{
-                $code = 200;
+                $code = RESPONSE_OK;
                 $message = json_encode($element);
             }
         }
     }
     catch (Error $e){
-        $code = 500;
+        $code = ERROR_INTERNAL;
         $message = '{"message" :"An internal error occured!","cause":"'+$e->getMessage()+'"}';
     }
     finally{
@@ -76,14 +78,14 @@ return function(Slim\App $app) {
     });
     // GET ACTIVE - quizes 
     $app->get("/quizes/active", function(Request $request, Response $response, array $args) {
-        $actives = Quiz::where("active","=",3)->get()->toJson();
+        $actives = Quiz::where("active","=",1)->get()->toJson();
         if($actives === "[]"){
-            $code = 404;
+            $code = ERROR_NOT_FOUND;
             $response->getBody()->write('{"message":"Empty result!"}');
         }
         else{
             $response->getBody()->write($actives);
-            $code = 200;
+            $code = RESPONSE_OK;
         }
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     }); 
@@ -91,12 +93,12 @@ return function(Slim\App $app) {
     $app->get("/quiz/{id}/questions", function(Request $request, Response $response, array $args) {
         $actives = Question::where("quiz_id","=",$args["id"])->get()->toJson();
         if($actives === "[]"){
-            $code = 404;
+            $code = ERROR_NOT_FOUND;
             $response->getBody()->write('{"message":"Empty result!"}');
         }
         else{
             $response->getBody()->write($actives);
-            $code = 200;
+            $code = RESPONSE_OK;
         }
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
@@ -106,8 +108,8 @@ return function(Slim\App $app) {
         $number = $args["number"];
         if (idIsValid($id) && idIsValid($number)){
             $actives = Question::where("quiz_id","=",$id)->get();
-            if($actives === null || empty($actives) || !isset($actives[$number])){
-                $code = 404;
+            if($actives === null || empty($actives) || !isset($actives[$number-1])){
+                $code = ERROR_NOT_FOUND;
                 $response->getBody()->write('{"message":"'
                             .$args["id"].'. quiz hasn\' got '
                             .$args["number"].'. question!"}');
@@ -115,12 +117,12 @@ return function(Slim\App $app) {
             else{
                 $active = $actives[$number-1];
                 $response->getBody()->write($active->toJson());
-                $code = 200;
+                $code = RESPONSE_OK;
             }
         }
         else{
             $response->getBody()->write('{"message":"Invalid quiz or question reference!"}');
-            $code = 400;
+            $code = ERROR_BAD_REQUEST;
         }
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
@@ -132,7 +134,7 @@ return function(Slim\App $app) {
         $quiz->save();
         $kimenet = $quiz->toJson();
         $response->getBody()->write($kimenet);
-        return $response->withStatus(201)->withHeader("Content-Type", "application/json");
+        return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
     });
     $app->post("/questions", function(Request $request, Response $response) {
         $input = json_decode($request->getBody(), true);
@@ -140,7 +142,7 @@ return function(Slim\App $app) {
         $question->save();
         $kimenet = $question->toJson();
         $response->getBody()->write($kimenet);
-        return $response->withStatus(201)->withHeader("Content-Type", "application/json");
+        return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
     });
     $app->post("/answers", function(Request $request, Response $response) {
         $input = json_decode($request->getBody(), true);
@@ -148,6 +150,6 @@ return function(Slim\App $app) {
         $quiz->save();
         $kimenet = $quiz->toJson();
         $response->getBody()->write($kimenet);
-        return $response->withStatus(201)->withHeader("Content-Type", "application/json");
+        return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
     });
 };
