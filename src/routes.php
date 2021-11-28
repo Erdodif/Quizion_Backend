@@ -6,9 +6,13 @@ use Quizion\Backend\Quiz;
 use Quizion\Backend\Question;
 use Quizion\Backend\Answer;
 
+function idIsValid($id):bool{
+    return is_numeric($id) && $id > 0;
+}
+
 function resultFromId($id,$class) :array{
     try{
-        if(!is_numeric($id) || $id < 1){
+        if(!idIsValid($id)){
             $code = 400;
             $message = '{"message":"Invalid id reference!"}';
         }
@@ -80,6 +84,43 @@ return function(Slim\App $app) {
         else{
             $response->getBody()->write($actives);
             $code = 200;
+        }
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+    }); 
+    // GET FROM QUIZ - questions/question
+    $app->get("/quiz/{id}/questions", function(Request $request, Response $response, array $args) {
+        $actives = Question::where("quiz_id","=",$args["id"])->get()->toJson();
+        if($actives === "[]"){
+            $code = 404;
+            $response->getBody()->write('{"message":"Empty result!"}');
+        }
+        else{
+            $response->getBody()->write($actives);
+            $code = 200;
+        }
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+    });
+
+    $app->get("/quiz/{id}/question/{number}", function(Request $request, Response $response, array $args) {
+        $id = $args["id"];
+        $number = $args["number"];
+        if (idIsValid($id) && idIsValid($number)){
+            $actives = Question::where("quiz_id","=",$id)->get();
+            if($actives === null || empty($actives) || !isset($actives[$number])){
+                $code = 404;
+                $response->getBody()->write('{"message":"'
+                            .$args["id"].'. quiz hasn\' got '
+                            .$args["number"].'. question!"}');
+            }
+            else{
+                $active = $actives[$number-1];
+                $response->getBody()->write($active->toJson());
+                $code = 200;
+            }
+        }
+        else{
+            $response->getBody()->write('{"message":"Invalid quiz or question reference!"}');
+            $code = 400;
         }
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
