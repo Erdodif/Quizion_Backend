@@ -10,13 +10,13 @@ function resultFromId($id,$class) :array{
     try{
         if(!is_numeric($id) || $id < 1){
             $code = 400;
-            $message = "['Invalid id reference!']";
+            $message = '{"message":"Invalid id reference!"}';
         }
         else{
             $element = $class::find($id);
             if($element === null){
                 $code = 404;
-                $message = "['Resource not found!']";
+                $message = '{"message":"Resource not found!"}';
             }
             else{
                 $code = 200;
@@ -26,7 +26,7 @@ function resultFromId($id,$class) :array{
     }
     catch (Error $e){
         $code = 500;
-        $message = "['An error occured!']";
+        $message = '{"message" :"An internal error occured!","cause":"'+$e->getMessage()+'"}';
     }
     finally{
         return array("code"=>$code,"out"=>$message);
@@ -34,7 +34,7 @@ function resultFromId($id,$class) :array{
 }
 
 return function(Slim\App $app) {
-    // GET quizes questions answers
+    // GET ALL - quizes/questions/answers
     $app->get("/quizes", function(Request $request, Response $response) {
         $quizes = Quiz::all();
         $out = $quizes->toJson();
@@ -54,7 +54,7 @@ return function(Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json");
     });
 
-    // GET ID quizes questions answers
+    // GET ID - quizes/questions/answers
     $app->get("/quiz/{id}", function(Request $request, Response $response, array $args) {
         $results = resultFromId($args["id"],Quiz::class);
         $response->getBody()->write($results["out"]);
@@ -70,8 +70,21 @@ return function(Slim\App $app) {
         $response->getBody()->write($results["out"]);
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
+    // GET ACTIVE - quizes 
+    $app->get("/quizes/active", function(Request $request, Response $response, array $args) {
+        $actives = Quiz::where("active","=",3)->get()->toJson();
+        if($actives === "[]"){
+            $code = 404;
+            $response->getBody()->write('{"message":"Empty result!"}');
+        }
+        else{
+            $response->getBody()->write($actives);
+            $code = 200;
+        }
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+    });
 
-    // POST quizes questions answers
+    // POST NEW - quizes/questions/answers
     $app->post("/quizes", function(Request $request, Response $response) {
         $input = json_decode($request->getBody(), true);
         $quiz = Quiz::create($input);
