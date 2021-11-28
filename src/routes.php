@@ -126,7 +126,66 @@ return function(Slim\App $app) {
         }
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
+    //GET FROM QUIZ > QUESTION - answers/anwser
+    $app->get("/quiz/{id}/question/{number}/answers", function(Request $request, Response $response, array $args) {
+        $id = $args["id"];
+        $number = $args["number"];
+        $questions = Question::select("id")->where("quiz_id","=",$id)->get();
+        if(idIsValid($id) && idIsValid($number)){
+            if(isset($questions[$number-1])){
+                $question_id = $questions[$number-1]["id"];
+                $answers = Answer::where("question_id","=",$question_id)->get()->toJson();
+                $response->getBody()->write($answers);
+                $code = RESPONSE_OK;
+            }
+            else{
+                $code = ERROR_NOT_FOUND;
+                $response->getBody()->write('{"message":"Empty result!"}');
+            }
+        }
+        else{
+            $response->getBody()->write('{"message":"Invalid quiz or question reference!"}');
+            $code = ERROR_BAD_REQUEST;
+        }
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+    });
 
+    $app->get("/quiz/{id}/question/{question_number}/answer/{answer_number}", function(Request $request, Response $response, array $args) {
+        $id = $args["id"];
+        $question_number = $args["question_number"];
+        $answer_number = $args["answer_number"];
+        $questions = Question::select("id")->where("quiz_id","=",$id)->get();
+        if(idIsValid($id) && idIsValid($question_number)){
+            if(isset($questions[$question_number-1])){
+                $question_id = $questions[$question_number-1]["id"];
+                $answers = Answer::where("question_id","=",$question_id)->get();
+                if (idIsValid($answer_number)){
+                    if (isset($answers[$answer_number-1])){
+                        $response->getBody()->write($answers[$answer_number-1]->toJson());
+                        $code = RESPONSE_OK;
+                    }
+                    else{
+                        $response->getBody()->write('{"message":"Question #'.$question_number.
+                            ' does not have '.$answer_number.'. answer!"}');
+                        $code = ERROR_NOT_FOUND;
+                    }
+                }
+                else{
+                    $response->getBody()->write('{"message":"Invalid answer number reference!"}');
+                    $code = ERROR_BAD_REQUEST;
+                }
+            }
+            else{
+                $response->getBody()->write('{"message":"Question #'.$question_number.' does not exist!"}');
+                $code = ERROR_NOT_FOUND;
+            }
+        }
+        else{
+            $response->getBody()->write('{"message":"Invalid quiz or question reference!"}');
+            $code = ERROR_BAD_REQUEST;
+        }
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+    });
     // POST NEW - quizes/questions/answers
     $app->post("/quizes", function(Request $request, Response $response) {
         $input = json_decode($request->getBody(), true);
