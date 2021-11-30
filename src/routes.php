@@ -111,7 +111,7 @@ function resultFromId($id, $class): array
             $message = new Message("Invalid id reference!");
         } else {
             $element = $class::find($id);
-            if ($element === null) {
+            if (isset($element["id"])) {
                 $code = ERROR_NOT_FOUND;
                 $message = new Message("Resource not found!");
             } else {
@@ -128,7 +128,6 @@ function resultFromId($id, $class): array
 }
 
 return function (Slim\App $app) {
-
     // GET ALL - quizes/questions/answers
     $app->get("/quizes", function (Request $request, Response $response) {
         $quizes = Quiz::all();
