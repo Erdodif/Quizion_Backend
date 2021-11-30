@@ -7,4 +7,8 @@ class Quiz extends Model {
     public $timestamps = false;
     protected $guarded = ["id"];
     protected $hidden = ["active"]; //Nem kell kiadni, mint később a jelszókat
+    
+    static public function getName(){
+        return "quiz";
+    }
 }

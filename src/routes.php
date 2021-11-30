@@ -127,66 +127,43 @@ function resultFromId($id, $class): array
     }
 }
 
+function resultFromAll($class): array{
+    $out = null;
+    try {
+        $result = Quiz::all();
+        if (isset($result[0]["id"])) {
+            $out = $result;
+            $code = RESPONSE_OK;
+        } else {
+            $out = new Message("There is no ".$class::getName()."!");
+            $code = ERROR_NOT_FOUND;
+        }
+    } catch (Error $e) {
+        $out = new Message("An Internal error occured! " . $e);
+        $code = ERROR_INTERNAL;
+    } finally {
+        return array("code"=>$code,"out"=>$out);
+    }
+}
+
 return function (Slim\App $app) {
     // GET ALL - quizes/questions/answers
     $app->get("/quizes", function (Request $request, Response $response) {
-        $out = null;
-        try {
-            $quizes = Quiz::all();
-            if (isset($quizes[0]["id"])) {
-                $out = $quizes;
-                $code = RESPONSE_OK;
-            } else {
-                $out = new Message("There is no quiz!");
-                $code = ERROR_NOT_FOUND;
-            }
-        } catch (Error $e) {
-            $out = new Message("An Internal error occured! " . $e);
-            $code = ERROR_INTERNAL;
-        } finally {
-            $response->getBody()->write($out->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-        }
+        $result = resultFromAll(Quiz::class);
+        $response->getBody()->write($result["out"]->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
 
     $app->get("/questions", function (Request $request, Response $response) {
-        $out = null;
-        try {
-            $quizes = Question::all();
-            if (isset($quizes[0]["id"])) {
-                $out = $quizes;
-                $code = RESPONSE_OK;
-            } else {
-                $out = new Message("There is no quiz!");
-                $code = ERROR_NOT_FOUND;
-            }
-        } catch (Error $e) {
-            $out = new Message("An Internal error occured! " . $e);
-            $code = ERROR_INTERNAL;
-        } finally {
-            $response->getBody()->write($out->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-        }
+        $result = resultFromAll(Question::class);
+        $response->getBody()->write($result["out"]->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
 
     $app->get("/answers", function (Request $request, Response $response) {
-        $out = null;
-        try {
-            $quizes = Answer::all();
-            if (isset($quizes[0]["id"])) {
-                $out = $quizes;
-                $code = RESPONSE_OK;
-            } else {
-                $out = new Message("There is no quiz!");
-                $code = ERROR_NOT_FOUND;
-            }
-        } catch (Error $e) {
-            $out = new Message("An Internal error occured! " . $e);
-            $code = ERROR_INTERNAL;
-        } finally {
-            $response->getBody()->write($out->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-        }
+        $result = resultFromAll(Answer::class);
+        $response->getBody()->write($result["out"]->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
 
     // GET ID - quizes/questions/answers

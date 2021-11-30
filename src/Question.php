@@ -7,4 +7,8 @@ class Question extends Model {
     public $timestamps = false;
     protected $guarded = ["id"];
     protected $hidden = ["quiz_id"];
+
+    static public function getName(){
+        return "question";
+    }
 }
