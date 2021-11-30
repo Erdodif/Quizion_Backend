@@ -121,7 +121,7 @@ function resultFromId($id, $class): array
         }
     } catch (Error $e) {
         $code = ERROR_INTERNAL;
-        $message = new Message("An internal error occured! cause: ".$e->getMessage());
+        $message = new Message("An internal error occured! cause: " . $e->getMessage());
     } finally {
         return array("code" => $code, "out" => $message);
     }
@@ -130,24 +130,63 @@ function resultFromId($id, $class): array
 return function (Slim\App $app) {
     // GET ALL - quizes/questions/answers
     $app->get("/quizes", function (Request $request, Response $response) {
-        $quizes = Quiz::all();
-        $out = $quizes->toJson();
-        $response->getBody()->write($out);
-        return $response->withHeader("Content-Type", "application/json");
+        $out = null;
+        try {
+            $quizes = Quiz::all();
+            if (isset($quizes[0]["id"])) {
+                $out = $quizes;
+                $code = RESPONSE_OK;
+            } else {
+                $out = new Message("There is no quiz!");
+                $code = ERROR_NOT_FOUND;
+            }
+        } catch (Error $e) {
+            $out = new Message("An Internal error occured! " . $e);
+            $code = ERROR_INTERNAL;
+        } finally {
+            $response->getBody()->write($out->toJson());
+            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+        }
     });
 
     $app->get("/questions", function (Request $request, Response $response) {
-        $questions = Question::all();
-        $out = $questions->toJson();
-        $response->getBody()->write($out);
-        return $response->withHeader("Content-Type", "application/json");
+        $out = null;
+        try {
+            $quizes = Question::all();
+            if (isset($quizes[0]["id"])) {
+                $out = $quizes;
+                $code = RESPONSE_OK;
+            } else {
+                $out = new Message("There is no quiz!");
+                $code = ERROR_NOT_FOUND;
+            }
+        } catch (Error $e) {
+            $out = new Message("An Internal error occured! " . $e);
+            $code = ERROR_INTERNAL;
+        } finally {
+            $response->getBody()->write($out->toJson());
+            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+        }
     });
 
     $app->get("/answers", function (Request $request, Response $response) {
-        $answers = Answer::all();
-        $out = $answers->toJson();
-        $response->getBody()->write($out);
-        return $response->withHeader("Content-Type", "application/json");
+        $out = null;
+        try {
+            $quizes = Answer::all();
+            if (isset($quizes[0]["id"])) {
+                $out = $quizes;
+                $code = RESPONSE_OK;
+            } else {
+                $out = new Message("There is no quiz!");
+                $code = ERROR_NOT_FOUND;
+            }
+        } catch (Error $e) {
+            $out = new Message("An Internal error occured! " . $e);
+            $code = ERROR_INTERNAL;
+        } finally {
+            $response->getBody()->write($out->toJson());
+            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+        }
     });
 
     // GET ID - quizes/questions/answers
@@ -292,8 +331,7 @@ return function (Slim\App $app) {
             $quiz = Quiz::find($args["id"]);
             $quiz->delete();
             $result["code"] = RESPONSE_NO_CONTENT;
-        }
-        else {
+        } else {
             $result["code"] = ERROR_NOT_FOUND;
             $response->getBody()->write($result["out"]->toJson());
         }
@@ -306,8 +344,7 @@ return function (Slim\App $app) {
             $question = Question::find($args["id"]);
             $question->delete();
             $result["code"] = RESPONSE_NO_CONTENT;
-        }
-        else {
+        } else {
             $result["code"] = ERROR_NOT_FOUND;
             $response->getBody()->write($result["out"]->toJson());
         }
@@ -320,8 +357,7 @@ return function (Slim\App $app) {
             $answer = Answer::find($args["id"]);
             $answer->delete();
             $result["code"] = RESPONSE_NO_CONTENT;
-        }
-        else {
+        } else {
             $result["code"] = ERROR_NOT_FOUND;
             $response->getBody()->write($result["out"]->toJson());
         }
