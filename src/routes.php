@@ -128,7 +128,7 @@ function resultFromId($id, $class): array
 }
 
 return function (Slim\App $app) {
-    
+
     // GET ALL - quizes/questions/answers
     $app->get("/quizes", function (Request $request, Response $response) {
         $quizes = Quiz::all();
@@ -204,38 +204,56 @@ return function (Slim\App $app) {
     });
 
     $app->get("/quiz/{id}/question/{question_number}/answer/{answer_number}", function (Request $request, Response $response, array $args) {
-        $result = getAnswerFromQuiz($args["id"],$args["question_number"],$args["answer_number"]);
+        $result = getAnswerFromQuiz($args["id"], $args["question_number"], $args["answer_number"]);
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
 
     // POST NEW - quizes/questions/answers
     $app->post("/quizes", function (Request $request, Response $response) {
-        $input = json_decode($request->getBody(), true);
-        $quiz = Quiz::create($input);
-        $quiz->save();
-        $response->getBody()->write($quiz->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
+        try {
+            $input = json_decode($request->getBody(), true);
+            $result = Quiz::create($input);
+            $result->save();
+            $code = RESPONSE_CREATED;
+        } catch (Error $e) {
+            $result = new Message($e);
+            $code = ERROR_INTERNAL;
+        }
+        $response->getBody()->write($result->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
     $app->post("/questions", function (Request $request, Response $response) {
-        $input = json_decode($request->getBody(), true);
-        $question = Question::create($input);
-        $question->save();
-        $response->getBody()->write($question->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
+        try {
+            $input = json_decode($request->getBody(), true);
+            $rerult = Question::create($input);
+            $rerult->save();
+            $code = RESPONSE_CREATED;
+        } catch (Error $e) {
+            $result = new Message($e);
+            $code = ERROR_INTERNAL;
+        }
+        $response->getBody()->write($result->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
     $app->post("/answers", function (Request $request, Response $response) {
-        $input = json_decode($request->getBody(), true);
-        $answer = Answer::create($input);
-        $answer->save();
-        $response->getBody()->write($answer->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
+        try {
+            $input = json_decode($request->getBody(), true);
+            $result = Answer::create($input);
+            $result->save();
+            $code = RESPONSE_CREATED;
+        } catch (Error $e) {
+            $result = new Message($e);
+            $code = ERROR_INTERNAL;
+        }
+        $response->getBody()->write($result->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
     // PUT quiz/answer/question
-    $app->put("/quiz/{id}", function(Request $request, Response $response, array $args) {
+    $app->put("/quiz/{id}", function (Request $request, Response $response, array $args) {
         $input = json_decode($request->getBody(), true);
         $quiz = Quiz::find($args["id"]);
         $quiz->save();
@@ -244,7 +262,7 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_OK);
     });
 
-    $app->put("/answer/{id}", function(Request $request, Response $response, array $args) {
+    $app->put("/answer/{id}", function (Request $request, Response $response, array $args) {
         $input = json_decode($request->getBody(), true);
         $answer = Answer::find($args["id"]);
         $answer->save();
@@ -253,7 +271,7 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_OK);
     });
 
-    $app->put("/question/{id}", function(Request $request, Response $response, array $args) {
+    $app->put("/question/{id}", function (Request $request, Response $response, array $args) {
         $input = json_decode($request->getBody(), true);
         $question = Question::find($args["id"]);
         $question->save();
@@ -263,19 +281,19 @@ return function (Slim\App $app) {
     });
 
     // DELETE quiz/answer/question
-    $app->delete("/quiz/{id}", function(Request $request, Response $response, array $args) {
+    $app->delete("/quiz/{id}", function (Request $request, Response $response, array $args) {
         $quiz = Quiz::find($args["id"]);
         $quiz->delete();
         return $response->withStatus(RESPONSE_NO_CONTENT);
     });
 
-    $app->delete("/question/{id}", function(Request $request, Response $response, array $args) {
+    $app->delete("/question/{id}", function (Request $request, Response $response, array $args) {
         $question = Question::find($args["id"]);
         $question->delete();
         return $response->withStatus(RESPONSE_NO_CONTENT);
     });
 
-    $app->delete("/answer/{id}", function(Request $request, Response $response, array $args) {
+    $app->delete("/answer/{id}", function (Request $request, Response $response, array $args) {
         $answer = Answer::find($args["id"]);
         $answer->delete();
         return $response->withStatus(RESPONSE_NO_CONTENT);
