@@ -1,5 +1,5 @@
 <?php
-require_once "vendor/autoload.php";
+require_once "vendor/autoload.php";//proba
 use Illuminate\Database\Capsule\Manager;
 use Slim\Factory\AppFactory;
 
