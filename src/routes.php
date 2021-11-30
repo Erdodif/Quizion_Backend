@@ -259,7 +259,6 @@ return function (Slim\App $app) {
             $result["out"]->fill($input);
             $result["out"]->save();
             $response->getBody()->write($result["out"]->toJson());
-            $result["code"] = RESPONSE_OK;
         }
         $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
@@ -272,7 +271,6 @@ return function (Slim\App $app) {
             $result["out"]->fill($input);
             $result["out"]->save();
             $response->getBody()->write($result["out"]->toJson());
-            $result["code"] = RESPONSE_OK;
         }
         $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
@@ -284,7 +282,6 @@ return function (Slim\App $app) {
             $input = json_decode($request->getBody(), true);
             $result["out"]->fill($input);
             $result["out"]->save();
-            $result["code"] = RESPONSE_OK;
         }
         $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
