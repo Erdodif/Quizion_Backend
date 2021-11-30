@@ -138,8 +138,8 @@ return function (Slim\App $app) {
     });
 
     $app->get("/questions", function (Request $request, Response $response) {
-        $question = Question::all();
-        $out = $question->toJson();
+        $questions = Question::all();
+        $out = $questions->toJson();
         $response->getBody()->write($out);
         return $response->withHeader("Content-Type", "application/json");
     });
@@ -210,45 +210,45 @@ return function (Slim\App $app) {
     });
 
     // POST NEW - quizes/questions/answers
-    $app->post("/quizes", function (Request $request, Response $response) {
+    $app->post("/quize", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
-            $result = Quiz::create($input);
-            $result->save();
+            $quiz = Quiz::create($input);
+            $quiz->save();
             $code = RESPONSE_CREATED;
         } catch (Error $e) {
-            $result = new Message($e);
+            $quiz = new Message($e);
             $code = ERROR_INTERNAL;
         }
-        $response->getBody()->write($result->toJson());
+        $response->getBody()->write($quiz->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
-    $app->post("/questions", function (Request $request, Response $response) {
+    $app->post("/question", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
-            $rerult = Question::create($input);
-            $rerult->save();
+            $question = Question::create($input);
+            $question->save();
             $code = RESPONSE_CREATED;
         } catch (Error $e) {
-            $result = new Message($e);
+            $question = new Message($e);
             $code = ERROR_INTERNAL;
         }
-        $response->getBody()->write($result->toJson());
+        $response->getBody()->write($question->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
-    $app->post("/answers", function (Request $request, Response $response) {
+    $app->post("/answer", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
-            $result = Answer::create($input);
-            $result->save();
+            $answer = Answer::create($input);
+            $answer->save();
             $code = RESPONSE_CREATED;
         } catch (Error $e) {
-            $result = new Message($e);
+            $answer = new Message($e);
             $code = ERROR_INTERNAL;
         }
-        $response->getBody()->write($result->toJson());
+        $response->getBody()->write($answer->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
