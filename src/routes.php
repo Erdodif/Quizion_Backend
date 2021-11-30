@@ -252,23 +252,39 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
 
-    // PUT quiz/answer/question
+    // PUT ID quiz/answer/question
     $app->put("/quiz/{id}", function (Request $request, Response $response, array $args) {
-        $input = json_decode($request->getBody(), true);
-        $quiz = Quiz::find($args["id"]);
-        $quiz->save();
-        $quiz->fill($input);
-        $response->getBody()->write($quiz->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_OK);
+        $result = resultFromId($args["id"], Quiz::class);
+        if ($result["code"] == RESPONSE_OK) {
+            $input = json_decode($request->getBody(), true);
+            $quiz = Quiz::find($args["id"]);
+            $quiz->fill($input);
+            $quiz->save();
+            $response->getBody()->write($quiz->toJson());
+            $result["code"] = RESPONSE_OK;
+        }
+        else {
+            $result["code"] = ERROR_NOT_FOUND;
+            $response->getBody()->write($result["out"]);
+        }
+        return $response->withStatus($result["code"]);
     });
 
     $app->put("/question/{id}", function (Request $request, Response $response, array $args) {
-        $input = json_decode($request->getBody(), true);
-        $question = Question::find($args["id"]);
-        $question->save();
-        $question->fill($input);
-        $response->getBody()->write($question->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_OK);
+        $result = resultFromId($args["id"], Question::class);
+        if ($result["code"] == RESPONSE_OK) {
+            $input = json_decode($request->getBody(), true);
+            $question = Question::find($args["id"]);
+            $question->fill($input);
+            $question->save();
+            $response->getBody()->write($question->toJson());
+            $result["code"] = RESPONSE_OK;
+        }
+        else {
+            $result["code"] = ERROR_NOT_FOUND;
+            $response->getBody()->write($result["out"]);
+        }
+        return $response->withStatus($result["code"]);
     });
 
     $app->put("/answer/{id}", function (Request $request, Response $response, array $args) {
@@ -276,22 +292,19 @@ return function (Slim\App $app) {
         if ($result["code"] == RESPONSE_OK) {
             $input = json_decode($request->getBody(), true);
             $answer = Answer::find($args["id"]);
-
             $answer->fill($input);
             $answer->save();
-
-            $response->getBody()->write($result["out"]->toJson());
+            $response->getBody()->write($answer->toJson());
             $result["code"] = RESPONSE_OK;
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
             $response->getBody()->write($result["out"]);
         }
-
         return $response->withStatus($result["code"]);
     });
 
-    // DELETE quiz/answer/question
+    // DELETE ID quiz/answer/question
     $app->delete("/quiz/{id}", function (Request $request, Response $response, array $args) {
         $result = resultFromId($args["id"], Quiz::class);
         if ($result["code"] == RESPONSE_OK) {
