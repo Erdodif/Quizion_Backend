@@ -268,4 +268,16 @@ return function (Slim\App $app) {
         $quiz->delete();
         return $response->withStatus(RESPONSE_NO_CONTENT);
     });
+
+    $app->delete("/question/{id}", function(Request $request, Response $response, array $args) {
+        $question = Question::find($args["id"]);
+        $question->delete();
+        return $response->withStatus(RESPONSE_NO_CONTENT);
+    });
+
+    $app->delete("/answer/{id}", function(Request $request, Response $response, array $args) {
+        $answer = Answer::find($args["id"]);
+        $answer->delete();
+        return $response->withStatus(RESPONSE_NO_CONTENT);
+    });
 };
