@@ -277,8 +277,8 @@ return function (Slim\App $app) {
             $input = json_decode($request->getBody(), true);
             $answer = Answer::find($args["id"]);
 
-            $answer->save();
             $answer->fill($input);
+            $answer->save();
 
             $response->getBody()->write($result["out"]->toJson());
             $result["code"] = RESPONSE_OK;
@@ -287,7 +287,6 @@ return function (Slim\App $app) {
             $result["code"] = ERROR_NOT_FOUND;
             $response->getBody()->write($result["out"]);
         }
-        //$response->getBody()->write($answer->toJson());
 
         return $response->withStatus($result["code"]);
     });
