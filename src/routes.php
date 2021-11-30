@@ -108,20 +108,20 @@ function resultFromId($id, $class): array
     try {
         if (!idIsValid($id)) {
             $code = ERROR_BAD_REQUEST;
-            $message = '{"message":"Invalid id reference!"}';
+            $message = new Message("Invalid id reference!");
         } else {
             $element = $class::find($id);
             if ($element === null) {
                 $code = ERROR_NOT_FOUND;
-                $message = '{"message":"Resource not found!"}';
+                $message = new Message("Resource not found!");
             } else {
                 $code = RESPONSE_OK;
-                $message = json_encode($element);
+                $message = $element;
             }
         }
     } catch (Error $e) {
         $code = ERROR_INTERNAL;
-        $message = '{"message" :"An internal error occured!","cause":"' + $e->getMessage() + '"}';
+        $message = new Message("An internal error occured! cause: ".$e->getMessage());
     } finally {
         return array("code" => $code, "out" => $message);
     }
@@ -154,19 +154,19 @@ return function (Slim\App $app) {
     // GET ID - quizes/questions/answers
     $app->get("/quiz/{id}", function (Request $request, Response $response, array $args) {
         $results = resultFromId($args["id"], Quiz::class);
-        $response->getBody()->write($results["out"]);
+        $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 
     $app->get("/question/{id}", function (Request $request, Response $response, array $args) {
         $results = resultFromId($args["id"], Question::class);
-        $response->getBody()->write($results["out"]);
+        $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 
     $app->get("/answer/{id}", function (Request $request, Response $response, array $args) {
         $results = resultFromId($args["id"], Answer::class);
-        $response->getBody()->write($results["out"]);
+        $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 
@@ -290,7 +290,7 @@ return function (Slim\App $app) {
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]);
+            $response->getBody()->write($result["out"]->toJson());
         }
         return $response->withStatus($result["code"]);
     });
@@ -304,7 +304,7 @@ return function (Slim\App $app) {
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]);
+            $response->getBody()->write($result["out"]->toJson());
         }
         return $response->withStatus($result["code"]);
     });
@@ -318,7 +318,7 @@ return function (Slim\App $app) {
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]);
+            $response->getBody()->write($result["out"]->toJson());
         }
         return $response->withStatus($result["code"]);
     });
