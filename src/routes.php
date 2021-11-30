@@ -111,7 +111,7 @@ function resultFromId($id, $class): array
             $message = new Message("Invalid id reference!");
         } else {
             $element = $class::find($id);
-            if (isset($element["id"])) {
+            if (!isset($element["id"])) {
                 $code = ERROR_NOT_FOUND;
                 $message = new Message("Resource not found!");
             } else {
@@ -256,16 +256,12 @@ return function (Slim\App $app) {
         $result = resultFromId($args["id"], Quiz::class);
         if ($result["code"] == RESPONSE_OK) {
             $input = json_decode($request->getBody(), true);
-            $quiz = Quiz::find($args["id"]);
-            $quiz->fill($input);
-            $quiz->save();
-            $response->getBody()->write($quiz->toJson());
+            $result["out"]->fill($input);
+            $result["out"]->save();
+            $response->getBody()->write($result["out"]->toJson());
             $result["code"] = RESPONSE_OK;
         }
-        else {
-            $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]);
-        }
+        $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
     });
 
@@ -273,16 +269,12 @@ return function (Slim\App $app) {
         $result = resultFromId($args["id"], Question::class);
         if ($result["code"] == RESPONSE_OK) {
             $input = json_decode($request->getBody(), true);
-            $question = Question::find($args["id"]);
-            $question->fill($input);
-            $question->save();
-            $response->getBody()->write($question->toJson());
+            $result["out"]->fill($input);
+            $result["out"]->save();
+            $response->getBody()->write($result["out"]->toJson());
             $result["code"] = RESPONSE_OK;
         }
-        else {
-            $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]);
-        }
+        $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
     });
 
@@ -290,16 +282,11 @@ return function (Slim\App $app) {
         $result = resultFromId($args["id"], Answer::class);
         if ($result["code"] == RESPONSE_OK) {
             $input = json_decode($request->getBody(), true);
-            $answer = Answer::find($args["id"]);
-            $answer->fill($input);
-            $answer->save();
-            $response->getBody()->write($answer->toJson());
+            $result["out"]->fill($input);
+            $result["out"]->save();
             $result["code"] = RESPONSE_OK;
         }
-        else {
-            $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]);
-        }
+        $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
     });
 
