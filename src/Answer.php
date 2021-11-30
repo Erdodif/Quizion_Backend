@@ -6,5 +6,5 @@ class Answer extends Model {
     protected $table = "answer";
     public $timestamps = false;
     protected $guarded = ["id"];
-    protected $hidden = ["is_right"];
+    protected $hidden = ["question_id", "is_right"];
 }
