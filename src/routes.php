@@ -286,6 +286,7 @@ return function (Slim\App $app) {
         if ($result["code"] == RESPONSE_OK) {
             $quiz = Quiz::find($args["id"]);
             $quiz->delete();
+            $result["code"] = RESPONSE_NO_CONTENT;
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
@@ -299,6 +300,7 @@ return function (Slim\App $app) {
         if ($result["code"] == RESPONSE_OK) {
             $question = Question::find($args["id"]);
             $question->delete();
+            $result["code"] = RESPONSE_NO_CONTENT;
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
@@ -312,6 +314,7 @@ return function (Slim\App $app) {
         if ($result["code"] == RESPONSE_OK) {
             $answer = Answer::find($args["id"]);
             $answer->delete();
+            $result["code"] = RESPONSE_NO_CONTENT;
         }
         else {
             $result["code"] = ERROR_NOT_FOUND;
