@@ -237,7 +237,7 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
     });
 
-    // PUT quiz
+    // PUT quiz, answer, question
     $app->put("/quiz/{id}", function(Request $request, Response $response, array $args) {
         $input = json_decode($request->getBody(), true);
         $quiz = Quiz::find($args["id"]);
@@ -245,5 +245,23 @@ return function (Slim\App $app) {
         $quiz->fill($input);
         $response->getBody()->write($quiz->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_OK);
+    });
+
+    $app->put("/answer/{id}", function(Request $request, Response $response, array $args) {
+        $answer = Answer::find($args["id"]);
+        $input = json_decode($request->getBody(), true);
+        $answer->fill($input);
+        $answer->save();
+        $response->getBody()->write($quiz->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus(200);
+    });
+
+    $app->put("/question/{id}", function(Request $request, Response $response, array $args) {
+        $question = Question::find($args["id"]);
+        $input = json_decode($request->getBody(), true);
+        $question->fill($input);
+        $question->save();
+        $response->getBody()->write($quiz->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus(200);
     });
 };
