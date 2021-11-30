@@ -252,7 +252,7 @@ return function (Slim\App $app) {
         $input = json_decode($request->getBody(), true);
         $answer->fill($input);
         $answer->save();
-        $response->getBody()->write($quiz->toJson());
+        $response->getBody()->write($answer->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus(200);
     });
 
@@ -261,7 +261,7 @@ return function (Slim\App $app) {
         $input = json_decode($request->getBody(), true);
         $question->fill($input);
         $question->save();
-        $response->getBody()->write($quiz->toJson());
+        $response->getBody()->write($question->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus(200);
     });
 };
