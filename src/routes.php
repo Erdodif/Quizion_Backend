@@ -282,20 +282,41 @@ return function (Slim\App $app) {
 
     // DELETE quiz/answer/question
     $app->delete("/quiz/{id}", function (Request $request, Response $response, array $args) {
-        $quiz = Quiz::find($args["id"]);
-        $quiz->delete();
-        return $response->withStatus(RESPONSE_NO_CONTENT);
+        $result = resultFromId($args["id"], Quiz::class);
+        if ($result["code"] == RESPONSE_OK) {
+            $quiz = Quiz::find($args["id"]);
+            $quiz->delete();
+        }
+        else {
+            $result["code"] = ERROR_NOT_FOUND;
+            $response->getBody()->write($result["out"]);
+        }
+        return $response->withStatus($result["code"]);
     });
 
     $app->delete("/question/{id}", function (Request $request, Response $response, array $args) {
-        $question = Question::find($args["id"]);
-        $question->delete();
-        return $response->withStatus(RESPONSE_NO_CONTENT);
+        $result = resultFromId($args["id"], Question::class);
+        if ($result["code"] == RESPONSE_OK) {
+            $question = Question::find($args["id"]);
+            $question->delete();
+        }
+        else {
+            $result["code"] = ERROR_NOT_FOUND;
+            $response->getBody()->write($result["out"]);
+        }
+        return $response->withStatus($result["code"]);
     });
 
     $app->delete("/answer/{id}", function (Request $request, Response $response, array $args) {
-        $answer = Answer::find($args["id"]);
-        $answer->delete();
-        return $response->withStatus(RESPONSE_NO_CONTENT);
+        $result = resultFromId($args["id"], Answer::class);
+        if ($result["code"] == RESPONSE_OK) {
+            $answer = Answer::find($args["id"]);
+            $answer->delete();
+        }
+        else {
+            $result["code"] = ERROR_NOT_FOUND;
+            $response->getBody()->write($result["out"]);
+        }
+        return $response->withStatus($result["code"]);
     });
 };
