@@ -216,7 +216,7 @@ return function (Slim\App $app) {
         $quiz->save();
         $kimenet = $quiz->toJson();
         $response->getBody()->write($kimenet);
-        return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
+        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
     });
 
     $app->post("/questions", function (Request $request, Response $response) {
@@ -225,7 +225,7 @@ return function (Slim\App $app) {
         $question->save();
         $kimenet = $question->toJson();
         $response->getBody()->write($kimenet);
-        return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
+        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
     });
 
     $app->post("/answers", function (Request $request, Response $response) {
@@ -234,16 +234,16 @@ return function (Slim\App $app) {
         $quiz->save();
         $kimenet = $quiz->toJson();
         $response->getBody()->write($kimenet);
-        return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
+        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_CREATED);
     });
 
     // PUT quiz
     $app->put("/quiz/{id}", function(Request $request, Response $response, array $args) {
-        $quiz = Quiz::find($args["id"]);
         $input = json_decode($request->getBody(), true);
-        $quiz->fill($input);
+        $quiz = Quiz::find($args["id"]);
         $quiz->save();
+        $quiz->fill($input);
         $response->getBody()->write($quiz->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus(200);
+        return $response->withHeader("Content-Type", "application/json")->withStatus(RESPONSE_OK);
     });
 };
