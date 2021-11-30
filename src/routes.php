@@ -237,12 +237,30 @@ return function (Slim\App $app) {
         return $response->withStatus(RESPONSE_CREATED)->withHeader("Content-Type", "application/json");
     });
 
-    // PUT quiz
+    // PUT quiz, answer, question
     $app->put("/quiz/{id}", function(Request $request, Response $response, array $args) {
         $quiz = Quiz::find($args["id"]);
         $input = json_decode($request->getBody(), true);
         $quiz->fill($input);
         $quiz->save();
+        $response->getBody()->write($quiz->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus(200);
+    });
+
+    $app->put("/answer/{id}", function(Request $request, Response $response, array $args) {
+        $answer = Answer::find($args["id"]);
+        $input = json_decode($request->getBody(), true);
+        $answer->fill($input);
+        $answer->save();
+        $response->getBody()->write($quiz->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus(200);
+    });
+
+    $app->put("/question/{id}", function(Request $request, Response $response, array $args) {
+        $question = Question::find($args["id"]);
+        $input = json_decode($request->getBody(), true);
+        $question->fill($input);
+        $question->save();
         $response->getBody()->write($quiz->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus(200);
     });
