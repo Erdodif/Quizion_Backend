@@ -209,8 +209,8 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
 
-    // POST NEW - quizes/questions/answers
-    $app->post("/quize", function (Request $request, Response $response) {
+    // POST NEW - quiz/question/answer
+    $app->post("/quiz", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
             $quiz = Quiz::create($input);
