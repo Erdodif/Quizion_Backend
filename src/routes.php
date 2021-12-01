@@ -99,44 +99,44 @@ function getAnswerFromQuiz($quiz_id, $question_order, $answer_order)
     return array("code" => $code, "out" => $response);
 }
 
-function getUserByName($identifier):array{
+function getUserByName($identifier): array
+{
     $code = RESPONSE_OK;
     $out = "";
-    if (isset($identifier["name"])) {
-        $user = User::where("name", "=", $identifier["name"])->get();
-        if ($user ===null){
+    if (isset($identifier)) {
+        $user = User::where("name", "=", $identifier)->get();
+        if (!isset($user[0])) {
             $out = new Message("User not found");
             $code = ERROR_NOT_FOUND;
-        }
-        else{
-            $out = $user;
+        } else {
+            $out = $user[0];
             $code = RESPONSE_OK;
         }
     } else {
         $out = new Message("Invalid identifier reference!");
         $code = ERROR_BAD_REQUEST;
     }
-    return array("code"=>$code,"out"=>$out);
+    return array("code" => $code, "out" => $out);
 }
 
-function getUserByEmail($identifier):array{
+function getUserByEmail($identifier): array
+{
     $code = RESPONSE_OK;
     $out = "";
-    if (isset($identifier["email"])) {
-        $user = User::where("email", "=", $identifier["email"])->get();
-        if ($user ===null){
+    if (isset($identifier)) {
+        $user = User::where("email", "=", $identifier)->get();
+        if (!isset($user[0])) {
             $out = new Message("User not found");
             $code = ERROR_NOT_FOUND;
-        }
-        else{
-            $out = $user;
+        } else {
+            $out = $user[0];
             $code = RESPONSE_OK;
         }
     } else {
         $out = new Message("Invalid identifier reference!");
         $code = ERROR_BAD_REQUEST;
     }
-    return array("code"=>$code,"out"=>$out);
+    return array("code" => $code, "out" => $out);
 }
 
 function idIsValid($id): bool
@@ -239,45 +239,18 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 
-    $app->get("/user/{id}", function (Request $request, Response $response, array $args) {
-        $results = resultFromId($args["id"], User::class);
+    $app->get("/user/{identifier}", function (Request $request, Response $response, array $args) {
+        $identifier = $args["identifier"];
+        if (is_numeric($identifier)) {
+            $results = resultFromId($args["identifier"], User::class);
+        } else if (str_contains($identifier, "@")) {
+            $results = getUserByEmail($identifier);
+        } else {
+            $results = getUserByName($identifier);
+        }
         $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
-
-    // GET BY NAME OR EMAIL - user
-    $app->get("/user/{identifier}", function (Request $request, Response $response, array $args) {
-        $identifier = $args["identifier"];
-        $code = RESPONSE_OK;
-        $out = "";
-        if (isset($identifier["email"])) {
-            $user = User::where("email", "=", $identifier["email"])->get();
-            if ($user ===null){
-                $out = new Message("User not found");
-                $code = ERROR_NOT_FOUND;
-            }
-            else{
-                $out = $user;
-                $code = RESPONSE_OK;
-            }
-        } else if (isset($identifier["name"])) {
-            $user = User::where("name", "=", $identifier["name"])->get();
-            if ($user ===null){
-                $out = new Message("User not found");
-                $code = ERROR_NOT_FOUND;
-            }
-            else{
-                $out = $user;
-                $code = RESPONSE_OK;
-            }
-        } else {
-            $out = new Message("Invalid identifier reference!");
-            $code = ERROR_BAD_REQUEST;
-        }
-        $response->getBody()->write($out->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-    });
-
 
     // GET ACTIVE - quizes 
     $app->get("/quizes/active", function (Request $request, Response $response) {
