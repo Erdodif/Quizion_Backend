@@ -166,6 +166,13 @@ return function (Slim\App $app) {
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
 
+    $app->get("/results", function (Request $request, Response $response, array $args) {
+        $result = resultFromAll($args["id"], Results::class);
+        $response->getBody()->write($result["out"]->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+    });
+
+
     // GET ID - quizes/questions/answers
     $app->get("/quiz/{id}", function (Request $request, Response $response, array $args) {
         $results = resultFromId($args["id"], Quiz::class);
