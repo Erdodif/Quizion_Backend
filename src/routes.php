@@ -99,6 +99,46 @@ function getAnswerFromQuiz($quiz_id, $question_order, $answer_order)
     return array("code" => $code, "out" => $response);
 }
 
+function getUserByName($identifier):array{
+    $code = RESPONSE_OK;
+    $out = "";
+    if (isset($identifier["name"])) {
+        $user = User::where("name", "=", $identifier["name"])->get();
+        if ($user ===null){
+            $out = new Message("User not found");
+            $code = ERROR_NOT_FOUND;
+        }
+        else{
+            $out = $user;
+            $code = RESPONSE_OK;
+        }
+    } else {
+        $out = new Message("Invalid identifier reference!");
+        $code = ERROR_BAD_REQUEST;
+    }
+    return array("code"=>$code,"out"=>$out);
+}
+
+function getUserByEmail($identifier):array{
+    $code = RESPONSE_OK;
+    $out = "";
+    if (isset($identifier["email"])) {
+        $user = User::where("email", "=", $identifier["email"])->get();
+        if ($user ===null){
+            $out = new Message("User not found");
+            $code = ERROR_NOT_FOUND;
+        }
+        else{
+            $out = $user;
+            $code = RESPONSE_OK;
+        }
+    } else {
+        $out = new Message("Invalid identifier reference!");
+        $code = ERROR_BAD_REQUEST;
+    }
+    return array("code"=>$code,"out"=>$out);
+}
+
 function idIsValid($id): bool
 {
     return is_numeric($id) && $id > 0;
@@ -128,7 +168,8 @@ function resultFromId($id, $class): array
     }
 }
 
-function resultFromAll($class): array{
+function resultFromAll($class): array
+{
     $out = null;
     try {
         $result = $class::all();
@@ -136,14 +177,14 @@ function resultFromAll($class): array{
             $out = $result;
             $code = RESPONSE_OK;
         } else {
-            $out = new Message("There is no ".$class::getName()."!");
+            $out = new Message("There is no " . $class::getName() . "!");
             $code = ERROR_NOT_FOUND;
         }
     } catch (Error $e) {
         $out = new Message("An Internal error occured! " . $e);
         $code = ERROR_INTERNAL;
     } finally {
-        return array("code"=>$code,"out"=>$out);
+        return array("code" => $code, "out" => $out);
     }
 }
 
@@ -172,7 +213,7 @@ return function (Slim\App $app) {
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
-    
+
     $app->get("/users", function (Request $request, Response $response) {
         $result = resultFromAll(User::class);
         $response->getBody()->write($result["out"]->toJson());
@@ -203,6 +244,40 @@ return function (Slim\App $app) {
         $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
+
+    // GET BY NAME OR EMAIL - user
+    $app->get("/user/{identifier}", function (Request $request, Response $response, array $args) {
+        $identifier = $args["identifier"];
+        $code = RESPONSE_OK;
+        $out = "";
+        if (isset($identifier["email"])) {
+            $user = User::where("email", "=", $identifier["email"])->get();
+            if ($user ===null){
+                $out = new Message("User not found");
+                $code = ERROR_NOT_FOUND;
+            }
+            else{
+                $out = $user;
+                $code = RESPONSE_OK;
+            }
+        } else if (isset($identifier["name"])) {
+            $user = User::where("name", "=", $identifier["name"])->get();
+            if ($user ===null){
+                $out = new Message("User not found");
+                $code = ERROR_NOT_FOUND;
+            }
+            else{
+                $out = $user;
+                $code = RESPONSE_OK;
+            }
+        } else {
+            $out = new Message("Invalid identifier reference!");
+            $code = ERROR_BAD_REQUEST;
+        }
+        $response->getBody()->write($out->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+    });
+
 
     // GET ACTIVE - quizes 
     $app->get("/quizes/active", function (Request $request, Response $response) {
@@ -289,6 +364,7 @@ return function (Slim\App $app) {
     $app->post("/user", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
+            $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
             $user = User::create($input);
             $user->save();
             $code = RESPONSE_CREATED;
@@ -338,6 +414,9 @@ return function (Slim\App $app) {
         $result = resultFromId($args["id"], User::class);
         if ($result["code"] == RESPONSE_OK) {
             $input = json_decode($request->getBody(), true);
+            if (isset($input["password"])) {
+                $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
+            }
             $result["out"]->fill($input);
             $result["out"]->save();
         }
