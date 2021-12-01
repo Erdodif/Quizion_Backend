@@ -130,7 +130,7 @@ function resultFromId($id, $class): array
 function resultFromAll($class): array{
     $out = null;
     try {
-        $result = Quiz::all();
+        $result = $class::all();
         if (isset($result[0]["id"])) {
             $out = $result;
             $code = RESPONSE_OK;
