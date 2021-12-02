@@ -1,5 +1,5 @@
 <?php 
-namespace Quizion\Backend;
+namespace Quizion\Backend\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model {

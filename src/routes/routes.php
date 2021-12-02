@@ -2,10 +2,10 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Quizion\Backend\Quiz;
-use Quizion\Backend\Question;
-use Quizion\Backend\Answer;
-use Quizion\Backend\User;
+use Quizion\Backend\Models\Quiz;
+use Quizion\Backend\Models\Question;
+use Quizion\Backend\Models\Answer;
+use Quizion\Backend\Models\User;
 use Quizion\Backend\Message;
 
 require_once "responseCodes.php";

@@ -21,6 +21,6 @@ $dbManager->addConnection([
 $dbManager->setAsGlobal();
 $dbManager->bootEloquent();
 
-$routes = require_once "src/routes.php";
+$routes = require_once "src/routes/routes.php";
 $routes($app);
 $app->run();

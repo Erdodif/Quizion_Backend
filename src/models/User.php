@@ -1,14 +1,14 @@
 <?php
-namespace Quizion\Backend;
+namespace Quizion\Backend\Models;
 use Illuminate\Database\Eloquent\Model;
 
-class Result extends Model{
-    protected $table = "results";
+class User extends Model{
+    protected $table = "user";
     public $timestamps = false;
     protected $guarded = ["id"];
-    //protected $hidden = [""];
+    protected $hidden = ["email","password"];
     
     static public function getName(){
-        return "results";
+        return "user";
     }
 }
