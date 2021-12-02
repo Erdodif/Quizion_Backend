@@ -99,6 +99,16 @@ function getAnswerFromQuiz($quiz_id, $question_order, $answer_order)
     return array("code" => $code, "out" => $response);
 }
 
+function getRightAnswersFromQuiz($quiz_id, $question_order): array
+{
+    $results = getAnswersFromQuiz($quiz_id,$question_order);
+    if($results["code"]==RESPONSE_OK){
+        $results["out"]->makeVisible(["is_right"]);
+        $results["out"]->makeHidden(["content"]);
+    }
+    return array("code" => $results["code"], "out" => $results["out"]);
+}
+
 function getUserByName($identifier): array
 {
     $code = RESPONSE_OK;
@@ -287,6 +297,13 @@ return function (Slim\App $app) {
 
     $app->get("/quiz/{id}/question/{question_order}/answer/{answer_order}", function (Request $request, Response $response, array $args) {
         $result = getAnswerFromQuiz($args["id"], $args["question_order"], $args["answer_order"]);
+        $response->getBody()->write($result["out"]->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+    });
+
+    //GET RIGHT - aswers
+    $app->get("/pick/quiz/{id}/question/{question_order}", function (Request $request, Response $response, array $args) {
+        $result = getRightAnswersFromQuiz($args["id"], $args["question_order"]);
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
