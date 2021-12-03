@@ -66,20 +66,6 @@ return function (Slim\App $app) {
     });
 
     // POST NEW - quiz/question/answer //nincs kiemelve!!!
-    $app->post("/quiz", function (Request $request, Response $response) {
-        try {
-            $input = json_decode($request->getBody(), true);
-            $quiz = Quiz::create($input);
-            $quiz->save();
-            $code = RESPONSE_CREATED;
-        } catch (Error $e) {
-            $quiz = new Message($e);
-            $code = ERROR_INTERNAL;
-        }
-        $response->getBody()->write($quiz->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-    });
-
     $app->post("/question", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
