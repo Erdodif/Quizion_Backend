@@ -3,10 +3,7 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Quizion\Backend\Companion\Data;
-use Quizion\Backend\Models\Quiz;
-use Quizion\Backend\Models\Question;
 use Quizion\Backend\Models\Answer;
-use Quizion\Backend\Models\User;
 use Quizion\Backend\Companion\Message;
 use Slim\Routing\RouteCollectorProxy;
 require_once "src/companion/responseCodes.php";
