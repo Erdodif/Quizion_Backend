@@ -15,35 +15,18 @@ return function (Slim\App $app) {
     $quizRoutes($app);
     $questionRoutes = require_once "src/routes/questionRoutes.php";
     $questionRoutes($app);
-    // GET ALL - quizes/questions/answers/users
-
-    $app->get("/answers", function (Request $request, Response $response) {
-        $result = Data::resultFromAll(Answer::class);
-        $response->getBody()->write($result["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
-    });
-
+    $answerRoutes = require_once "src/routes/answerRoutes.php";
+    $answerRoutes($app);
     $app->get("/results", function (Request $request, Response $response, array $args) {
         $result = Data::resultFromAll($args["id"], Results::class);
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
-
     $app->get("/users", function (Request $request, Response $response) {
         $result = Data::resultFromAll(User::class);
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
-
-    // GET ID - quiz/question/answer/user
-
-
-    $app->get("/answer/{id}", function (Request $request, Response $response, array $args) {
-        $results = Data::resultFromId($args["id"], Answer::class);
-        $response->getBody()->write($results["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
-    });
-
     $app->get("/user/{identifier}", function (Request $request, Response $response, array $args) {
         $identifier = $args["identifier"];
         if (is_numeric($identifier)) {
@@ -56,24 +39,6 @@ return function (Slim\App $app) {
         $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
-
-    // POST NEW - quiz/question/answer //nincs kiemelve!!!
-    
-
-    $app->post("/answer", function (Request $request, Response $response) {
-        try {
-            $input = json_decode($request->getBody(), true);
-            $answer = Answer::create($input);
-            $answer->save();
-            $code = RESPONSE_CREATED;
-        } catch (Error $e) {
-            $answer = new Message($e);
-            $code = ERROR_INTERNAL;
-        }
-        $response->getBody()->write($answer->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-    });
-
     $app->post("/user", function (Request $request, Response $response) {
         try {
             $input = json_decode($request->getBody(), true);
@@ -88,21 +53,6 @@ return function (Slim\App $app) {
         $response->getBody()->write($user->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     });
-
-    // PUT ID quiz/answer/question/user
-
-
-    $app->put("/answer/{id}", function (Request $request, Response $response, array $args) {
-        $result = Data::resultFromId($args["id"], Answer::class);
-        if ($result["code"] == RESPONSE_OK) {
-            $input = json_decode($request->getBody(), true);
-            $result["out"]->fill($input);
-            $result["out"]->save();
-        }
-        $response->getBody()->write($result["out"]->toJson());
-        return $response->withStatus($result["code"]);
-    });
-
     $app->put("/user/{id}", function (Request $request, Response $response, array $args) {
         $result = Data::resultFromId($args["id"], User::class);
         if ($result["code"] == RESPONSE_OK) {
@@ -116,22 +66,6 @@ return function (Slim\App $app) {
         $response->getBody()->write($result["out"]->toJson());
         return $response->withStatus($result["code"]);
     });
-
-    // DELETE ID quiz/answer/question/user
-
-
-    $app->delete("/answer/{id}", function (Request $request, Response $response, array $args) {
-        $result = Data::resultFromId($args["id"], Answer::class);
-        if ($result["code"] == RESPONSE_OK) {
-            $result["out"]->delete();
-            $result["code"] = RESPONSE_NO_CONTENT;
-        } else {
-            $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]->toJson());
-        }
-        return $response->withStatus($result["code"]);
-    });
-
     $app->delete("/user/{id}", function (Request $request, Response $response, array $args) {
         $result = Data::resultFromId($args["id"], User::class);
         if ($result["code"] == RESPONSE_OK) {
