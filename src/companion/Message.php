@@ -1,6 +1,6 @@
 <?php
 
-namespace Quizion\Backend;
+namespace Quizion\Backend\Companion;
 
 class Message
 {
