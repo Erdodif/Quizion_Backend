@@ -8,17 +8,14 @@ use Quizion\Backend\Models\Question;
 use Quizion\Backend\Models\Answer;
 use Quizion\Backend\Models\User;
 use Quizion\Backend\Companion\Message;
+require_once "src/companion/responseCodes.php";
 
 return function (Slim\App $app) {
     $quizRoutes = require_once "src/routes/quizRoutes.php";
     $quizRoutes($app);
+    $questionRoutes = require_once "src/routes/questionRoutes.php";
+    $questionRoutes($app);
     // GET ALL - quizes/questions/answers/users
-
-    $app->get("/questions", function (Request $request, Response $response) {
-        $result = Data::resultFromAll(Question::class);
-        $response->getBody()->write($result["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
-    });
 
     $app->get("/answers", function (Request $request, Response $response) {
         $result = Data::resultFromAll(Answer::class);
@@ -40,11 +37,6 @@ return function (Slim\App $app) {
 
     // GET ID - quiz/question/answer/user
 
-    $app->get("/question/{id}", function (Request $request, Response $response, array $args) {
-        $results = Data::resultFromId($args["id"], Question::class);
-        $response->getBody()->write($results["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
-    });
 
     $app->get("/answer/{id}", function (Request $request, Response $response, array $args) {
         $results = Data::resultFromId($args["id"], Answer::class);
@@ -66,19 +58,7 @@ return function (Slim\App $app) {
     });
 
     // POST NEW - quiz/question/answer //nincs kiemelve!!!
-    $app->post("/question", function (Request $request, Response $response) {
-        try {
-            $input = json_decode($request->getBody(), true);
-            $question = Question::create($input);
-            $question->save();
-            $code = RESPONSE_CREATED;
-        } catch (Error $e) {
-            $question = new Message($e);
-            $code = ERROR_INTERNAL;
-        }
-        $response->getBody()->write($question->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
-    });
+    
 
     $app->post("/answer", function (Request $request, Response $response) {
         try {
@@ -111,16 +91,6 @@ return function (Slim\App $app) {
 
     // PUT ID quiz/answer/question/user
 
-    $app->put("/question/{id}", function (Request $request, Response $response, array $args) {
-        $result = Data::resultFromId($args["id"], Question::class);
-        if ($result["code"] == RESPONSE_OK) {
-            $input = json_decode($request->getBody(), true);
-            $result["out"]->fill($input);
-            $result["out"]->save();
-        }
-        $response->getBody()->write($result["out"]->toJson());
-        return $response->withStatus($result["code"]);
-    });
 
     $app->put("/answer/{id}", function (Request $request, Response $response, array $args) {
         $result = Data::resultFromId($args["id"], Answer::class);
@@ -149,17 +119,6 @@ return function (Slim\App $app) {
 
     // DELETE ID quiz/answer/question/user
 
-    $app->delete("/question/{id}", function (Request $request, Response $response, array $args) {
-        $result = Data::resultFromId($args["id"], Question::class);
-        if ($result["code"] == RESPONSE_OK) {
-            $result["out"]->delete();
-            $result["code"] = RESPONSE_NO_CONTENT;
-        } else {
-            $result["code"] = ERROR_NOT_FOUND;
-            $response->getBody()->write($result["out"]->toJson());
-        }
-        return $response->withStatus($result["code"]);
-    });
 
     $app->delete("/answer/{id}", function (Request $request, Response $response, array $args) {
         $result = Data::resultFromId($args["id"], Answer::class);

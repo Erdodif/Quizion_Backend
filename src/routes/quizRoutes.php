@@ -11,7 +11,7 @@ return function (Slim\App $app) {
     // GET ALL
     $app->group("/quizes",function(RouteCollectorProxy $group){
         $group->get("", function (Request $request, Response $response, array $args) {
-            $results = Data::getAllQuiz();
+            $results = Data::resultFromAll(Quiz::class);
             $response->getBody()->write($results["out"]->toJson());
             return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
         });

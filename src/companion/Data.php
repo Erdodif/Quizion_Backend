@@ -13,19 +13,6 @@ require_once "responseCodes.php";
 
 class Data
 {
-    static function getAllQuiz(): array
-    {
-        $actives = Quiz::get();
-        if ($actives === "[]") {
-            $code = ERROR_NOT_FOUND;
-            $response = new Message("Empty result!");
-        } else {
-            $response = $actives;
-            $code = RESPONSE_OK;
-        }
-        return array("code" => $code, "out"=> $response);
-    }
-
     static function getActiveQuizes(): array
     {
         $actives = Quiz::where("active", "=", 1)->get();
