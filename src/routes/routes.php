@@ -14,6 +14,8 @@ return function (Slim\App $app) {
     $questionRoutes($app);
     $answerRoutes = require_once "src/routes/answerRoutes.php";
     $answerRoutes($app);
+    $userRoutes = require_once "src/routes/userRoutes.php";
+    $userRoutes($app);
     $app->get("/results", function (Request $request, Response $response, array $args) {
         $result = Data::resultFromAll($args["id"], Results::class);
         $response->getBody()->write($result["out"]->toJson());
