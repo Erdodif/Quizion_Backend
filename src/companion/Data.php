@@ -1,15 +1,44 @@
 <?php
+
 namespace Quizion\Backend\Companion;
+
 use Quizion\Backend\Models\Quiz;
 use Quizion\Backend\Models\Question;
 use Quizion\Backend\Models\Answer;
 use Quizion\Backend\Models\User;
 use Quizion\Backend\Models\Result;
 use \Error;
+
 require_once "responseCodes.php";
 
-class Data{
-    
+class Data
+{
+    static function getAllQuiz(): array
+    {
+        $actives = Quiz::get();
+        if ($actives === "[]") {
+            $code = ERROR_NOT_FOUND;
+            $response = new Message("Empty result!");
+        } else {
+            $response = $actives;
+            $code = RESPONSE_OK;
+        }
+        return array("code" => $code, "out"=> $response);
+    }
+
+    static function getActiveQuizes(): array
+    {
+        $actives = Quiz::where("active", "=", 1)->get();
+        if ($actives === "[]") {
+            $code = ERROR_NOT_FOUND;
+            $response = new Message("Empty result!");
+        } else {
+            $response = $actives;
+            $code = RESPONSE_OK;
+        }
+        return array("code" => $code, "out"=> $response);
+    }
+
     static function getQuestionsFromQuiz($quiz_id): array
     {
         $actives = Question::where("quiz_id", "=", $quiz_id)->get();
@@ -101,8 +130,8 @@ class Data{
 
     static function getRightAnswersFromQuiz($quiz_id, $question_order): array
     {
-        $results = Data::getAnswersFromQuiz($quiz_id,$question_order);
-        if($results["code"]==RESPONSE_OK){
+        $results = Data::getAnswersFromQuiz($quiz_id, $question_order);
+        if ($results["code"] == RESPONSE_OK) {
             $results["out"]->makeVisible(["is_right"]);
             $results["out"]->makeHidden(["content"]);
         }
@@ -197,5 +226,4 @@ class Data{
             return array("code" => $code, "out" => $out);
         }
     }
-
 }
