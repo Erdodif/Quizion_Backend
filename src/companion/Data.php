@@ -28,8 +28,8 @@ class Data
 
     static function getQuestionsFromQuiz($quiz_id): array
     {
-        $actives = Question::where("quiz_id", "=", $quiz_id)->get();
         if (Data::idIsValid($quiz_id)) {
+            $actives = Question::where("quiz_id", "=", $quiz_id)->get();
             if (Data::resultFromId($quiz_id, Quiz::class)["code"] == RESPONSE_OK) {
                 if ($actives === null || empty($actives)) {
                     $response = new Message("Empty result!");
@@ -64,6 +64,51 @@ class Data
                 }
             } else {
                 $response = new Message("Invalid question number reference!");
+                $code = ERROR_BAD_REQUEST;
+            }
+        } else {
+            $response = $result["out"];
+            $code = $result["code"];
+        }
+        return array("code" => $code, "out" => $response);
+    }
+
+    static function getAnswersFromQuestion($question_id):array{
+        if (Data::idIsValid($question_id)) {
+            $actives = Answer::where("question_id", "=", $question_id)->get();
+            if (Data::resultFromId($question_id, Question::class)["code"] == RESPONSE_OK) {
+                if ($actives === null || empty($actives)) {
+                    $response = new Message("Question #$question_id has no answers!");
+                    $code = ERROR_NOT_FOUND;
+                } else {
+                    $response = $actives;
+                    $code = RESPONSE_OK;
+                }
+            } else {
+                $response = new Message("Question #$question_id not found!");
+                $code = ERROR_NOT_FOUND;
+            }
+        } else {
+            $response = new Message("Invalid question reference!");
+            $code = ERROR_BAD_REQUEST;
+        }
+        return array("code" => $code, "out" => $response);
+    }
+
+    static function getAnswerFromQuestion($question_id,$answer_order):array{
+        $result = Data::getAnswersFromQuestion($question_id);
+        if ($result["code"] == RESPONSE_OK) {
+            if (Data::idIsValid($answer_order)) {
+                if ($result["out"] === null || empty($result["out"]) || !isset($result["out"][$answer_order - 1])) {
+                    $response = new Message("Question #$question_id does not have $answer_order. answer!");
+                    $code = ERROR_NOT_FOUND;
+                } else {
+                    $active = $result["out"][$answer_order - 1];
+                    $response = $active;
+                    $code = RESPONSE_OK;
+                }
+            } else {
+                $response = new Message("Invalid answer number reference!");
                 $code = ERROR_BAD_REQUEST;
             }
         } else {

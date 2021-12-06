@@ -58,5 +58,18 @@ return function (Slim\App $app) {
             }
             return $response->withStatus($result["code"]);
         });
+        
+        // GET FROM QUIZ > QUESTION - answers/anwser
+        $group->get("/answers", function (Request $request, Response $response, array $args) {
+            $result = Data::getAnswersFromQuestion($args["id"]);
+            $response->getBody()->write($result["out"]->toJson());
+            return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+        });
+
+        $group->get("/answer/{answer_order}", function (Request $request, Response $response, array $args) {
+            $result = Data::getAnswerFromQuestion($args["id"], $args["answer_order"]);
+            $response->getBody()->write($result["out"]->toJson());
+            return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+        });
     });
 };
