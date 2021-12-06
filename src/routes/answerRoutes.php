@@ -6,17 +6,18 @@ use Quizion\Backend\Companion\Data;
 use Quizion\Backend\Models\Answer;
 use Quizion\Backend\Companion\Message;
 use Slim\Routing\RouteCollectorProxy;
+
 require_once "src/companion/responseCodes.php";
 
 return function (Slim\App $app) {
-    
+
     $app->get("/answers", function (Request $request, Response $response) {
         $result = Data::resultFromAll(Answer::class);
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
     });
-    
-    $app->group("/answer",function(RouteCollectorProxy $group){
+
+    $app->group("/answer", function (RouteCollectorProxy $group) {
         $group->post("/answer", function (Request $request, Response $response) {
             try {
                 $input = json_decode($request->getBody(), true);
@@ -31,7 +32,7 @@ return function (Slim\App $app) {
             return $response->withHeader("Content-Type", "application/json")->withStatus($code);
         });
 
-        $group->group("/{id}",function(RouteCollectorProxy $group){
+        $group->group("/{id}", function (RouteCollectorProxy $group) {
             $group->get("", function (Request $request, Response $response, array $args) {
                 $results = Data::resultFromId($args["id"], Answer::class);
                 $response->getBody()->write($results["out"]->toJson());
@@ -61,5 +62,12 @@ return function (Slim\App $app) {
                 return $response->withStatus($result["code"]);
             });
         });
+    });
+
+    // GET RIGHT answer
+    $app->get("/pick/answer/{id}", function (Request $request, Response $response, array $args) {
+        $results = Data::getAnswerIsRight($args["id"]);
+        $response->getBody()->write($results["out"]->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
     });
 };

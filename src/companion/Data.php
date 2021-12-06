@@ -23,7 +23,7 @@ class Data
             $response = $actives;
             $code = RESPONSE_OK;
         }
-        return array("code" => $code, "out"=> $response);
+        return array("code" => $code, "out" => $response);
     }
 
     static function getQuestionsFromQuiz($quiz_id): array
@@ -73,7 +73,8 @@ class Data
         return array("code" => $code, "out" => $response);
     }
 
-    static function getAnswersFromQuestion($question_id):array{
+    static function getAnswersFromQuestion($question_id): array
+    {
         if (Data::idIsValid($question_id)) {
             $actives = Answer::where("question_id", "=", $question_id)->get();
             if (Data::resultFromId($question_id, Question::class)["code"] == RESPONSE_OK) {
@@ -95,7 +96,8 @@ class Data
         return array("code" => $code, "out" => $response);
     }
 
-    static function getAnswerFromQuestion($question_id,$answer_order):array{
+    static function getAnswerFromQuestion($question_id, $answer_order): array
+    {
         $result = Data::getAnswersFromQuestion($question_id);
         if ($result["code"] == RESPONSE_OK) {
             if (Data::idIsValid($answer_order)) {
@@ -158,6 +160,16 @@ class Data
             $code = $result["code"];
         }
         return array("code" => $code, "out" => $response);
+    }
+
+    static function getAnswerIsRight($answer_id)
+    {
+        $results = Data::resultFromId($answer_id, Answer::class);
+        if ($results["code"] == RESPONSE_OK) {
+            $results["out"]->makeVisible(["is_right"]);
+            $results["out"]->makeHidden(["content"]);
+        }
+        return array("code" => $results["code"], "out" => $results["out"]);
     }
 
     static function getRightAnswersFromQuiz($quiz_id, $question_order): array
