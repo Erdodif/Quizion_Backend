@@ -1,4 +1,5 @@
 <?php
+
 namespace Quizion\Backend\Middlewares;
 
 use Exception;
@@ -9,7 +10,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Quizion\Backend\Companion\Message;
 use Slim\App;
 
-class AuthMiddleware{
+class AuthMiddleware
+{
 
     private $responseFactory;
 
@@ -18,26 +20,36 @@ class AuthMiddleware{
         $this->responseFactory = $responseFactory;
     }
 
-    public function __invoke(Request $request, RequestHandler $handler) :Response
+    public function __invoke(Request $request, RequestHandler $handler): Response
     {
         $auth = $request->getHeader("Authorization");
-        try{
-            if(count($auth) !==1){
-                throw new Exception("Hibás a kérés feljéce!");
+        try {
+            if (count($auth) !== 1) {
+                $code = ERROR_BAD_REQUEST;
+                $out = new Message("Invalid request header!");
+            } else {
+                $authArray = mb_split(" ", $auth[0]);
+                if ($authArray[0] !== 'Bearer') {
+                    $code = ERROR_METHOD_NOT_ALLOWED;
+                    $out = new Message("Unsupported method!");
+                } else {
+                    $tokenStr = $authArray[1];
+                    if ($tokenStr === "") {
+                        $code = ERROR_UNAUTHORIZED;
+                        $out = new Message("Login reqired!");
+                    } else {
+                        Token::where("token", $tokenStr)->firstOrFail();
+                        $out = $handler->handle($request);
+                        return $out;
+                    }
+                }
             }
-            $authArray = mb_split(" ", $auth[0]);
-            if($authArray[0]!== 'Bearer'){
-                throw new Exception("Nem támogatott autentikaciós módszer!");
-            }
-            $tokenStr = $authArray[1];
-            Token::where("token", $tokenStr)->firstOrFail();
-            $response = $handler->handle($request);
+        } catch (Exception $e) {
+            $code = ERROR_UNAUTHORIZED;
+            $out = new Message("Invalid or expired Token!");
         }
-        catch(Exception $e){
-            $response = $this->responseFactory->createResponse();
-            $response->withStatus(ERROR_UNAUTHORIZED);
-            $response->getBody()->write((new Message("Invalid or expired Token!"))->toJson());
-        }
-        return $response;
+        $response = $this->responseFactory->createResponse();
+        $response->getBody()->write($out->toJson());
+        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
     }
 }
