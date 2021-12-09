@@ -6,6 +6,7 @@ use Quizion\Backend\Models\Quiz;
 use Quizion\Backend\Models\Question;
 use Quizion\Backend\Models\Answer;
 use Quizion\Backend\Models\User;
+use Quizion\Backend\Models\Token;
 use Quizion\Backend\Models\Result;
 use \Error;
 
@@ -222,6 +223,14 @@ class Data
         return array("code" => $code, "out" => $out);
     }
 
+    static function getUserByAny($usernameOrEmail):array{
+        $result = Data::getUserByName($usernameOrEmail);
+        if($result["code"]!==RESPONSE_OK){
+            $result = Data::getUserByEmail($usernameOrEmail);
+        }
+        return $result;
+    }
+
     static function idIsValid($id): bool
     {
         return is_numeric($id) && $id > 0;
@@ -270,4 +279,28 @@ class Data
             return array("code" => $code, "out" => $out);
         }
     }
+
+    static function createKey(): string
+    {
+        return bin2hex(random_bytes(64));
+    }
+
+    static function getTokenByKey(string $key): Token|false{
+        try{
+            return Token::where("key",$key)->firstOrFail();
+        } catch (Error $e){
+            return false;
+        }
+    }
+
+    static function getUserByToken(Token $token): User|false
+    {
+        try{
+            return User::where("id",$token->user_id)->firtsOrFail();
+        }
+        catch(Error $e){
+            return false;
+        }
+    }
+
 }

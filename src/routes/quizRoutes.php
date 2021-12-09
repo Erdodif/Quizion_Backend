@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Quizion\Backend\Companion\Data;
 use Quizion\Backend\Models\Quiz;
 use Quizion\Backend\Companion\Message;
+use Quizion\Backend\Middlewares\AuthMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
 return function (Slim\App $app) {
@@ -99,5 +100,5 @@ return function (Slim\App $app) {
         $result = Data::getRightAnswersFromQuiz($args["id"], $args["question_order"]);
         $response->getBody()->write($result["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
-    });
+    })->add(new AuthMiddleware($app->getResponseFactory()));
 };

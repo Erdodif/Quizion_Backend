@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Quizion\Backend\Companion\Data;
 use Quizion\Backend\Models\Answer;
 use Quizion\Backend\Companion\Message;
+use Quizion\Backend\Middlewares\AuthMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
 require_once "src/companion/responseCodes.php";
@@ -69,5 +70,5 @@ return function (Slim\App $app) {
         $results = Data::getAnswerIsRight($args["id"]);
         $response->getBody()->write($results["out"]->toJson());
         return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
-    });
+    })->add(new AuthMiddleware($app->getResponseFactory()));
 };
