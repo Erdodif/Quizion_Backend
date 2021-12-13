@@ -6,99 +6,72 @@ use Quizion\Backend\Companion\Data;
 use Quizion\Backend\Models\Quiz;
 use Quizion\Backend\Companion\Message;
 use Quizion\Backend\Middlewares\AuthMiddleware;
+use Quizion\Backend\Models\Answer;
+use Quizion\Backend\Models\Question;
 use Slim\Routing\RouteCollectorProxy;
 
 return function (Slim\App $app) {
     // GET ALL
-    $app->group("/quizes",function(RouteCollectorProxy $group){
+    $app->group("/quizes", function (RouteCollectorProxy $group) {
         $group->get("", function (Request $request, Response $response, array $args) {
-            $results = Data::resultFromAll(Quiz::class);
-            $response->getBody()->write($results["out"]->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
+            $results = Quiz::getAll();
+            return $results->withResponse($response);
         });
         // GET ACTIVE - quizes //nincs kiemelve!!
         $group->get("/active", function (Request $request, Response $response) {
-            $results = Data::getActiveQuizes();
-            $response->getBody()->write($results["out"]->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
+            $results = Quiz::getActives();
+            return $results->withResponse($response);
         });
     });
-    
-    $app->group("/quiz",function(RouteCollectorProxy $group){
+
+    $app->group("/quiz", function (RouteCollectorProxy $group) {
         $group->post("", function (Request $request, Response $response) {
-            try {
-                $input = json_decode($request->getBody(), true);
-                $quiz = Quiz::create($input);
-                $quiz->save();
-                $code = RESPONSE_CREATED;
-            } catch (Error $e) {
-                $quiz = new Message($e);
-                $code = ERROR_INTERNAL;
-            }
-            $response->getBody()->write($quiz->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+            $results = Quiz::addNew(json_decode($request->getBody(), true));
+            return $results->withResponse($response);
         });
-        $group->group("/{id}",function(RouteCollectorProxy $group){
+        $group->group("/{id}", function (RouteCollectorProxy $group) {
             $group->get("", function (Request $request, Response $response, array $args) {
-                $results = Data::resultFromId($args["id"], Quiz::class);
-                $response->getBody()->write($results["out"]->toJson());
-                return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
+                $results = Quiz::getById($args['id']);
+                return $results->withResponse($response);
             });
             $group->put("", function (Request $request, Response $response, array $args) {
-                $result = Data::resultFromId($args["id"], Quiz::class);
-                if ($result["code"] == RESPONSE_OK) {
-                    $input = json_decode($request->getBody(), true);
-                    $result["out"]->fill($input);
-                    $result["out"]->save();
-                }
-                $response->getBody()->write($result["out"]->toJson());
-                return $response->withStatus($result["code"]);
+                $result = Quiz::alterById($args["id"], json_decode($request->getBody(), true));
+                return $result->withResponse($response);
             });
             $group->delete("", function (Request $request, Response $response, array $args) {
-                $result = Data::resultFromId($args["id"], Quiz::class);
-                if ($result["code"] == RESPONSE_OK) {
-                    $result["out"]->delete();
-                    $result["code"] = RESPONSE_NO_CONTENT;
-                } else {
-                    $result["code"] = ERROR_NOT_FOUND;
-                    $response->getBody()->write($result["out"]->toJson());
-                }
-                return $response->withStatus($result["code"]);
+                $result = Quiz::deleteById($args["id"]);
+                return $result->withResponse($response);
             });
-            
+
             // GET FROM QUIZ - questions/question
             $group->get("/questions", function (Request $request, Response $response, array $args) {
-                $result = Data::getQuestionsFromQuiz($args["id"]);
-                $response->getBody()->write($result["out"]->toJson());
-                return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+                $result = Question::getByQuiz($args["id"]);
+                return $result->withResponse($response);
             });
-            $group->group("/question/{question_order}",function(RouteCollectorProxy $group){
+            $group->group("/question/{question_order}", function (RouteCollectorProxy $group) {
                 $group->get("", function (Request $request, Response $response, array $args) {
-                    $result = Data::getQuestionFromQuiz($args["id"], $args["question_order"]);
-                    $response->getBody()->write($result["out"]->toJson());
-                    return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+                    $result = Question::getByOrder($args["id"],$args["question_order"]);
+                    return $result->withResponse($response);
                 });
 
                 // GET FROM QUIZ > QUESTION - answers/anwser
                 $group->get("/answers", function (Request $request, Response $response, array $args) {
-                    $result = Data::getAnswersFromQuiz($args["id"], $args["question_order"]);
-                    $response->getBody()->write($result["out"]->toJson());
-                    return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+                    $result = Answer::getAllByQuiz($args["id"], $args["question_order"]);
+                    return $result->withResponse($response);
                 });
 
                 $group->get("/answer/{answer_order}", function (Request $request, Response $response, array $args) {
-                    $result = Data::getAnswerFromQuiz($args["id"], $args["question_order"], $args["answer_order"]);
-                    $response->getBody()->write($result["out"]->toJson());
-                    return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+                    $result = Answer::getByQuiz($args["id"], $args["question_order"], $args["answer_order"]);
+                    return $result->withResponse($response);
                 });
             });
         });
     });
-    
+
     //GET RIGHT - aswers
     $app->get("/pick/quiz/{id}/question/{question_order}", function (Request $request, Response $response, array $args) {
-        $result = Data::getRightAnswersFromQuiz($args["id"], $args["question_order"]);
-        $response->getBody()->write($result["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+        $result = Answer::getAllByQuiz($args["id"], $args["question_order"]);
+        $result->getDataRaw()->seeRight();
+        return $result->withResponse($response);
     })->add(new AuthMiddleware($app->getResponseFactory()));
 };

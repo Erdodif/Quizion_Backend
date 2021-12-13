@@ -13,62 +13,35 @@ require_once "src/companion/responseCodes.php";
 return function (Slim\App $app) {
 
     $app->get("/answers", function (Request $request, Response $response) {
-        $result = Data::resultFromAll(Answer::class);
-        $response->getBody()->write($result["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($result["code"]);
+        $result = Answer::getAll();
+        return $result->withResponse($response);
     });
 
     $app->group("/answer", function (RouteCollectorProxy $group) {
-        $group->post("/answer", function (Request $request, Response $response) {
-            try {
-                $input = json_decode($request->getBody(), true);
-                $answer = Answer::create($input);
-                $answer->save();
-                $code = RESPONSE_CREATED;
-            } catch (Error $e) {
-                $answer = new Message($e);
-                $code = ERROR_INTERNAL;
-            }
-            $response->getBody()->write($answer->toJson());
-            return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+        $group->post("", function (Request $request, Response $response) {
+            $result = Answer::addNew(json_decode($request->getBody(),true));
+            return $result->withResponse($response);
         });
-
-        $group->group("/{id}", function (RouteCollectorProxy $group) {
+        $group->group("/{id}",function(RouteCollectorProxy $group){
             $group->get("", function (Request $request, Response $response, array $args) {
-                $results = Data::resultFromId($args["id"], Answer::class);
-                $response->getBody()->write($results["out"]->toJson());
-                return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
+                $results = Answer::getById($args['id']);
+                return $results->withResponse($response);
             });
-
             $group->put("", function (Request $request, Response $response, array $args) {
-                $result = Data::resultFromId($args["id"], Answer::class);
-                if ($result["code"] == RESPONSE_OK) {
-                    $input = json_decode($request->getBody(), true);
-                    $result["out"]->fill($input);
-                    $result["out"]->save();
-                }
-                $response->getBody()->write($result["out"]->toJson());
-                return $response->withStatus($result["code"]);
+                $result = Answer::alterById($args["id"],json_decode($request->getBody(), true));
+                return $result->withResponse($response);
             });
-
             $group->delete("", function (Request $request, Response $response, array $args) {
-                $result = Data::resultFromId($args["id"], Answer::class);
-                if ($result["code"] == RESPONSE_OK) {
-                    $result["out"]->delete();
-                    $result["code"] = RESPONSE_NO_CONTENT;
-                } else {
-                    $result["code"] = ERROR_NOT_FOUND;
-                    $response->getBody()->write($result["out"]->toJson());
-                }
-                return $response->withStatus($result["code"]);
+                $result = Answer::deleteById($args["id"]);
+                return $result->withResponse($response);
             });
         });
     });
 
     // GET RIGHT answer
     $app->get("/pick/answer/{id}", function (Request $request, Response $response, array $args) {
-        $results = Data::getAnswerIsRight($args["id"]);
-        $response->getBody()->write($results["out"]->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($results["code"]);
+        $result = Answer::getById($args["id"]);
+        $result->getDataRaw()->seeRight();
+        return $result->withResponse($response);
     })->add(new AuthMiddleware($app->getResponseFactory()));
 };
