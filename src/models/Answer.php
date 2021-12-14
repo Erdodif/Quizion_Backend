@@ -53,6 +53,48 @@ class Answer extends Model
         }
     }
 
+    static function getByIds($ids): Data
+    {
+        try {
+            $idsAreValid = false;
+            try {
+                $i = 0;
+                while ($i < count($ids) && Data::idIsValid($ids[$i])) {
+                    $i++;
+                }
+                $idsAreValid = $i >= count($ids);
+            } catch (Error $e) {
+                $idsAreValid = false;
+            }
+            if (!$idsAreValid) {
+                $data = new Data(
+                    ERROR_BAD_REQUEST,
+                    new Message("Invalid id reference!")
+                );
+            } else {
+                $element = Answer::whereIn("id",$ids)->get();
+                if (!isset($element[0]["id"])) {
+                    $data = new Data(
+                        ERROR_NOT_FOUND,
+                        new Message("Answer not found!")
+                    );
+                } else {
+                    $data = new Data(
+                        RESPONSE_OK,
+                        $element
+                    );
+                }
+            }
+        } catch (Error $e) {
+            $data = new Data(
+                ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            );
+        } finally {
+            return $data;
+        }
+    }
+
     static function alterById($id, array $input)
     {
         $result = Answer::getById($id);
@@ -196,7 +238,7 @@ class Answer extends Model
         return $result;
     }
 
-    static function getByQuiz($quiz_id, $question_order, $answer_order):Data
+    static function getByQuiz($quiz_id, $question_order, $answer_order): Data
     {
 
         $result = Answer::getAllByQuiz($quiz_id, $question_order);
@@ -218,7 +260,8 @@ class Answer extends Model
         return $result;
     }
 
-    function seeRight(){
+    function seeRight()
+    {
         $this->makeVisible(["is_right"]);
         $this->makeHidden(["content"]);
     }
