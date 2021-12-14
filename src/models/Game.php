@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class Game extends Model
 {
-    protected $table = "qaming";
+    protected $table = "gaming";
     protected $guarded = ["user_id", "quiz_id"];
     protected $hidden = ["question_started", "right", "created_at", "updated_at"];
 
