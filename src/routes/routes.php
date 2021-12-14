@@ -14,4 +14,8 @@ return function (Slim\App $app) {
     $answerRoutes($app);
     $userRoutes = require_once "src/routes/userRoutes.php";
     $userRoutes($app);
+    $userRoutes = require_once "src/routes/resultRoutes.php";
+    $resultRoutes($app);
+    $userRoutes = require_once "src/routes/gameRoutes.php";
+    $gameRoutes($app);
 };
