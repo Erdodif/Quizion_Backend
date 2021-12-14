@@ -16,7 +16,7 @@ return function (Slim\App $app) {
         //TODO #16 TESZTELÉS
         $group->post("/newgame/{quiz_id}",function(Request $request, Response $response, array $args){
             $userID = $request->getAttribute("userID");
-            $game = Game::newGame(["quiz_id"=>$args["quiz_id"],"user_id"=>$userID]);
+            $game = Game::newGame(array("quiz_id"=>$args["quiz_id"],"user_id"=>$userID));
             return $game->withResponse($response);
         });
         $group->group("/{quiz_id}",function(RouteCollectorProxy $group){

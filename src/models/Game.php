@@ -22,6 +22,9 @@ class Game extends Model
             if ($input instanceof Request){
                 $input = json_decode($input->getBody(), true);
             }
+            echo $input["quiz_id"]."\n";
+            echo $input["user_id"];
+            $input["quiz_id"] = (int)$input["quiz_id"];
             $game = Game::create($input);
             $game->current = 0;
             $game->save();
