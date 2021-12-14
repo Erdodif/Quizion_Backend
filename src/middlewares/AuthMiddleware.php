@@ -8,6 +8,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Quizion\Backend\Companion\Message;
+use Quizion\Backend\Companion\Data;
 use Slim\App;
 
 class AuthMiddleware
@@ -25,37 +26,46 @@ class AuthMiddleware
         $auth = $request->getHeader("Authorization");
         try {
             if (count($auth) !== 1) {
-                $code = ERROR_BAD_REQUEST;
-                $out = new Message("Invalid request header!");
+                $data = new Data(
+                    ERROR_BAD_REQUEST,
+                    new Message("Invalid request header!")
+                );
             } else {
                 $authArray = mb_split(" ", $auth[0]);
                 if ($authArray[0] !== 'Bearer') {
-                    $code = ERROR_METHOD_NOT_ALLOWED;
-                    $out = new Message("Unsupported method!");
+                    $data = new Data(
+                        ERROR_METHOD_NOT_ALLOWED,
+                        new Message("Unsupported method!")
+                    );
                 } else {
                     $tokenStr = $authArray[1];
                     if ($tokenStr === "") {
-                        $code = ERROR_UNAUTHORIZED;
-                        $out = new Message("Login reqired!");
+                        $data = new Data(
+                            ERROR_UNAUTHORIZED,
+                            new Message("Login reqired!")
+                        );
                     } else {
                         Token::where("token", $tokenStr)->firstOrFail();
                         try {
                             $out = $handler->handle($request);
                             return $out;
                         } catch (Error $e) {
-                            $code = ERROR_INTERNAL;
-                            $out = new Message("An internal error occured! " . $e);
+                            $data = new Data(
+                                ERROR_INTERNAL,
+                                new Message("An internal error occured! " . $e)
+                            );
                             //TODO #15 Production-be kiszedni a hibakódot!
                         }
                     }
                 }
             }
         } catch (Error $e) {
-            $code = ERROR_UNAUTHORIZED;
-            $out = new Message("Invalid or expired Token!");
+            $data = new Data(
+                ERROR_UNAUTHORIZED,
+                new Message("Invalid or expired Token!")
+            );
         }
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write($out->toJson());
-        return $response->withHeader("Content-Type", "application/json")->withStatus($code);
+        return $data->withResponse($response);
     }
 }
