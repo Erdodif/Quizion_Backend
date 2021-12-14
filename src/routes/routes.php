@@ -1,8 +1,5 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Quizion\Backend\Companion\Data;
 require_once "src/companion/responseCodes.php";
 
 return function (Slim\App $app) {
@@ -14,8 +11,8 @@ return function (Slim\App $app) {
     $answerRoutes($app);
     $userRoutes = require_once "src/routes/userRoutes.php";
     $userRoutes($app);
-    $userRoutes = require_once "src/routes/resultRoutes.php";
+    $resultRoutes = require_once "src/routes/resultRoutes.php";
     $resultRoutes($app);
-    $userRoutes = require_once "src/routes/gameRoutes.php";
+    $gameRoutes = require_once "src/routes/gameRoutes.php";
     $gameRoutes($app);
 };

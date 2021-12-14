@@ -20,11 +20,11 @@ class Token extends Model
 
     static function getTokenByKey(string $key): Token|false
     {
-        try {
-            return Token::where("key", $key)->firstOrFail();
-        } catch (Error $e) {
-            return false;
+        $token = Token::where("token", $key)->first();
+        if (!isset($token->id)){
+            $token = false;
         }
+        return $token;
     }
 
     static function getUserByToken(Token $token): User|false

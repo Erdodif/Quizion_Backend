@@ -5,7 +5,7 @@ namespace Quizion\Backend\Middlewares;
 use \Error;
 use Quizion\Backend\Models\Token;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Quizion\Backend\Companion\Message;
 use Quizion\Backend\Companion\Data;
@@ -45,8 +45,12 @@ class AuthMiddleware
                             new Message("Login reqired!")
                         );
                     } else {
-                        Token::where("token", $tokenStr)->firstOrFail();
+                        $token = Token::getTokenByKey($tokenStr);
+                        if(!$token){
+                            throw new Error("No result in database...");
+                        }
                         try {
+                            $request = $request->withAttribute("userID",$token->user_id);
                             $out = $handler->handle($request);
                             return $out;
                         } catch (Error $e) {

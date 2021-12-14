@@ -2,6 +2,7 @@
 
 namespace Quizion\Backend\Models;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Illuminate\Database\Eloquent\Model;
 use Quizion\Backend\Companion\Message;
 use Quizion\Backend\Companion\Data;
@@ -15,19 +16,41 @@ class Game extends Model
     protected $guarded = ["user_id", "quiz_id"];
     protected $hidden = ["question_started", "right", "created_at", "updated_at"];
 
-    static function newGame($data)
+    static function newGame(array|Request $input): Data
     {
         try {
-            $input = json_decode($data->getBody(), true);
+            if ($input instanceof Request){
+                $input = json_decode($input->getBody(), true);
+            }
             $game = Game::create($input);
             $game->current = 0;
             $game->save();
-            $code = RESPONSE_CREATED;
+            $data = new Data(
+                RESPONSE_CREATED,
+                $game
+            );
         } catch (Error $e) {
-            $game = new Message($e);
-            $code = ERROR_INTERNAL;
+            $data = new Data(
+                ERROR_INTERNAL,
+                new Message($e)
+            );
         }
-        return array("code" => $code, "out" => $game);
+        return $data;
+    }
+
+    static function getGame(int|Quiz $quiz,int|User $user):Game|false
+    {
+        if($quiz instanceof Quiz){
+            $quiz = $quiz->id;
+        }
+        if($user instanceof User){
+            $user = $user->id;
+        }
+        $game = Game::where(["quiz_id"=>$quiz,"user_id"=>$user])->get();
+        if(!isset($game->id)){
+           $game = false; 
+        }        
+        return $game;
     }
 
     function getCurrentQuestion(): Question|false
