@@ -45,7 +45,8 @@ class Game extends Model
         return $out;
     }
 
-    function getCurrentAnswers():Collection|false{
+    function getCurrentAnswers(): Collection|false
+    {
         $question = $this->getCurrentQuestion();
         $result = Answer::getAllByQuestion($question->id);
         if ($result->getCode() === RESPONSE_OK) {
@@ -86,7 +87,7 @@ class Game extends Model
     function pickAnswers(array $picked): Data
     {
         $answers = Answer::getByIds($picked)->getDataRaw();
-        $points = $this->getPoints($answers);
+        $points = $this->getPoints($answers) / 100;
         $this->fill([
             "right" => ($this->right + $points),
             "question_started" => false,
@@ -94,7 +95,7 @@ class Game extends Model
         ]);
         $this->save();
         $answers = Answer::getAllByQuestion($this->getCurrentQuestion()->id);
-        $answers->getDataRaw()->map(function($element){
+        $answers->getDataRaw()->map(function ($element) {
             return $element->seeRight();
         });
         return $answers;
