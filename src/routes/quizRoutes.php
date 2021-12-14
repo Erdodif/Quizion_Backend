@@ -71,7 +71,8 @@ return function (Slim\App $app) {
     //GET RIGHT - aswers
     $app->get("/pick/quiz/{id}/question/{question_order}", function (Request $request, Response $response, array $args) {
         $result = Answer::getAllByQuiz($args["id"], $args["question_order"]);
-        $result->getDataRaw()->seeRight();
+        $result->getDataRaw()->map(function($e){return $e->seeRight();});
+        //$result->getDataRaw();//->seeRight();
         return $result->withResponse($response);
     })->add(new AuthMiddleware($app->getResponseFactory()));
 };

@@ -2,7 +2,7 @@
 
 namespace Quizion\Backend\Middlewares;
 
-use Exception;
+use \Error;
 use Quizion\Backend\Models\Token;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Message\RequestInterface as Request;
@@ -39,12 +39,18 @@ class AuthMiddleware
                         $out = new Message("Login reqired!");
                     } else {
                         Token::where("token", $tokenStr)->firstOrFail();
-                        $out = $handler->handle($request);
-                        return $out;
+                        try {
+                            $out = $handler->handle($request);
+                            return $out;
+                        } catch (Error $e) {
+                            $code = ERROR_INTERNAL;
+                            $out = new Message("An internal error occured! " . $e);
+                            //TODO #15 Production-be kiszedni a hibakódot!
+                        }
                     }
                 }
             }
-        } catch (Exception $e) {
+        } catch (Error $e) {
             $code = ERROR_UNAUTHORIZED;
             $out = new Message("Invalid or expired Token!");
         }
