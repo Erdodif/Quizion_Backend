@@ -15,7 +15,7 @@ Route::group(['prefix' => '/user'], function(){
         $result = User::addNew($request->getContent());
         return $result->toResponse();
     });
-    Route::post('login',function(Request $request){
+    Route::post('/login',function(Request $request){
         $result = Token::addNewByLogin($request->getContent());
         return $result->toResponse();
     });

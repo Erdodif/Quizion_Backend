@@ -16,9 +16,12 @@ Route::group(['prefix' => '/play'], function(){
         return $game->toResponse();*/
     });
     Route::group(['prefix' => '/{quiz_id}'], function(){
-        Route::post('login',function(Request $request){
-            $result = Token::addNewByLogin($request->getContent());
+        Route::post('',function(Request $request){
+            $UID = $request->attributes->get("userID");
+            echo $UID;
+            $result = Game::newGame(["quiz_id"=>$request->getContent()["quiz_id"],"user_id"=>$UID]);
             return $result->toResponse();
+            //
         });
         Route::get('',function(int $id){
             // TODO getCurrentQuestion(); még csak kérdést ad vissza, nem Data-t!!!
