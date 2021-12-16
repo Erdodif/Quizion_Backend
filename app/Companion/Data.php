@@ -73,7 +73,7 @@ class Data
      */
     static function castArray(array|string $array):array{
         
-        if (!($array instanceof ('array'))) {
+        if ($array instanceof ('string')) {
             $array = json_decode($array, true);
             if ($array === null) {
                 throw new Error("Json format invalid!");
@@ -88,7 +88,7 @@ class Data
     static function inputErrors(array|string|null $input, array $lookup):array|false
     {
         $array = array();
-        if ($input == null){
+        if ($input === null){
             $array = $lookup;
         }
         else{

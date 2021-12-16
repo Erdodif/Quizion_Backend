@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Companion\Data;
+use App\Companion\Message;
+use App\Models\Token;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,10 +19,14 @@ class TokenIsValid
      */
     public function handle($request, Closure $next)
     {
-        if ($request->input('token') !== 'my-secret-token') {
-            return redirect('home');
+        $token = Token::getTokenByKey($request->bearerToken());
+        if (!$token){
+            return (new Data(
+                    ERROR_UNAUTHORIZED,
+                    new Message("Login required!")
+                ))->toResponse;
         }
-        $request->attributes->add(["userID"=>4]);
+        $request->attributes->add(["userID"=>$token->user_id]);
         return $next($request);
     }
 }

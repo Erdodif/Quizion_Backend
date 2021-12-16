@@ -8,51 +8,35 @@ use App\Companion\Message;
 use App\Companion\Data;
 use App\Models\Question;
 use \Error;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 
-class Game extends Model
+class Game extends Table
 {
     protected $table = "gaming";
-    protected $guarded = ["user_id", "quiz_id"];
+    protected $fillable = ["user_id", "quiz_id"];
     protected $hidden = ["question_started", "right", "created_at", "updated_at"];
-
-    static function newGame(array|Request $input): Data
+    static function getName(): string
     {
-        try {
-            if ($input instanceof Request){
-                $input = json_decode($input->getBody(), true);
-            }
-            echo $input["quiz_id"]."\n";
-            echo $input["user_id"];
-            $input["quiz_id"] = (int)$input["quiz_id"];
-            $game = Game::create($input);
-            $game->current = 0;
-            $game->save();
-            $data = new Data(
-                RESPONSE_CREATED,
-                $game
-            );
-        } catch (Error $e) {
-            $data = new Data(
-                ERROR_INTERNAL,
-                new Message($e)
-            );
-        }
-        return $data;
+        return "Game";
+    }
+    static function getRequiredColumns(): array
+    {
+        return ["user_id", "quiz_id"];
     }
 
-    static function getGame(int|Quiz $quiz,int|User $user):Game|false
+    static function getGame(int|Quiz $quiz, int|User $user): Game|false
     {
-        if($quiz instanceof Quiz){
+        if ($quiz instanceof Quiz) {
             $quiz = $quiz->id;
         }
-        if($user instanceof User){
+        if ($user instanceof User) {
             $user = $user->id;
         }
-        $game = Game::where(["quiz_id"=>$quiz,"user_id"=>$user])->get();
-        if(!isset($game->id)){
-           $game = false; 
-        }        
+        $game = Game::where(["quiz_id" => $quiz, "user_id" => $user])->get();
+        if (!isset($game->user_id)) {
+            $game = false;
+        }
         return $game;
     }
 
@@ -62,7 +46,7 @@ class Game extends Model
             $this->fill(["started" => true]);
             $this->save();
         }
-        $result = Question::getByQuiz($this->current);
+        $result = Question::getByOrder($this->quiz_id, $this->current);
         if ($result->getCode() === RESPONSE_OK) {
             $out = $result->getDataRaw();
         } else {
@@ -83,37 +67,35 @@ class Game extends Model
         return $out;
     }
 
-    function getPoints(Collection $picked)
+    function getPoints(Collection $picked, int $rightAnswerCount)
     {
         $maxPoint = $this->getCurrentQuestion()->point;
-        $answers = $this->getCurrentAnswers();
-        return $maxPoint * Game::calculateRatio($picked, $answers);
+        return $maxPoint * Game::calculateRatio($picked, $rightAnswerCount);
     }
 
-    static function calculateRatio(Collection $picked, Collection $right)
+    static function calculateRatio(Collection $picked, int $rightAnswerCount)
     {
-        $found = 0;
-        $right->map(function ($rightElement) use ($picked, $found) {
-            $picked->map(function ($pickedElement) use ($rightElement, $found) {
-                if ($rightElement->id == $pickedElement->id) {
-                    if ($rightElement->is_right == 1 && $pickedElement->is_right == 1) {
-                        $found++;
-                    } else if ($rightElement->is_right == 1 && $pickedElement->is_right == 0) {
-                        $found--;
-                    }
-                }
-            });
+        $success = 0;
+        $picked->map(function ($pickedElement) use ($success) {
+            if ($pickedElement->is_right == 1) {
+                $success++;
+            } else if ($pickedElement->is_right == 0) {
+                $success--;
+            }
         });
-        if ($found < 0) {
-            $found = 0;
+        if ($success <= 0) {
+            $success = 0;
+        } else {
+            $success = $success / $rightAnswerCount;
         }
-        return $right->count() / $found;
+        return $success;
     }
 
     function pickAnswers(array $picked): Data
     {
-        $answers = Answer::getByIds($picked)->getDataRaw();
-        $points = $this->getPoints($answers) / 100;
+        $rightCount = Answer::getRightAnswersCount($this->getCurrentAnswers());
+        $pickedAnswers = Answer::getByIds($picked)->getDataRaw();
+        $points = $this->getPoints($pickedAnswers, $rightCount);
         $this->fill([
             "right" => ($this->right + $points),
             "question_started" => false,

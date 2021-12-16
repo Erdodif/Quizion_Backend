@@ -6,6 +6,7 @@ use App\Models\Table;
 use App\Models\Question;
 use App\Companion\Message;
 use App\Companion\Data;
+use Illuminate\Database\Eloquent\Collection;
 
 class Answer extends Table
 {
@@ -14,12 +15,13 @@ class Answer extends Table
     protected $guarded = ["id"];
     protected $hidden = ["question_id", "is_right"];
 
-    static function getName():string{
+    static function getName(): string
+    {
         return "Answer";
     }
     static function getRequiredColumns(): array
     {
-        return ["question_id","content" , "is_right"];
+        return ["question_id", "content", "is_right"];
     }
 
     static function getAllByQuestion($question_id): Data
@@ -111,6 +113,15 @@ class Answer extends Table
             }
         }
         return $result;
+    }
+
+    static function getRightAnswersCount(Collection $answers): int
+    {
+        $count = 0;
+        $answers->map(function ($element) use ($count) {
+            $count += $element->is_right;
+        });
+        return $count;
     }
 
     function seeRight()
