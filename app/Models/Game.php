@@ -69,19 +69,25 @@ class Game extends Table
         return $result;
     }
 
-    function getPoints(Collection $picked, int $rightAnswerCount)
+    function getPoints(Collection $picked)
     {
         $maxPoint = $this->getCurrentQuestion()->point;
-        return $maxPoint * Game::calculateRatio($picked, $rightAnswerCount);
+        return $maxPoint * $this->calculateRatio($picked);
     }
 
-    static function calculateRatio(Collection $picked, int $rightAnswerCount)
+    function calculateRatio(Collection $picked)
     {
+        $rightAnswerCount = Answer::getRightAnswersCount($this->getCurrentAnswers()->getDataRaw());
+        $question_id = $this->getCurrentQuestion()->id;
         $success = 0;
-        $picked->map(function ($pickedElement) use ($success) {
-            if ($pickedElement->is_right == 1) {
-                $success++;
-            } else if ($pickedElement->is_right == 0) {
+        $picked->map(function ($pickedElement) use ($success, $question_id) {
+            if ($pickedElement->question_id == $question_id) {
+                if ($pickedElement->is_right == 1) {
+                    $success++;
+                } else if ($pickedElement->is_right == 0) {
+                    $success--;
+                }
+            } else {
                 $success--;
             }
         });
@@ -109,9 +115,8 @@ class Game extends Table
                 new Message("Question timed out!")
             );
         } else {
-            $rightCount = Answer::getRightAnswersCount($this->getCurrentAnswers()->getDataRaw());
             $pickedAnswers = Answer::getByIds($picked)->getDataRaw();
-            $points = $this->getPoints($pickedAnswers, $rightCount);
+            $points = $this->getPoints($pickedAnswers);
             $this->fill([
                 "right" => ($this->right + $points),
                 "question_started" => false,
