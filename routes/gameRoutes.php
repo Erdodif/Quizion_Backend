@@ -18,17 +18,19 @@ Route::prefix('/play')->middleware('auth.token')->group(function(){
         return $result->toResponse();
     });
     Route::group(['prefix' => '/{quiz_id}'], function(){
+        Route::get('/current/question',function(Request $request, int $quiz_id){
+            $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
+            return $game->getCurrentQuestion()->toResponse();
+        });
+        Route::get('/current/answers',function(Request $request,int $quiz_id){
+            $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
+            return $game->getCurrentAnswers()->toResponse();
+        });
         Route::post('',function(Request $request,int $quiz_id){
-            $UID = $request->attributes->get("userID");
-            $result = Game::newGame(["quiz_id"=>$quiz_id,"user_id"=>$UID]);
-            return $result->toResponse();
-            //
-        });
-        Route::get('',function(int $quiz_id){
-            // TODO getCurrentQuestion(); még csak kérdést ad vissza, nem Data-t!!!
-        });
-        Route::get('',function(int $quiz_id){
-            // TODO getCurrentQuestion(); még csak kérdést ad vissza, nem Data-t!!!
+            $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
+            if ($game){
+                $game->pickAnswers([1,2]);
+            }
         });
         Route::post('',function(Request $request, $quiz_id){
             //TODO pickAnswers(); Nem fogad el stringet (Data::castArray())!!!

@@ -10,6 +10,7 @@ use App\Models\Question;
 use \Error;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Game extends Table
 {
@@ -25,6 +26,15 @@ class Game extends Table
         return ["user_id", "quiz_id"];
     }
 
+    function setStarted()
+    {
+        //nem változtat az adatbázis elemen, nem tudom, miért
+        if ($this->question_started == 0) {
+            $this->fill(["question_started" => 1]);
+            $this->save();
+        }
+    }
+
     static function getGame(int|Quiz $quiz, int|User $user): Game|false
     {
         if ($quiz instanceof Quiz) {
@@ -33,38 +43,30 @@ class Game extends Table
         if ($user instanceof User) {
             $user = $user->id;
         }
-        $game = Game::where(["quiz_id" => $quiz, "user_id" => $user])->get();
+        $game = Game::where(["quiz_id" => $quiz, "user_id" => $user])->first();
         if (!isset($game->user_id)) {
             $game = false;
         }
         return $game;
     }
 
-    function getCurrentQuestion(): Question|false
+    function getCurrentQuestion(): Data
     {
+        $this->setStarted();
         if (!$this->question_started) {
             $this->fill(["started" => true]);
             $this->save();
         }
         $result = Question::getByOrder($this->quiz_id, $this->current);
-        if ($result->getCode() === RESPONSE_OK) {
-            $out = $result->getDataRaw();
-        } else {
-            $out = false;
-        }
-        return $out;
+        return $result;
     }
 
-    function getCurrentAnswers(): Collection|false
+    function getCurrentAnswers(): Data
     {
-        $question = $this->getCurrentQuestion();
+        $this->setStarted();
+        $question = $this->getCurrentQuestion()->getDataRaw();
         $result = Answer::getAllByQuestion($question->id);
-        if ($result->getCode() === RESPONSE_OK) {
-            $out = $result->getDataRaw();
-        } else {
-            $out = false;
-        }
-        return $out;
+        return $result;
     }
 
     function getPoints(Collection $picked, int $rightAnswerCount)
@@ -93,19 +95,34 @@ class Game extends Table
 
     function pickAnswers(array $picked): Data
     {
-        $rightCount = Answer::getRightAnswersCount($this->getCurrentAnswers());
-        $pickedAnswers = Answer::getByIds($picked)->getDataRaw();
-        $points = $this->getPoints($pickedAnswers, $rightCount);
-        $this->fill([
-            "right" => ($this->right + $points),
-            "question_started" => false,
-            "current" => ($this->current + 1)
-        ]);
-        $this->save();
-        $answers = Answer::getAllByQuestion($this->getCurrentQuestion()->id);
-        $answers->getDataRaw()->map(function ($element) {
-            return $element->seeRight();
-        });
-        return $answers;
+        $started = $this->updated_at;
+        $duration = DB::select(DB::raw("SELECT TIMESTAMPDIFF(SECOND,'$started', CURRENT_TIMESTAMP) AS r_now"))[0]->r_now;
+        $limit = Quiz::getById($this->quiz_id)->seconds_per_quiz;
+        if ($duration > $limit) {
+            $this->fill([
+                "question_started" => false,
+                "current" => ($this->current + 1)
+            ]);
+            $this->save();
+            $data = new Data(
+                ERROR_TIMEOUT,
+                new Message("Question timed out!")
+            );
+        } else {
+            $rightCount = Answer::getRightAnswersCount($this->getCurrentAnswers()->getDataRaw());
+            $pickedAnswers = Answer::getByIds($picked)->getDataRaw();
+            $points = $this->getPoints($pickedAnswers, $rightCount);
+            $this->fill([
+                "right" => ($this->right + $points),
+                "question_started" => false,
+                "current" => ($this->current + 1)
+            ]);
+            $this->save();
+            $data = $this->getCurrentAnswers();
+            $data->getDataRaw()->map(function ($element) {
+                return $element->seeRight();
+            });
+        }
+        return $data;
     }
 }
