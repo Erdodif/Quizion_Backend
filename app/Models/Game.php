@@ -148,6 +148,13 @@ class Game extends Model
 
     function pickAnswers(array $picked): Data
     {
+        if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
+            $this->delete();
+            return new Data(
+                ERROR_NOT_FOUND,
+                new Message("Game ended!")
+            );
+        }
         $started = $this->updated_at;
         $duration = DB::select(DB::raw("SELECT TIMESTAMPDIFF(SECOND, '$started', CURRENT_TIMESTAMP) AS r_now"))[0]->r_now;
         $limit = Quiz::getById($this->quiz_id)->getDataRaw()->seconds_per_quiz;
@@ -201,6 +208,7 @@ class Game extends Model
         }
         if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
             $data = Result::saveFromGame($this);
+            $this->delete();
         }
         return $data;
     }
