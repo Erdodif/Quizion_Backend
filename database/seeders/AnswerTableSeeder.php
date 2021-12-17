@@ -32,7 +32,7 @@ class AnswerTableSeeder extends Seeder
                 'id' => 2,
                 'question_id' => 1,
                 'content' => 'Első kvíz első kérdés második válaszlehetőség',
-                'is_right' => 0,
+                'is_right' => 1,
             ),
             2 => 
             array (

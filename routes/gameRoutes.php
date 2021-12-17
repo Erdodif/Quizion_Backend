@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Middleware\TokenIsValid;
+use App\Companion\Data;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Token;
+use App\Companion\Message;
 use App\Models\Game;
 /**
  * TODO Middleware
@@ -17,22 +16,27 @@ Route::prefix('/play')->middleware('auth.token')->group(function(){
         return $result->toResponse();
     });
     Route::group(['prefix' => '/{quiz_id}'], function(){
-        Route::get('/current/question',function(Request $request, int $quiz_id){
+        Route::get('/question',function(Request $request, int $quiz_id){
             $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
             return $game->getCurrentQuestion()->toResponse();
         });
-        Route::get('/current/answers',function(Request $request,int $quiz_id){
+        Route::get('/answers',function(Request $request,int $quiz_id){
             $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
             return $game->getCurrentAnswers()->toResponse();
         });
-        Route::post('',function(Request $request,int $quiz_id){
+        Route::post('/choose',function(Request $request,int $quiz_id){
             $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
+            $chosen = $request->all()["chosen"];
             if ($game){
-                $game->pickAnswers([1,2]);
+                $result = $game->pickAnswers($chosen);
             }
-        });
-        Route::post('',function(Request $request, $quiz_id){
-            //TODO pickAnswers(); Nem fogad el stringet (Data::castArray())!!!
+            else{
+                $result = new Data(
+                    ERROR_INTERNAL,
+                    new Message("ez probléma")
+                );
+            }
+            return $result->toResponse();
         });
     });
 });

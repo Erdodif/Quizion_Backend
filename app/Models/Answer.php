@@ -118,7 +118,7 @@ class Answer extends Table
     static function getRightAnswersCount(Collection $answers): int
     {
         $count = 0;
-        $answers->map(function ($element) use ($count) {
+        $answers->map(function ($element) use (&$count) {
             $count += $element->is_right;
         });
         return $count;

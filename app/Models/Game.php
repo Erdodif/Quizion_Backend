@@ -73,6 +73,17 @@ class Game extends Model
         }
     }
 
+    function incrementCurrent(){
+        $this->question_started = 0;
+        $this->current = $this->current + 1;
+        $this->save();
+    }
+
+    function addPoints(int $points){
+        $this->right = $points;
+        $this->save;
+    }
+
     static function getGame(int|Quiz $quiz, int|User $user): Game|false
     {
         if ($quiz instanceof Quiz) {
@@ -107,27 +118,23 @@ class Game extends Model
         return $result;
     }
 
-    function getPoints(Collection $picked)
+    function getPoints(Collection $picked):int
     {
-        $maxPoint = $this->getCurrentQuestion()->point;
-        return $maxPoint * $this->calculateRatio($picked);
+        $maxPoint = $this->getCurrentQuestion()->getDataRaw()->point;
+        $earned = $maxPoint * $this->calculateRatio($picked);
+        return $earned;
     }
 
     function calculateRatio(Collection $picked)
     {
         $rightAnswerCount = Answer::getRightAnswersCount($this->getCurrentAnswers()->getDataRaw());
-        $question_id = $this->getCurrentQuestion()->id;
         $success = 0;
-        $picked->map(function ($pickedElement) use ($success, $question_id) {
-            if ($pickedElement->question_id == $question_id) {
-                if ($pickedElement->is_right == 1) {
-                    $success++;
-                } else if ($pickedElement->is_right == 0) {
-                    $success--;
-                }
-            } else {
+        $picked->map(function ($pickedElement) use (&$success) {
+            if ($pickedElement->is_right == 1) {
+                $success++;
+            } else if ($pickedElement->is_right == 0) {
                 $success--;
-            }
+            };
         });
         if ($success <= 0) {
             $success = 0;
@@ -141,30 +148,49 @@ class Game extends Model
     {
         $started = $this->updated_at;
         $duration = DB::select(DB::raw("SELECT TIMESTAMPDIFF(SECOND,'$started', CURRENT_TIMESTAMP) AS r_now"))[0]->r_now;
-        $limit = Quiz::getById($this->quiz_id)->seconds_per_quiz;
+        $limit = Quiz::getById($this->quiz_id)->getDataRaw()->seconds_per_quiz;
+        echo "limit: $limit\ntime:$duration\n";
         if ($duration > $limit) {
-            $this->fill([
-                "question_started" => false,
-                "current" => ($this->current + 1)
-            ]);
-            $this->save();
+            $this->incrementCurrent();
             $data = new Data(
                 ERROR_TIMEOUT,
                 new Message("Question timed out!")
             );
         } else {
-            $pickedAnswers = Answer::getByIds($picked)->getDataRaw();
-            $points = $this->getPoints($pickedAnswers);
-            $this->fill([
-                "right" => ($this->right + $points),
-                "question_started" => false,
-                "current" => ($this->current + 1)
-            ]);
-            $this->save();
-            $data = $this->getCurrentAnswers();
-            $data->getDataRaw()->map(function ($element) {
-                return $element->seeRight();
-            });
+            $pickedAnswers = Answer::getByIds($picked);
+            if($pickedAnswers->getCode()===RESPONSE_OK){
+                $pickedAnswers = $pickedAnswers->getDataRaw();
+                $question_id = $this->getCurrentQuestion()->getDataRaw()->id;
+                $ok = true;
+                $pickedAnswers->map(function ($item) use (&$ok, &$question_id){
+                    if ($item->question_id !== $question_id){
+                        $ok = false;
+                    }
+                    return $ok;
+                });
+                if ($ok){
+                    $points = $this->getPoints($pickedAnswers);
+                    echo "points: $points";
+                    $this->addPoints($points);
+                    $data = $this->getCurrentAnswers();
+                    $data->getDataRaw()->map(function ($element) {
+                        return $element->seeRight();
+                    });
+                    $this->incrementCurrent();
+                }
+                else{
+                    $data = new Data(
+                        ERROR_BAD_REQUEST,
+                        new Message("One or more given answers do not belong to the current question!")
+                    );
+                }
+            }
+            else{
+                $data = new Data(
+                    ERROR_NOT_FOUND,
+                    new Message("One or more given answers do not exist!")
+                );
+            }
         }
         return $data;
     }
