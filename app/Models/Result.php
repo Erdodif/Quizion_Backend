@@ -64,10 +64,10 @@ class Result extends Model{
 
     static function saveFromGame(Game $game):Data
     {   
-        try{
+        try {
             $result = Result::firstOrNew(["user_id"=>$game->user_id,"quiz_id"=>$game->quiz_id]);
             $isnew = empty($result->points);
-            if($isnew){
+            if ($isnew) {
                 $result->points = $game->right;
                 $result->save();
                 $data = new Data(
@@ -75,22 +75,22 @@ class Result extends Model{
                     new Message("First result by the user.")
                 );
             }
-            else{
-                if($result->point < $game->right){ 
-                    $result->point = $game->right;
+            else {
+                if($result->points < $game->right) { 
+                    $result->points = $game->right;
                     $result->save();
                     $data = new Data(
                         RESPONSE_OK,
                         new Message("New Highscore!")
                     );
                 }
-                else if ($result->point = $game->right){
+                else if ($result->points = $game->right) {
                     $data = new Data(
                         RESPONSE_OK,
                         new Message("Same result as the last time...")
                     );
                 }
-                else{
+                else {
                     $data = new Data(
                         RESPONSE_OK,
                         new Message("Worse than last the time...")
