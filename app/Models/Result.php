@@ -66,9 +66,9 @@ class Result extends Model{
     {   
         try{
             $result = Result::firstOrNew(["user_id"=>$game->user_id,"quiz_id"=>$game->quiz_id]);
-            $isnew = empty($result->point);
+            $isnew = empty($result->points);
             if($isnew){
-                $result->point = $game->right;
+                $result->points = $game->right;
                 $result->save();
                 $data = new Data(
                     RESPONSE_CREATED,
@@ -76,8 +76,8 @@ class Result extends Model{
                 );
             }
             else{
-                if($result->point > $game->right){ 
-                    $result->point = $game->right;
+                if($result->points > $game->right){ 
+                    $result->points = $game->right;
                     $result->save();
                     $data = new Data(
                         RESPONSE_OK,
