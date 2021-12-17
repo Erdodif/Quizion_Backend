@@ -27,11 +27,11 @@ class Data
         $this->data = $data;
     }
 
-    function getCode(){
+    function getCode() {
         return $this->code;
     }
 
-    function getDataRaw(){
+    function getDataRaw() {
         return $this->data;
     }
 
@@ -48,7 +48,7 @@ class Data
     function toJson():string
     {
         $out = "{}";
-        if ($this->data !==null){
+        if ($this->data !==null) {
             $out = $this->data->toJson();
         }
         return $out;
@@ -60,7 +60,7 @@ class Data
         if ($this->data !== null) {
             $content = $this->toJson();
         }
-        return response($content,$this->getCode())->header("Content-Type","application/json");
+        return response($content,$this->getCode())->header("Content-Type", "application/json");
     }
 
     static function idIsValid($id): bool
@@ -71,7 +71,7 @@ class Data
     /**
      * @throws Error On invalid Json formatted string
      */
-    static function castArray(array|string $array):array{
+    static function castArray(array|string $array): array {
         
         if ($array instanceof ('string')) {
             $array = json_decode($array, true);
@@ -88,13 +88,13 @@ class Data
     static function inputErrors(array|string|null $input, array $lookup):array|false
     {
         $array = array();
-        if ($input === null){
+        if ($input === null) {
             $array = $lookup;
         }
         else{
             $input = Data::castArray($input);
-            foreach ($lookup as $value){
-                if (!isset($input[$value])){
+            foreach ($lookup as $value) {
+                if (!isset($input[$value])) {
                     array_push($array,$value);
                 }
             }
