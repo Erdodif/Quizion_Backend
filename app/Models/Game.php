@@ -81,7 +81,7 @@ class Game extends Model
 
     function addPoints(int $points)
     {
-        $this->right = $points;
+        $this->right = $this->right + $points;
         $this->save();
     }
 
