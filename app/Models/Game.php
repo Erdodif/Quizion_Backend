@@ -2,35 +2,113 @@
 
 namespace App\Models;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Illuminate\Database\Eloquent\Model;
 use App\Companion\Message;
 use App\Companion\Data;
 use App\Models\Question;
 use \Error;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class Game extends Table
+class Game extends Model
 {
+    protected $guarded = ["id"];
+    public $increamenting = false;
     protected $table = "gaming";
     protected $fillable = ["user_id", "quiz_id"];
     protected $hidden = ["question_started", "right", "created_at", "updated_at"];
-    static function getName(): string
+
+    static function addNew(array|string|null $input): Data
     {
-        return "Game";
+        try {
+            if ($input === null) {
+                $data = new Data(
+                    ERROR_BAD_REQUEST,
+                    new Message("No data provided!")
+                );
+            } else {
+                $invalids = Data::inputErrors($input, ["user_id", "quiz_id"]);
+                $input = Data::castArray($input);
+                if (!$invalids) {
+                    echo var_dump($input);
+                    $answer = Game::create($input);
+                    $answer->save();
+                    $data = new Data(
+                        RESPONSE_CREATED,
+                        $answer
+                    );
+                } else {
+                    $out = "";
+                    foreach (["user_id", "quiz_id"] as $invalid) {
+                        $out .= $invalid . ", ";
+                    }
+                    $out = substr($out, 0, -2);
+                    $data = new Data(
+                        ERROR_BAD_REQUEST,
+                        new Message("Missing " . $out)
+                    );
+                }
+            }
+        } catch (Error $e) {
+            $data = new Data(
+                ERROR_BAD_REQUEST,
+                new Message($e)
+            );
+        } catch (Exception $e) {
+            $data = new Data(
+                ERROR_INTERNAL,
+                new Message($e)
+            );
+        } finally {
+            return $data;
+        }
     }
-    static function getRequiredColumns(): array
+    /**
+     * Set the keys for a save update query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     *//*
+    protected function setKeysForSaveQuery($query)
     {
-        return ["user_id", "quiz_id"];
-    }
+        $keys = $this->getKeyName();
+        if (!is_array($keys)) {
+            return parent::setKeysForSaveQuery($query);
+        }
+
+        foreach ($keys as $keyName) {
+            $query->where($keyName, '=', $this->getKeyForSaveQuery($keyName));
+        }
+
+        return $query;
+    }*/
+
+    /**
+     * Get the primary key value for a save query.
+     *
+     * @param mixed $keyName
+     * @return mixed
+     *//** *//*
+    protected function getKeyForSaveQuery($keyName = null)
+    {
+        if (is_null($keyName)) {
+            $keyName = $this->getKeyName();
+        }
+
+        if (isset($this->original[$keyName])) {
+            return $this->original[$keyName];
+        }
+
+        return $this->getAttribute($keyName);
+    }*/
 
     function setStarted()
     {
         //nem változtat az adatbázis elemen, nem tudom, miért
-        if ($this->question_started == 0) {
-            $this->fill(["question_started" => 1]);
+        if ($this->question_started == 0 || $this->question_started == false) {
+            $this->question_started = 1;
             $this->save();
         }
     }

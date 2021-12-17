@@ -13,7 +13,6 @@ use App\Models\Game;
 Route::prefix('/play')->middleware('auth.token')->group(function(){
     Route::post('/newgame/{quiz_id}',function(Request $request, int $quiz_id){
         $UID = $request->attributes->get("userID");
-        echo $UID."(kint)\n";
         $result = Game::addNew(["user_id"=>$UID,"quiz_id"=>$quiz_id]);
         return $result->toResponse();
     });

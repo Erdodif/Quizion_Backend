@@ -24,7 +24,7 @@ class TokenIsValid
             return (new Data(
                     ERROR_UNAUTHORIZED,
                     new Message("Login required!")
-                ))->toResponse;
+                ))->toResponse();
         }
         $request->attributes->add(["userID"=>$token->user_id]);
         return $next($request);

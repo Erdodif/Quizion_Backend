@@ -10,9 +10,9 @@ use Exception;
 
 abstract class Table extends Model
 {
-    static abstract function getName():string;
-    static abstract function getRequiredColumns():array;
-    
+    static abstract function getName(): string;
+    static abstract function getRequiredColumns(): array;
+
     static function addNew(array|string|null $input): Data
     {
         try {
@@ -71,7 +71,7 @@ abstract class Table extends Model
                 if (!isset($element["id"])) {
                     $data = new Data(
                         ERROR_NOT_FOUND,
-                        new Message(static::getName()." not found!")
+                        new Message(static::getName() . " not found!")
                     );
                 } else {
                     $data = new Data(
@@ -89,7 +89,7 @@ abstract class Table extends Model
             return $data;
         }
     }
-    
+
     static function getByIds($ids): Data
     {
         try {
@@ -113,7 +113,7 @@ abstract class Table extends Model
                 if (!isset($element[0]["id"])) {
                     $data = new Data(
                         ERROR_NOT_FOUND,
-                        new Message(static::getName()." not found!")
+                        new Message(static::getName() . " not found!")
                     );
                 } else {
                     $data = new Data(
@@ -132,7 +132,7 @@ abstract class Table extends Model
         }
     }
 
-    static function getAll():Data
+    static function getAll(): Data
     {
         try {
             $result = self::all();
@@ -144,7 +144,7 @@ abstract class Table extends Model
             } else {
                 $data = new Data(
                     ERROR_NOT_FOUND,
-                    new Message("There is no ".strtolower(static::getName())."!")
+                    new Message("There is no " . strtolower(static::getName()) . "!")
                 );
             }
         } catch (Error $e) {
@@ -157,10 +157,10 @@ abstract class Table extends Model
         }
     }
 
-    
-    static function alterById($id, array|string $input):Data
+
+    static function alterById($id, array|string $input): Data
     {
-        try{
+        try {
             $input = Data::castArray($input);
             $result = self::getById($id);
             if ($result->getCode() == RESPONSE_OK) {
@@ -172,8 +172,7 @@ abstract class Table extends Model
                     $result->setData(new Message("An internal error occured: " . $e));
                 }
             }
-        }
-        catch (Error $e){
+        } catch (Error $e) {
             $result = new Data(
                 ERROR_BAD_REQUEST,
                 new Message("The given Data is missing or invalid!")
@@ -182,7 +181,7 @@ abstract class Table extends Model
         return $result;
     }
 
-    static function deleteById($id):Data
+    static function deleteById($id): Data
     {
         $result = self::getById($id);
         try {

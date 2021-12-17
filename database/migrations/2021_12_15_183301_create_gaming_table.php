@@ -14,6 +14,7 @@ class CreateGamingTable extends Migration
     public function up()
     {
         Schema::create('gaming', function (Blueprint $table) {
+            $table->integer('id',true);
             $table->integer('user_id')->index('user_id');
             $table->integer('quiz_id');
             $table->integer('current')->default(1);
