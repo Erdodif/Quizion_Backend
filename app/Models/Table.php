@@ -157,7 +157,6 @@ abstract class Table extends Model
         }
     }
 
-
     static function alterById($id, array|string $input): Data
     {
         try {

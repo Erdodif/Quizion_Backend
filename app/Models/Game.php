@@ -8,7 +8,6 @@ use App\Companion\Data;
 use App\Models\Question;
 use \Error;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -73,13 +72,15 @@ class Game extends Model
         }
     }
 
-    function incrementCurrent(){
+    function incrementCurrent()
+    {
         $this->question_started = 0;
         $this->current = $this->current + 1;
         $this->save();
     }
 
-    function addPoints(int $points){
+    function addPoints(int $points)
+    {
         $this->right = $points;
         $this->save;
     }
@@ -118,14 +119,15 @@ class Game extends Model
         return $result;
     }
 
-    function getPoints(Collection $picked):int
+    function getPoints(Collection $picked): int
     {
         $maxPoint = $this->getCurrentQuestion()->getDataRaw()->point;
         $earned = $maxPoint * $this->calculateRatio($picked);
+        echo var_dump($earned);
         return $earned;
     }
 
-    function calculateRatio(Collection $picked)
+    function calculateRatio(Collection $picked): float
     {
         $rightAnswerCount = Answer::getRightAnswersCount($this->getCurrentAnswers()->getDataRaw());
         $success = 0;
@@ -147,30 +149,35 @@ class Game extends Model
     function pickAnswers(array $picked): Data
     {
         $started = $this->updated_at;
-        $duration = DB::select(DB::raw("SELECT TIMESTAMPDIFF(SECOND,'$started', CURRENT_TIMESTAMP) AS r_now"))[0]->r_now;
+        $duration = DB::select(DB::raw("SELECT TIMESTAMPDIFF(SECOND, '$started', CURRENT_TIMESTAMP) AS r_now"))[0]->r_now;
         $limit = Quiz::getById($this->quiz_id)->getDataRaw()->seconds_per_quiz;
-        echo "limit: $limit\ntime:$duration\n";
-        if ($duration > $limit) {
+        if ($this->question_started === 0) {
+            $data = new Data(
+                ERROR_NOT_FOUND,
+                new Message("The question not started!")
+            );
+        }
+        else if ($duration > $limit) {
             $this->incrementCurrent();
             $data = new Data(
                 ERROR_TIMEOUT,
                 new Message("Question timed out!")
             );
-        } else {
+        }
+        else {
             $pickedAnswers = Answer::getByIds($picked);
-            if($pickedAnswers->getCode()===RESPONSE_OK){
+            if ($pickedAnswers->getCode() === RESPONSE_OK) {
                 $pickedAnswers = $pickedAnswers->getDataRaw();
                 $question_id = $this->getCurrentQuestion()->getDataRaw()->id;
                 $ok = true;
-                $pickedAnswers->map(function ($item) use (&$ok, &$question_id){
-                    if ($item->question_id !== $question_id){
+                $pickedAnswers->map(function ($item) use (&$ok, &$question_id) {
+                    if ($item->question_id !== $question_id) {
                         $ok = false;
                     }
                     return $ok;
                 });
-                if ($ok){
+                if ($ok) {
                     $points = $this->getPoints($pickedAnswers);
-                    echo "points: $points";
                     $this->addPoints($points);
                     $data = $this->getCurrentAnswers();
                     $data->getDataRaw()->map(function ($element) {
@@ -178,19 +185,22 @@ class Game extends Model
                     });
                     $this->incrementCurrent();
                 }
-                else{
+                else {
                     $data = new Data(
                         ERROR_BAD_REQUEST,
                         new Message("One or more given answers do not belong to the current question!")
                     );
                 }
             }
-            else{
+            else {
                 $data = new Data(
                     ERROR_NOT_FOUND,
                     new Message("One or more given answers do not exist!")
                 );
             }
+        }
+        if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
+            $data = Result::saveFromGame($this);
         }
         return $data;
     }
