@@ -17,7 +17,6 @@ class CreateResultsTable extends Migration
             $table->integer('id', true);
             $table->integer('user_id')->index('user_id');
             $table->integer('quiz_id')->index('quiz_id');
-            $table->double('right', 10, 5)->nullable()->default(0);
             $table->integer('points')->default(0);
         });
     }
