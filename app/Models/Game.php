@@ -82,7 +82,7 @@ class Game extends Model
     function addPoints(int $points)
     {
         $this->right = $points;
-        $this->save;
+        $this->save();
     }
 
     static function getGame(int|Quiz $quiz, int|User $user): Game|false
