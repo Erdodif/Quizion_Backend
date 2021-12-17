@@ -76,7 +76,7 @@ class Result extends Model{
                 );
             }
             else{
-                if($result->point > $game->right){ 
+                if($result->point < $game->right){ 
                     $result->point = $game->right;
                     $result->save();
                     $data = new Data(
