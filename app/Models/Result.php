@@ -84,9 +84,15 @@ class Result extends Model{
                         new Message("New Highscore!")
                     );
                 }
+                else if ($result->point = $game->right){
+                    $data = new Data(
+                        RESPONSE_OK,
+                        new Message("Same result as the last time...")
+                    );
+                }
                 else{
                     $data = new Data(
-                        RESPONSE_NOT_MODIFIED,
+                        RESPONSE_OK,
                         new Message("Worse than last the time...")
                     );
                 }
