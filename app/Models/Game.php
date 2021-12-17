@@ -123,7 +123,6 @@ class Game extends Model
     {
         $maxPoint = $this->getCurrentQuestion()->getDataRaw()->point;
         $earned = $maxPoint * $this->calculateRatio($picked);
-        echo var_dump($earned);
         return $earned;
     }
 
