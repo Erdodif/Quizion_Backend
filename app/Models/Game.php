@@ -28,8 +28,8 @@ class Game extends Model
                     new Message("No data provided!")
                 );
             } else {
+                Data::castArray($input);
                 $invalids = Data::inputErrors($input, ["user_id", "quiz_id"]);
-                $input = Data::castArray($input);
                 if (!$invalids) {
                     $answer = Game::create($input);
                     $answer->save();

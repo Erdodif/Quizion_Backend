@@ -22,8 +22,8 @@ abstract class Table extends Model
                     new Message("No data provided!")
                 );
             } else {
+                Data::castArray($input);
                 $invalids = Data::inputErrors($input, static::getRequiredColumns());
-                $input = Data::castArray($input);
                 if (!$invalids) {
                     $answer = self::create($input);
                     $answer->save();
@@ -160,7 +160,7 @@ abstract class Table extends Model
     static function alterById($id, array|string $input): Data
     {
         try {
-            $input = Data::castArray($input);
+            Data::castArray($input);
             $result = self::getById($id);
             if ($result->getCode() == RESPONSE_OK) {
                 try {

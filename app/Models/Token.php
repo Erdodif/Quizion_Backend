@@ -36,9 +36,9 @@ class Token extends Model
         }
     }
 
-    static function addNewByLogin($input): Data
+    static function addNewByLogin(string|array $input): Data
     {
-        $input = Data::castArray($input);
+        Data::castArray($input);
         if ($input === null || !isset($input["userID"]) || !isset($input["password"])) {
             $result = new Data(
                 ERROR_BAD_REQUEST,

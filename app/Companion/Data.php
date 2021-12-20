@@ -7,6 +7,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use \Error;
+use Exception;
 
 require_once "responseCodes.php";
 
@@ -71,28 +72,25 @@ class Data
     /**
      * @throws Error On invalid Json formatted string
      */
-    static function castArray(array|string $array): array {
-        
-        if ($array instanceof ('string')) {
+    static function castArray(array|string &$array) {
+        try{
             $array = json_decode($array, true);
-            if ($array === null) {
-                throw new Error("Json format invalid!");
-            }
         }
-        return $array;
+        catch (Exception $e){
+
+        }
     }
 
     /**
      * @throws Error On invalid Json formatted string
      */
-    static function inputErrors(array|string|null $input, array $lookup):array|false
+    static function inputErrors(array|null $input, array $lookup):array|false
     {
         $array = array();
         if ($input === null) {
             $array = $lookup;
         }
         else{
-            $input = Data::castArray($input);
             foreach ($lookup as $value) {
                 if (!isset($input[$value])) {
                     array_push($array,$value);

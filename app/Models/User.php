@@ -27,7 +27,7 @@ class User extends Table{
         $result = User::getById($id);
         if ($result->getCode() == RESPONSE_OK) {
             try {
-                $input = Data::castArray($input);
+                Data::castArray($input);
                 if (isset($input["password"])){
                     $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
                 }
@@ -50,8 +50,8 @@ class User extends Table{
                     new Message("No data provided!")
                 );
             } else {
+                Data::castArray($input);
                 $invalids = Data::inputErrors($input, User::getRequiredColumns());
-                $input = Data::castArray($input);
                 $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
                 if (!$invalids) {
                     $answer = User::create($input);
