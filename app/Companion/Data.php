@@ -73,7 +73,10 @@ class Data
      * @throws Error On invalid Json formatted string
      */
     static function castArray(array|string &$array) {
-        $array = json_decode($array, true, 512, JSON_THROW_ON_ERROR);
+        try{
+            $array = json_decode($array, true, 512, JSON_THROW_ON_ERROR);
+        }
+        catch(Error $e){}
     }
 
     /**
