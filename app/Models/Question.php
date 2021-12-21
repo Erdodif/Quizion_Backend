@@ -47,6 +47,35 @@ class Question extends Table
         }
     }
 
+    static function getCountByQuiz($quiz_id):Data
+    {
+        if (Data::idIsValid($quiz_id)) {
+            $count = Question::where("quiz_id", "=", $quiz_id)->count();
+            if (Quiz::getById($quiz_id)->getCode() == RESPONSE_OK) {
+                $data = new Data(
+                    RESPONSE_OK,
+                    new Message(
+                        $count,
+                        "count",
+                        MESSAGE_TYPE_INT
+                    )
+                );
+            } else {
+                $data = new Data(
+                    ERROR_NOT_FOUND,
+                    new Message("Quiz #$quiz_id not found!")
+                );
+            }
+        } else {
+            $data = new Data(
+                ERROR_BAD_REQUEST,
+                new Message("Invalid quiz reference!")
+            );
+        }
+        return $data;
+
+    }
+
     static function getAllByQuiz($quiz_id): Data
     {
         if (Data::idIsValid($quiz_id)) {

@@ -34,9 +34,15 @@ Route::group(['prefix' => '/quiz'], function () {
             $result = Quiz::deleteById($id);
             return $result->toResponse();
         });
-        Route::get('/questions', function (int $id) {
-            $result = Question::getAllByQuiz($id);
-            return $result->toResponse();
+        Route::group(['prefix' => '/questions'], function () {
+            Route::get('', function (int $id) {
+                $result = Question::getAllByQuiz($id);
+                return $result->toResponse();
+            });
+            Route::get('/count', function (int $id) {
+                $result = Question::getCountByQuiz($id);
+                return $result->toResponse();
+            });
         });
         Route::group(['prefix' => '/question/{question_order}'], function () {
             Route::get('', function (int $id, int $question_order) {
