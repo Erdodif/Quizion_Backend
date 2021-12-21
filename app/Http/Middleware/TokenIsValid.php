@@ -19,14 +19,21 @@ class TokenIsValid
      */
     public function handle($request, Closure $next)
     {
-        $token = Token::getTokenByKey($request->bearerToken());
-        if (!$token){
+        $token = $request->bearerToken();
+        if(empty($token)){
             return (new Data(
                     ERROR_UNAUTHORIZED,
                     new Message("Login required!")
                 ))->toResponse();
         }
-        $request->attributes->add(["userID"=>$token->user_id]);
+        $result = Token::getTokenByKey($token);
+        if (!$result){
+            return (new Data(
+                    ERROR_UNAUTHORIZED,
+                    new Message("Invalid or expired token!")
+                ))->toResponse();
+        }
+        $request->attributes->add(["userID"=>$result->user_id]);
         return $next($request);
     }
 }
