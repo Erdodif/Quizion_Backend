@@ -16,6 +16,10 @@ Route::prefix('/play')->middleware('auth.token')->group(function(){
         return $result->toResponse();
     });
     Route::group(['prefix' => '/{quiz_id}'], function(){
+        Route::get('/state',function(Request $request, int $quiz_id){
+            $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
+            return $game->getCurrentState()->toResponse();
+        });
         Route::get('/question',function(Request $request, int $quiz_id){
             $game = Game::getGame($quiz_id,$request->attributes->get("userID"));
             return $game->getCurrentQuestion()->toResponse();

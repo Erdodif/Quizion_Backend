@@ -10,6 +10,7 @@ use \Error;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class Game extends Model
 {
@@ -210,5 +211,9 @@ class Game extends Model
             $this->delete();
         }
         return $data;
+    }
+
+    function getCurrentState():Data{
+        return new Data (RESPONSE_OK, new Message($this->current,"current",MESSAGE_TYPE_INT));
     }
 }
