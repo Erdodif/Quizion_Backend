@@ -103,12 +103,17 @@ class Game extends Model
 
     function getCurrentQuestion(): Data
     {
-        $this->setStarted();
-        if (!$this->question_started) {
-            $this->fill(["started" => true]);
-            $this->save();
+        if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
+            $result = Result::saveFromGame($this);
+            $this->delete();
+        } else {
+            $this->setStarted();
+            if (!$this->question_started) {
+                $this->fill(["started" => true]);
+                $this->save();
+            }
+            $result = Question::getByOrder($this->quiz_id, $this->current);
         }
-        $result = Question::getByOrder($this->quiz_id, $this->current);
         return $result;
     }
 
@@ -163,15 +168,13 @@ class Game extends Model
                 ERROR_NOT_FOUND,
                 new Message("The question not started!")
             );
-        }
-        else if ($duration > $limit) {
+        } else if ($duration > $limit) {
             $this->incrementCurrent();
             $data = new Data(
                 ERROR_TIMEOUT,
                 new Message("Question timed out!")
             );
-        }
-        else {
+        } else {
             $pickedAnswers = Answer::getByIds($picked);
             if ($pickedAnswers->getCode() === RESPONSE_OK) {
                 $pickedAnswers = $pickedAnswers->getDataRaw();
@@ -191,29 +194,24 @@ class Game extends Model
                         return $element->seeRight();
                     });
                     $this->incrementCurrent();
-                }
-                else {
+                } else {
                     $data = new Data(
                         ERROR_BAD_REQUEST,
                         new Message("One or more given answers do not belong to the current question!")
                     );
                 }
-            }
-            else {
+            } else {
                 $data = new Data(
                     ERROR_NOT_FOUND,
                     new Message("One or more given answers do not exist!")
                 );
             }
         }
-        if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
-            $data = Result::saveFromGame($this);
-            $this->delete();
-        }
         return $data;
     }
 
-    function getCurrentState():Data{
-        return new Data (RESPONSE_OK, new Message($this->current,"current",MESSAGE_TYPE_INT));
+    function getCurrentState(): Data
+    {
+        return new Data(RESPONSE_OK, new Message($this->current, "current", MESSAGE_TYPE_INT));
     }
 }
