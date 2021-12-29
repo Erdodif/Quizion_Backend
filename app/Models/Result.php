@@ -21,7 +21,7 @@ class Result extends Model
             DB::statement(DB::raw('set @c=0'));
             $result = collect(
                 DB::select("
-                select `results`.`quiz_id`,`results`.`user_id`, ranks.rank
+                select `results`.`user_id`,`user`.`name`,`results`.`points`, ranks.rank
                 from
                 `results`
                 JOIN
@@ -35,7 +35,9 @@ class Result extends Model
                         order by `points` desc
                     ) as _ranking
                 ) as ranks
-                ON ranks.quiz_id = `results`.`quiz_id` and ranks.points = `results`.`points`"
+                ON ranks.quiz_id = `results`.`quiz_id` and ranks.points = `results`.`points`
+                JOIN `user`
+                ON `user`.`id` = `results`.`user_id`"
                     ));
             if($result->isEmpty()){
                 $data = new Data(
@@ -62,7 +64,7 @@ class Result extends Model
         DB::statement(DB::raw('set @c=0'));
         $result = collect(
             DB::select("
-            select `results`.`quiz_id`,`results`.`user_id`,`results`.`points`, ranks.rank
+            select `results`.`quiz_id`,`results`.`user_id`,`user`.`name`,`results`.`points`, ranks.rank
             from
             `results`
             JOIN
@@ -77,6 +79,8 @@ class Result extends Model
                 ) as _ranking
             ) as ranks
             ON ranks.quiz_id = `results`.`quiz_id` and ranks.points = `results`.`points`
+            JOIN `user`
+            ON `user`.`id` = `results`.`user_id`
             WHERE `results`.`user_id` = $user_id"
                 ))->first();
         try{
