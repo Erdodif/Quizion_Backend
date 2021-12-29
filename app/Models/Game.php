@@ -174,6 +174,12 @@ class Game extends Model
                 ERROR_TIMEOUT,
                 new Message("Question timed out!")
             );
+        } else if (empty($picked)) {
+            $data = $this->getCurrentAnswers();
+            $data->getDataRaw()->map(function ($element) {
+                return $element->seeRight();
+            });
+            $this->incrementCurrent();
         } else {
             $pickedAnswers = Answer::getByIds($picked);
             if ($pickedAnswers->getCode() === RESPONSE_OK) {
