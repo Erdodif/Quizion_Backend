@@ -35,3 +35,4 @@ class Message
 }
 define("MESSAGE_TYPE_STRING","string");
 define("MESSAGE_TYPE_INT","int");
+define("MESSAGE_TYPE_RAW","raw");

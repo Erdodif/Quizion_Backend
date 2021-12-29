@@ -4,7 +4,8 @@ namespace App\Companion;
 
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Database\Eloquent\Model;
 use \Error;
 use Exception;
@@ -14,11 +15,11 @@ require_once "responseCodes.php";
 class Data
 {
     private ?int $code;
-    private Message|Model|Collection|null $data;
+    private Message|Model|EloquentCollection|SupportCollection|null $data;
     private array|null $hidden;
     private array|null $visible;
 
-    function __construct(int $code = null, Message|Model|Collection|null $data = null)
+    function __construct(int $code = null, Message|Model|EloquentCollection|SupportCollection|null $data = null)
     {
         if ($code == null) {
             $this->code = RESPONSE_OK;
@@ -41,7 +42,7 @@ class Data
         $this->code = $code;
     }
 
-    function setData(Message|Model|Collection|null $data)
+    function setData(Message|Model|EloquentCollection|SupportCollection|null $data)
     {
         $this->data = $data;
     }
