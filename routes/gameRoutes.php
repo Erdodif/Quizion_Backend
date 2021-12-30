@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Companion\Message;
 use App\Models\Game;
 
-require_once "../../api/app/Companion/responseCodes.php";
+require_once "../api/app/Companion/responseCodes.php";
 
 /**
  * TODO Middleware
