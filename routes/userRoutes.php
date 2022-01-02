@@ -11,7 +11,7 @@ Route::get('/users', function () {
 });
 
 Route::group(['prefix' => '/user'], function(){
-    Route::post('register',function(Request $request){
+    Route::post('/register',function(Request $request){
         $result = User::addNew($request->getContent());
         return $result->toResponse();
     });
