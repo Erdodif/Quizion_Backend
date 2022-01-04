@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use App\Companion\ResponseCodes;
 
 class Game extends Model
 {
@@ -25,7 +26,7 @@ class Game extends Model
         try {
             if ($input === null) {
                 $data = new Data(
-                    ERROR_BAD_REQUEST,
+                    ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("No data provided!")
                 );
             } else {
@@ -35,7 +36,7 @@ class Game extends Model
                     $answer = Game::create($input);
                     $answer->save();
                     $data = new Data(
-                        RESPONSE_CREATED,
+                        ResponseCodes::RESPONSE_CREATED,
                         $answer
                     );
                 } else {
@@ -45,19 +46,19 @@ class Game extends Model
                     }
                     $out = substr($out, 0, -2);
                     $data = new Data(
-                        ERROR_BAD_REQUEST,
+                        ResponseCodes::ERROR_BAD_REQUEST,
                         new Message("Missing " . $out)
                     );
                 }
             }
         } catch (Error $e) {
             $data = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message($e)
             );
         } catch (Exception $e) {
             $data = new Data(
-                ERROR_INTERNAL,
+                ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
             );
         } finally {
@@ -156,7 +157,7 @@ class Game extends Model
         if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
             $this->delete();
             return new Data(
-                ERROR_NOT_FOUND,
+                ResponseCodes::ERROR_NOT_FOUND,
                 new Message("Game ended!")
             );
         }
@@ -165,13 +166,13 @@ class Game extends Model
         $limit = Quiz::getById($this->quiz_id)->getDataRaw()->seconds_per_quiz;
         if ($this->question_started === 0) {
             $data = new Data(
-                ERROR_NOT_FOUND,
+                ResponseCodes::ERROR_NOT_FOUND,
                 new Message("The question not started!")
             );
         } else if ($duration > $limit) {
             $this->incrementCurrent();
             $data = new Data(
-                ERROR_TIMEOUT,
+                ResponseCodes::ERROR_TIMEOUT,
                 new Message("Question timed out!")
             );
         } else if (empty($picked)) {
@@ -182,7 +183,7 @@ class Game extends Model
             $this->incrementCurrent();
         } else {
             $pickedAnswers = Answer::getByIds($picked);
-            if ($pickedAnswers->getCode() === RESPONSE_OK) {
+            if ($pickedAnswers->getCode() === ResponseCodes::RESPONSE_OK) {
                 $pickedAnswers = $pickedAnswers->getDataRaw();
                 $question_id = $this->getCurrentQuestion()->getDataRaw()->id;
                 $ok = true;
@@ -202,13 +203,13 @@ class Game extends Model
                     $this->incrementCurrent();
                 } else {
                     $data = new Data(
-                        ERROR_BAD_REQUEST,
+                        ResponseCodes::ERROR_BAD_REQUEST,
                         new Message("One or more given answers do not belong to the current question!")
                     );
                 }
             } else {
                 $data = new Data(
-                    ERROR_NOT_FOUND,
+                    ResponseCodes::ERROR_NOT_FOUND,
                     new Message("One or more given answers do not exist!")
                 );
             }
@@ -218,6 +219,6 @@ class Game extends Model
 
     function getCurrentState(): Data
     {
-        return new Data(RESPONSE_OK, new Message($this->current, "current", MESSAGE_TYPE_INT));
+        return new Data(ResponseCodes::RESPONSE_OK, new Message($this->current, "current", MESSAGE_TYPE_INT));
     }
 }

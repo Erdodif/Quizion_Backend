@@ -7,6 +7,7 @@ use App\Companion\Data;
 use App\Companion\Message;
 use Error;
 use Exception;
+use App\Companion\ResponseCodes;
 
 abstract class Table extends Model
 {
@@ -18,7 +19,7 @@ abstract class Table extends Model
         try {
             if ($input === null) {
                 $data = new Data(
-                    ERROR_BAD_REQUEST,
+                    ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("No data provided!")
                 );
             } else {
@@ -28,7 +29,7 @@ abstract class Table extends Model
                     $answer = self::create($input);
                     $answer->save();
                     $data = new Data(
-                        RESPONSE_CREATED,
+                        ResponseCodes::RESPONSE_CREATED,
                         $answer
                     );
                 } else {
@@ -38,19 +39,19 @@ abstract class Table extends Model
                     }
                     $out = substr($out, 0, -2);
                     $data = new Data(
-                        ERROR_BAD_REQUEST,
+                        ResponseCodes::ERROR_BAD_REQUEST,
                         new Message("Missing " . $out)
                     );
                 }
             }
         } catch (Error $e) {
             $data = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message($e)
             );
         } catch (Exception $e) {
             $data = new Data(
-                ERROR_INTERNAL,
+                ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
             );
         } finally {
@@ -63,26 +64,26 @@ abstract class Table extends Model
         try {
             if (!Data::idIsValid($id)) {
                 $data = new Data(
-                    ERROR_BAD_REQUEST,
+                    ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("Invalid id reference!")
                 );
             } else {
                 $element = self::find($id);
                 if (!isset($element["id"])) {
                     $data = new Data(
-                        ERROR_NOT_FOUND,
+                        ResponseCodes::ERROR_NOT_FOUND,
                         new Message(static::getName() . " not found!")
                     );
                 } else {
                     $data = new Data(
-                        RESPONSE_OK,
+                        ResponseCodes::RESPONSE_OK,
                         $element
                     );
                 }
             }
         } catch (Error $e) {
             $data = new Data(
-                ERROR_INTERNAL,
+                ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
         } finally {
@@ -105,26 +106,26 @@ abstract class Table extends Model
             }
             if (!$idsAreValid) {
                 $data = new Data(
-                    ERROR_BAD_REQUEST,
+                    ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("Invalid id reference!")
                 );
             } else {
                 $element = self::whereIn("id", $ids)->get();
                 if (!isset($element[0]["id"])) {
                     $data = new Data(
-                        ERROR_NOT_FOUND,
+                        ResponseCodes::ERROR_NOT_FOUND,
                         new Message(static::getName() . " not found!")
                     );
                 } else {
                     $data = new Data(
-                        RESPONSE_OK,
+                        ResponseCodes::RESPONSE_OK,
                         $element
                     );
                 }
             }
         } catch (Error $e) {
             $data = new Data(
-                ERROR_INTERNAL,
+                ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
         } finally {
@@ -138,18 +139,18 @@ abstract class Table extends Model
             $result = self::all();
             if (isset($result[0]["id"])) {
                 $data = new Data(
-                    RESPONSE_OK,
+                    ResponseCodes::RESPONSE_OK,
                     $result
                 );
             } else {
                 $data = new Data(
-                    ERROR_NOT_FOUND,
+                    ResponseCodes::ERROR_NOT_FOUND,
                     new Message("There is no " . strtolower(static::getName()) . "!")
                 );
             }
         } catch (Error $e) {
             $data = new Data(
-                ERROR_INTERNAL,
+                ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
         } finally {
@@ -162,18 +163,18 @@ abstract class Table extends Model
         try {
             Data::castArray($input);
             $result = self::getById($id);
-            if ($result->getCode() == RESPONSE_OK) {
+            if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
                 try {
                     $result->getDataRaw()->fill($input);
                     $result->getDataRaw()->save();
                 } catch (Error $e) {
-                    $result->setCode(ERROR_INTERNAL);
+                    $result->setCode(ResponseCodes::ERROR_INTERNAL);
                     $result->setData(new Message("An internal error occured: " . $e));
                 }
             }
         } catch (Error $e) {
             $result = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("The given Data is missing or invalid!")
             );
         }
@@ -184,12 +185,12 @@ abstract class Table extends Model
     {
         $result = self::getById($id);
         try {
-            if ($result->getCode() == RESPONSE_OK) {
+            if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
                 $result->getDataRaw()->delete();
-                $result->setCode(RESPONSE_NO_CONTENT);
+                $result->setCode(ResponseCodes::RESPONSE_NO_CONTENT);
             }
         } catch (Error $e) {
-            $result->setCode(ERROR_INTERNAL);
+            $result->setCode(ResponseCodes::ERROR_INTERNAL);
             $result->setData(new Message("An internal error occured! " . $e));
         }
         return $result;

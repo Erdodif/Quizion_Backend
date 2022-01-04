@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Companion\Message;
 use App\Companion\Data;
 use \Error;
+use App\Companion\ResponseCodes;
 
 class Token extends Model
 {
@@ -21,7 +22,7 @@ class Token extends Model
     static function getTokenByKey(string $key): Token|false
     {
         $token = Token::where("token", $key)->first();
-        if (!isset($token->id)){
+        if (!isset($token->id)) {
             $token = false;
         }
         return $token;
@@ -41,7 +42,7 @@ class Token extends Model
         Data::castArray($input);
         if ($input === null || !isset($input["userID"]) || !isset($input["password"])) {
             $result = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Missing userID or password!")
             );
         } else {
@@ -49,7 +50,7 @@ class Token extends Model
                 $userID = $input["userID"];
                 $password = $input["password"];
                 $result = User::getByAny($userID);
-                if ($result->getCode() == RESPONSE_OK && password_verify($password, $result->getDataRaw()->password)) {
+                if ($result->getCode() == ResponseCodes::RESPONSE_OK && password_verify($password, $result->getDataRaw()->password)) {
                     $stillNeeded = true;
                     while ($stillNeeded) {
                         try {
@@ -60,16 +61,16 @@ class Token extends Model
                         } catch (Error $e) {
                         }
                     }
-                    $result->setCode(RESPONSE_CREATED);
+                    $result->setCode(ResponseCodes::RESPONSE_CREATED);
                     $token->makeHidden(["user_id"]);
                     $token->makeVisible(["token"]);
                     $result->setData($token);
                 } else {
-                    $result->setCode(ERROR_BAD_REQUEST);
+                    $result->setCode(ResponseCodes::ERROR_BAD_REQUEST);
                     $result->setData(new Message("Invalid userID or password!"));
                 }
             } catch (Error $e) {
-                $result->setCode(ERROR_INTERNAL);
+                $result->setCode(ResponseCodes::ERROR_INTERNAL);
                 $result->setData(new Message($e->getMessage()));
             }
         }

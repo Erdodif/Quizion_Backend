@@ -9,8 +9,7 @@ use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Database\Eloquent\Model;
 use \Error;
 use Exception;
-
-require_once "responseCodes.php";
+use App\Companion\ResponseCodes;
 
 class Data
 {
@@ -22,7 +21,7 @@ class Data
     function __construct(int $code = null, Message|Model|EloquentCollection|SupportCollection|null $data = null)
     {
         if ($code == null) {
-            $this->code = RESPONSE_OK;
+            $this->code = ResponseCodes::RESPONSE_OK;
         } else {
             $this->code = $code;
         }

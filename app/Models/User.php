@@ -7,14 +7,17 @@ use App\Companion\Message;
 use App\Companion\Data;
 use Error;
 use Exception;
+use App\Companion\ResponseCodes;
 
-class User extends Table{
+class User extends Table
+{
     protected $table = "user";
     public $timestamps = false;
     protected $guarded = ["id"];
-    protected $hidden = ["email","password"];
-    
-    static function getName():string{
+    protected $hidden = ["email", "password"];
+
+    static function getName(): string
+    {
         return "User";
     }
     static function getRequiredColumns(): array
@@ -22,31 +25,31 @@ class User extends Table{
         return ["name", "email", "password"];
     }
 
-    static function alterById($id, array|string $input):Data
+    static function alterById($id, array|string $input): Data
     {
         $result = User::getById($id);
-        if ($result->getCode() == RESPONSE_OK) {
+        if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
             try {
                 Data::castArray($input);
-                if (isset($input["password"])){
+                if (isset($input["password"])) {
                     $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
                 }
                 $result->getDataRaw()->fill($input);
                 $result->getDataRaw()->save();
             } catch (Error $e) {
-                $result->setCode(ERROR_INTERNAL);
+                $result->setCode(ResponseCodes::ERROR_INTERNAL);
                 $result->setData(new Message("An internal error occured: " . $e));
             }
         }
         return $result;
     }
-    
+
     static function addNew(array|string|null $input): Data
     {
         try {
             if ($input === null) {
                 $data = new Data(
-                    ERROR_BAD_REQUEST,
+                    ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("No data provided!")
                 );
             } else {
@@ -57,7 +60,7 @@ class User extends Table{
                     $answer = User::create($input);
                     $answer->save();
                     $data = new Data(
-                        RESPONSE_CREATED,
+                        ResponseCodes::RESPONSE_CREATED,
                         $answer
                     );
                 } else {
@@ -67,19 +70,19 @@ class User extends Table{
                     }
                     $out = substr($out, 0, -2);
                     $data = new Data(
-                        ERROR_BAD_REQUEST,
+                        ResponseCodes::ERROR_BAD_REQUEST,
                         new Message("Missing " . $out)
                     );
                 }
             }
         } catch (Error $e) {
             $data = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message($e)
             );
         } catch (Exception $e) {
             $data = new Data(
-                ERROR_INTERNAL,
+                ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
             );
         } finally {
@@ -93,48 +96,48 @@ class User extends Table{
             $user = User::where("name", "=", $identifier)->get();
             if (!isset($user[0])) {
                 $data = new Data(
-                    ERROR_NOT_FOUND,
+                    ResponseCodes::ERROR_NOT_FOUND,
                     new Message("User not found")
                 );
             } else {
                 $data = new Data(
-                    RESPONSE_OK,
+                    ResponseCodes::RESPONSE_OK,
                     $user[0]
                 );
             }
         } else {
             $data = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid userID or password!")
             );
         }
         return $data;
     }
 
-    static function getByEmail($identifier):Data
+    static function getByEmail($identifier): Data
     {
         if (isset($identifier)) {
             $user = User::where("email", "=", $identifier)->get();
             if (!isset($user[0])) {
                 $data = new Data(
-                    ERROR_NOT_FOUND,
+                    ResponseCodes::ERROR_NOT_FOUND,
                     new Message("User not found")
                 );
             } else {
                 $data = new Data(
-                    RESPONSE_OK,
+                    ResponseCodes::RESPONSE_OK,
                     $user[0]
                 );
             }
         } else {
             $data = new Data(
-                ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid userID or password!")
             );
         }
         return $data;
     }
-    
+
     static function getByAny($identifier): Data
     {
         if (is_numeric($identifier)) {
