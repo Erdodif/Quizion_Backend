@@ -163,36 +163,44 @@ abstract class Table extends Model
         try {
             Data::castArray($input);
             $result = self::getById($id);
-            if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
-                try {
-                    $result->getDataRaw()->fill($input);
-                    $result->getDataRaw()->save();
-                } catch (Error $e) {
-                    $result->setCode(ResponseCodes::ERROR_INTERNAL);
-                    $result->setData(new Message("An internal error occured: " . $e));
-                }
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                return $result;
+            }
+            try {
+                $result->getDataRaw()->fill($input);
+                $result->getDataRaw()->save();
+                return $result;
+            } catch (Error $e) {
+                return new Data(
+                    ResponseCodes::ERROR_INTERNAL,
+                    new Message("An internal error occured: " . $e)
+                );
             }
         } catch (Error $e) {
-            $result = new Data(
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("The given Data is missing or invalid!")
             );
         }
-        return $result;
     }
 
     static function deleteById($id): Data
     {
         $result = self::getById($id);
         try {
-            if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
-                $result->getDataRaw()->delete();
-                $result->setCode(ResponseCodes::RESPONSE_NO_CONTENT);
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                return $result;
             }
+            $result->getDataRaw()->delete();
+            return new Data(
+                ResponseCodes::RESPONSE_NO_CONTENT,
+                null
+            );
         } catch (Error $e) {
-            $result->setCode(ResponseCodes::ERROR_INTERNAL);
-            $result->setData(new Message("An internal error occured! " . $e));
+            return new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e)
+            );
         }
-        return $result;
     }
 }

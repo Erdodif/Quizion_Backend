@@ -112,24 +112,21 @@ class Result extends Model
     {
         try {
             $result = Result::all();
-            if (isset($result[0]["id"])) {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $result
-                );
-            } else {
-                $data = new Data(
+            if (!isset($result[0]["id"])) {
+                return new Data(
                     ResponseCodes::ERROR_NOT_FOUND,
                     new Message("There is no result!")
                 );
             }
+            return new Data(
+                ResponseCodes::RESPONSE_OK,
+                $result
+            );
         } catch (Error $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
-        } finally {
-            return $data;
         }
     }
 
@@ -138,23 +135,20 @@ class Result extends Model
         try {
             $result = Result::where("quiz_id", $quiz_id)->get();
             if (isset($result[0]["id"])) {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $result
-                );
-            } else {
-                $data = new Data(
+                return new Data(
                     ResponseCodes::ERROR_NOT_FOUND,
                     new Message("No one played this quiz yet!")
                 );
             }
+            return new Data(
+                ResponseCodes::RESPONSE_OK,
+                $result
+            );
         } catch (Error $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
-        } finally {
-            return $data;
         }
     }
 
@@ -166,37 +160,35 @@ class Result extends Model
             if ($isnew) {
                 $result->points = $game->right;
                 $result->save();
-                $data = new Data(
+                return new Data(
                     ResponseCodes::RESPONSE_CREATED,
                     new Message("First result by the user.", "result")
                 );
-            } else {
-                if ($result->points < $game->right) {
-                    $result->points = $game->right;
-                    $result->save();
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_OK,
-                        new Message("New Highscore!", "result")
-                    );
-                } else if ($result->points = $game->right) {
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_OK,
-                        new Message("Same result as the last time...", "result")
-                    );
-                } else {
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_OK,
-                        new Message("Worse than last the time...", "result")
-                    );
-                }
             }
+            if ($result->points < $game->right) {
+                $result->points = $game->right;
+                $result->save();
+                return new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    new Message("New Highscore!", "result")
+                );
+            }
+            if ($result->points = $game->right) {
+                return new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    new Message("Same result as the last time...", "result")
+                );
+            }
+            return new Data(
+                ResponseCodes::RESPONSE_OK,
+                new Message("Worse than last the time...", "result")
+            );
         } catch (Exception $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! $e")
             );
         }
-        return $data;
     }
 
     function quiz(): Quiz

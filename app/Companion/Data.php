@@ -54,7 +54,7 @@ class Data
     function toJson():string
     {
         $out = "{}";
-        if ($this->data !==null) {
+        if ($this->data !== null) {
             $out = $this->data->toJson();
         }
         return $out;

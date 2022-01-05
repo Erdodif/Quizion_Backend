@@ -28,101 +28,89 @@ class Question extends Table
 
     static function getCountByQuiz($quiz_id): Data
     {
-        if (Data::idIsValid($quiz_id)) {
-            $count = Question::where("quiz_id", "=", $quiz_id)->count();
-            if (Quiz::getById($quiz_id)->getCode() == ResponseCodes::RESPONSE_OK) {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    new Message(
-                        $count,
-                        "count",
-                        MESSAGE_TYPE_INT
-                    )
-                );
-            } else {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("Quiz #$quiz_id not found!")
-                );
-            }
-        } else {
-            $data = new Data(
+        if (!Data::idIsValid($quiz_id)) {
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid quiz reference!")
             );
         }
-        return $data;
+        $count = Question::where("quiz_id", "=", $quiz_id)->count();
+        if (Quiz::getById($quiz_id)->getCode() !== ResponseCodes::RESPONSE_OK) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("Quiz #$quiz_id not found!")
+            );
+        }
+        return new Data(
+            ResponseCodes::RESPONSE_OK,
+            new Message(
+                $count,
+                "count",
+                MESSAGE_TYPE_INT
+            )
+        );
     }
 
     static function getAllByQuiz($quiz_id): Data
     {
-        if (Data::idIsValid($quiz_id)) {
-            $quiz = Quiz::find($quiz_id);
-            if (isset($quiz["id"])) {
-                $questions = $quiz->questions();
-                if ($questions !== null) {
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_OK,
-                        $questions
-                    );
-                } else {
-                    $data = new Data(
-                        ResponseCodes::ERROR_NOT_FOUND,
-                        new Message("Empty result!")
-                    );
-                }
-            } else {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("Quiz #$quiz_id not found!")
-                );
-            }
-        } else {
-            $data = new Data(
+        if (!Data::idIsValid($quiz_id)) {
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid quiz reference!")
             );
         }
-        return $data;
+        $quiz = Quiz::find($quiz_id);
+        if (!isset($quiz["id"])) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("Quiz #$quiz_id not found!")
+            );
+        }
+        $questions = $quiz->questions();
+        if ($questions === null) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("Quiz #$quiz_id does not have questions!")
+            );
+        }
+        return new Data(
+            ResponseCodes::RESPONSE_OK,
+            $questions
+        );
     }
 
     static function getByOrder($quiz_id, $question_order): Data
     {
-        if (Data::idIsValid($quiz_id)) {
-            $quiz = Quiz::find($quiz_id);
-            if (Data::idIsValid($question_order)) {
-                if (isset($quiz["id"])) {
-                    $question = $quiz->question($question_order);
-                    if ($question !== null) {
-                        $data = new Data(
-                            ResponseCodes::RESPONSE_OK,
-                            $question
-                        );
-                    } else {
-                        $data = new Data(
-                            ResponseCodes::ERROR_NOT_FOUND,
-                            new Message("Quiz #$quiz_id does not have $question_order. question!")
-                        );
-                    }
-                } else {
-                    $data = new Data(
-                        ResponseCodes::ERROR_NOT_FOUND,
-                        new Message("Quiz #$quiz_id not found!")
-                    );
-                }
-            } else {
-                $data = new Data(
-                    ResponseCodes::ERROR_BAD_REQUEST,
-                    new Message("Invalid question order reference!")
-                );
-            }
-        } else {
-            $data = new Data(
+        if (!Data::idIsValid($quiz_id)) {
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid quiz reference!")
             );
         }
-        return $data;
+        $quiz = Quiz::find($quiz_id);
+        if (!isset($quiz["id"])) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("Quiz #$quiz_id not found!")
+            );
+        }
+        if (!Data::idIsValid($question_order)) {
+            return new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                new Message("Invalid question order reference!")
+            );
+        }
+        $question = $quiz->question($question_order);
+        if ($question === null) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("Quiz #$quiz_id does not have $question_order. question!")
+            );
+        }
+        return new Data(
+            ResponseCodes::RESPONSE_OK,
+            $question
+        );
     }
 
     function answers(): Collection|null
@@ -135,11 +123,9 @@ class Question extends Table
     {
         $collection = $this->hasMany(Answer::class)->get();
         if ($collection->count() < $order) {
-            $out = null;
-        } else {
-            $out = $collection[$order - 1];
+            return null;
         }
-        return $out;
+        return $collection[$order - 1];
     }
 
     function quiz(): Quiz

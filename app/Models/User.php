@@ -94,62 +94,54 @@ class User extends Table
 
     static function getByName($identifier): Data
     {
-        if (isset($identifier)) {
-            $user = User::where("name", "=", $identifier)->get();
-            if (!isset($user[0])) {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("User not found")
-                );
-            } else {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $user[0]
-                );
-            }
-        } else {
-            $data = new Data(
+        if (!isset($identifier)) {
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid userID or password!")
             );
         }
-        return $data;
+        $user = User::where("name", "=", $identifier)->get();
+        if (!isset($user[0])) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("User not found")
+            );
+        }
+        return new Data(
+            ResponseCodes::RESPONSE_OK,
+            $user[0]
+        );
     }
 
     static function getByEmail($identifier): Data
     {
-        if (isset($identifier)) {
-            $user = User::where("email", "=", $identifier)->get();
-            if (!isset($user[0])) {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("User not found")
-                );
-            } else {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $user[0]
-                );
-            }
-        } else {
-            $data = new Data(
+        if (!isset($identifier)) {
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Invalid userID or password!")
             );
         }
-        return $data;
+        $user = User::where("email", "=", $identifier)->get();
+        if (!isset($user[0])) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("User not found")
+            );
+        }
+        return new Data(
+            ResponseCodes::RESPONSE_OK,
+            $user[0]
+        );
     }
 
     static function getByAny($identifier): Data
     {
         if (is_numeric($identifier)) {
-            $result = User::getById($identifier);
-        } else if (str_contains($identifier, "@")) {
-            $result = User::getByEmail($identifier);
-        } else {
-            $result = User::getByName($identifier);
-        }
-        return $result;
+            return User::getById($identifier);
+        } if (str_contains($identifier, "@")) {
+            return User::getByEmail($identifier);
+        } 
+        return User::getByName($identifier);
     }
 
     function results(): Collection|null

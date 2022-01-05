@@ -50,31 +50,35 @@ class Token extends Model
                 $userID = $input["userID"];
                 $password = $input["password"];
                 $result = User::getByAny($userID);
-                if ($result->getCode() == ResponseCodes::RESPONSE_OK && password_verify($password, $result->getDataRaw()->password)) {
-                    $stillNeeded = true;
-                    while ($stillNeeded) {
-                        try {
-                            $key = Token::createKey();
-                            $token = Token::create(array("user_id" => $result->getDataRaw()->id, "token" => $key));
-                            $token->save();
-                            $stillNeeded = false;
-                        } catch (Error $e) {
-                        }
-                    }
-                    $result->setCode(ResponseCodes::RESPONSE_CREATED);
-                    $token->makeHidden(["user_id"]);
-                    $token->makeVisible(["token"]);
-                    $result->setData($token);
-                } else {
-                    $result->setCode(ResponseCodes::ERROR_BAD_REQUEST);
-                    $result->setData(new Message("Invalid userID or password!"));
+                if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !password_verify($password, $result->getDataRaw()->password)) {
+                    return new Data(
+                        ResponseCodes::ERROR_BAD_REQUEST,
+                        new Message("Invalid userID or password!")
+                    );
                 }
+                $stillNeeded = true;
+                while ($stillNeeded) {
+                    try {
+                        $key = Token::createKey();
+                        $token = Token::create(array("user_id" => $result->getDataRaw()->id, "token" => $key));
+                        $token->save();
+                        $stillNeeded = false;
+                    } catch (Error $e) {
+                    }
+                }
+                $token->makeHidden(["user_id"]);
+                $token->makeVisible(["token"]);
+                return new Data(
+                    ResponseCodes::RESPONSE_CREATED,
+                    $token
+                );
             } catch (Error $e) {
-                $result->setCode(ResponseCodes::ERROR_INTERNAL);
-                $result->setData(new Message($e->getMessage()));
+                return new Data(
+                    ResponseCodes::ERROR_INTERNAL,
+                    new Message($e->getMessage())
+                );
             }
         }
-        return $result;
     }
 
     function user(): User

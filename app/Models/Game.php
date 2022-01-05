@@ -25,44 +25,40 @@ class Game extends Model
     {
         try {
             if ($input === null) {
-                $data = new Data(
+                return new Data(
                     ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("No data provided!")
                 );
-            } else {
-                Data::castArray($input);
-                $invalids = Data::inputErrors($input, ["user_id", "quiz_id"]);
-                if (!$invalids) {
-                    $answer = Game::create($input);
-                    $answer->save();
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_CREATED,
-                        $answer
-                    );
-                } else {
-                    $out = "";
-                    foreach (["user_id", "quiz_id"] as $invalid) {
-                        $out .= $invalid . ", ";
-                    }
-                    $out = substr($out, 0, -2);
-                    $data = new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("Missing " . $out)
-                    );
-                }
             }
+            Data::castArray($input);
+            $invalids = Data::inputErrors($input, ["user_id", "quiz_id"]);
+            if ($invalids) {
+                $out = "";
+                foreach (["user_id", "quiz_id"] as $invalid) {
+                    $out .= $invalid . ", ";
+                }
+                $out = substr($out, 0, -2);
+                return new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Missing " . $out)
+                );
+            }
+            $answer = Game::create($input);
+            $answer->save();
+            return new Data(
+                ResponseCodes::RESPONSE_CREATED,
+                $answer
+            );
         } catch (Error $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message($e)
             );
         } catch (Exception $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
             );
-        } finally {
-            return $data;
         }
     }
 
@@ -145,11 +141,9 @@ class Game extends Model
             };
         });
         if ($success <= 0) {
-            $success = 0;
-        } else {
-            $success = $success / $rightAnswerCount;
+            return 0;
         }
-        return $success;
+        return $success / $rightAnswerCount;
     }
 
     function pickAnswers(array $picked): Data
@@ -165,55 +159,55 @@ class Game extends Model
         $duration = DB::select(DB::raw("SELECT TIMESTAMPDIFF(SECOND, '$started', CURRENT_TIMESTAMP) AS r_now"))[0]->r_now;
         $limit = Quiz::getById($this->quiz_id)->getDataRaw()->seconds_per_quiz;
         if ($this->question_started === 0) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_NOT_FOUND,
                 new Message("The question not started!")
             );
-        } else if ($duration > $limit) {
+        }
+        if ($duration > $limit) {
             $this->incrementCurrent();
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_TIMEOUT,
                 new Message("Question timed out!")
             );
-        } else if (empty($picked)) {
+        }
+        if (empty($picked)) {
             $data = $this->getCurrentAnswers();
             $data->getDataRaw()->map(function ($element) {
                 return $element->seeRight();
             });
             $this->incrementCurrent();
-        } else {
-            $pickedAnswers = Answer::getByIds($picked);
-            if ($pickedAnswers->getCode() === ResponseCodes::RESPONSE_OK) {
-                $pickedAnswers = $pickedAnswers->getDataRaw();
-                $question_id = $this->getCurrentQuestion()->getDataRaw()->id;
-                $ok = true;
-                $pickedAnswers->map(function ($item) use (&$ok, &$question_id) {
-                    if ($item->question_id !== $question_id) {
-                        $ok = false;
-                    }
-                    return $ok;
-                });
-                if ($ok) {
-                    $points = $this->getPoints($pickedAnswers);
-                    $this->addPoints($points);
-                    $data = $this->getCurrentAnswers();
-                    $data->getDataRaw()->map(function ($element) {
-                        return $element->seeRight();
-                    });
-                    $this->incrementCurrent();
-                } else {
-                    $data = new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("One or more given answers do not belong to the current question!")
-                    );
-                }
-            } else {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("One or more given answers do not exist!")
-                );
-            }
+            return $data;
         }
+        $pickedAnswers = Answer::getByIds($picked);
+        if ($pickedAnswers->getCode() !== ResponseCodes::RESPONSE_OK) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("One or more given answers do not exist!")
+            );
+        }
+        $pickedAnswers = $pickedAnswers->getDataRaw();
+        $question_id = $this->getCurrentQuestion()->getDataRaw()->id;
+        $ok = true;
+        $pickedAnswers->map(function ($item) use (&$ok, &$question_id) {
+            if ($item->question_id !== $question_id) {
+                $ok = false;
+            }
+            return $ok;
+        });
+        if (!$ok) {
+            return new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                new Message("One or more given answers do not belong to the current question!")
+            );
+        }
+        $points = $this->getPoints($pickedAnswers);
+        $this->addPoints($points);
+        $data = $this->getCurrentAnswers();
+        $data->getDataRaw()->map(function ($element) {
+            return $element->seeRight();
+        });
+        $this->incrementCurrent();
         return $data;
     }
 

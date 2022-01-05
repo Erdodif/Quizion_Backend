@@ -20,11 +20,9 @@ class Message
     }
     public function toJson(): String
     {
+        $out = $this->content;
         if($this->type === MESSAGE_TYPE_STRING){
-            $out = "\"$this->content\"";
-        }
-        else{
-            $out = $this->content;
+            $out = "\"$out\"";
         }
         return "{\"$this->name\":$out}";
     }

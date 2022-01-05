@@ -60,23 +60,19 @@ class Quiz extends Table
     {
         $collection = $this->hasMany(Question::class)->get();
         if ($collection->count() < $order) {
-            $out = null;
-        } else {
-            $out = $collection[$order - 1];
+            return null;
         }
-        return $out;
+        return $collection[$order - 1];
     }
 
     function answers(int $order): Collection|null
     {
         $question = $this->question($order);
         if ($question === null) {
-            $out = null;
-        } else {
-            $collection = $question->answers();
-            $out = Data::collectionOrNull($collection);
+            return null;
         }
-        return $out;
+        $collection = $question->answers();
+        return Data::collectionOrNull($collection);
     }
 
     function results(): Collection|null
