@@ -149,4 +149,12 @@ class User extends Table
         }
         return $result;
     }
+
+    function results(){
+        return $this->hasMany(Result::class);
+    }
+
+    function tokens(){
+        return $this->hasMany(Token::class);
+    }
 }

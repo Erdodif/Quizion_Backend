@@ -128,4 +128,14 @@ class Question extends Table
         }
         return $result;
     }
+
+    function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
+    }
 }

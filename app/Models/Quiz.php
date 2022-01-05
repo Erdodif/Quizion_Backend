@@ -48,4 +48,21 @@ class Quiz extends Table
             return $data;
         }
     }
+
+    function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
+
+    function question(int $order)
+    {
+        //TODO TESZTELNI
+        return $this->hasMany(Question::class)->get()[$order];
+    }
+
+    function answers(int $order)
+    {
+        //TODO TESZTELNI
+        return $this->question($order)->hasMany(Answer::class);
+    }
 }

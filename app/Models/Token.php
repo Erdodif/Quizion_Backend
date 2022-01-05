@@ -76,4 +76,9 @@ class Token extends Model
         }
         return $result;
     }
+
+    function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

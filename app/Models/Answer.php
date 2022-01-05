@@ -130,4 +130,12 @@ class Answer extends Table
         $this->makeVisible(["is_right"]);
         $this->makeHidden(["content"]);
     }
+
+    function question(){
+        return $this->belongsTo(Question::class);
+    }
+
+    function quiz(){
+        return $this->belongsTo(Question::class)->belongsTo(Quiz::class);
+    }
 }

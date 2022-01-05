@@ -221,4 +221,12 @@ class Game extends Model
     {
         return new Data(ResponseCodes::RESPONSE_OK, new Message($this->current, "current", MESSAGE_TYPE_INT));
     }
+
+    function quiz(){
+        return $this->hasMany(Quiz::class);
+    }
+
+    function user(){
+        return $this->hasMany(User::class);
+    }
 }

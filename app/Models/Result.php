@@ -198,4 +198,14 @@ class Result extends Model
         }
         return $data;
     }
+
+    function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
+    }
+
+    function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
