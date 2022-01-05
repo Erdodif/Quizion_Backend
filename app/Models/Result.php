@@ -199,13 +199,13 @@ class Result extends Model
         return $data;
     }
 
-    function quiz()
+    function quiz(): Quiz
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Quiz::class)->where("user_id", $this->user_id)->first();
     }
 
-    function user()
+    function user(): User
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->where("quiz_id", $this->quiz_id)->first();
     }
 }

@@ -28,17 +28,18 @@ class Answer extends Table
     static function getAllByQuestion($question_id): Data
     {
         if (Data::idIsValid($question_id)) {
-            $actives = Answer::where("question_id", "=", $question_id)->get();
-            if (Question::getById($question_id)->getCode() == ResponseCodes::RESPONSE_OK) {
-                if ($actives === null || empty($actives)) {
+            $question = Question::find($question_id);
+            if ($question !== null) {
+                $answers = $question->answers();
+                if ($answers !== null) {
                     $data = new Data(
-                        ResponseCodes::ERROR_NOT_FOUND,
-                        new Message("Question #$question_id has no answers!")
+                        ResponseCodes::RESPONSE_OK,
+                        $answers
                     );
                 } else {
                     $data = new Data(
-                        ResponseCodes::RESPONSE_OK,
-                        $actives
+                        ResponseCodes::ERROR_NOT_FOUND,
+                        new Message("Question #$question_id has no answers!")
                     );
                 }
             } else {
@@ -58,34 +59,52 @@ class Answer extends Table
 
     static function getByQuestion($question_id, $answer_order): Data
     {
-        $result = Answer::getAllByQuestion($question_id);
-        if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
+        if (Data::idIsValid($question_id)) {
+            $question = Question::find($question_id);
             if (Data::idIsValid($answer_order)) {
-                $data = $result->getDataRaw();
-                if ($data === null || empty($data) || !isset($data[$answer_order - 1])) {
-                    $result->setCode(ResponseCodes::ERROR_NOT_FOUND);
-                    $result->setData(new Message("Question #$question_id does not have $answer_order. answer!"));
+                if (isset($question["id"])) {
+                    $answer = $question->answer($answer_order);
+                    if ($answer !== null) {
+                        $data = new Data(
+                            ResponseCodes::RESPONSE_OK,
+                            $answer
+                        );
+                    } else {
+                        $data = new Data(
+                            ResponseCodes::ERROR_NOT_FOUND,
+                            new Message("Question #$question_id does not have $answer_order. answer!")
+                        );
+                    }
                 } else {
-                    $result->setCode(ResponseCodes::RESPONSE_OK);
-                    $result->setData($data[$answer_order - 1]);
+                    $data = new Data(
+                        ResponseCodes::ERROR_NOT_FOUND,
+                        new Message("Question #$question_id not found!")
+                    );
                 }
             } else {
-                $result->setCode(ResponseCodes::ERROR_BAD_REQUEST);
-                $result->setData(new Message("Invalid answer number reference!"));
+                $data = new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Invalid answer order reference!")
+                );
             }
+        } else {
+            $data = new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                new Message("Invalid question reference!")
+            );
         }
-        return $result;
+        return $data;
     }
 
     static function getAllByQuiz($quiz_id, $question_order): Data
     {
         $result = Question::getByOrder($quiz_id, $question_order);
         if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
-            $data = $result->getDataRaw();
-            if (isset($data["id"])) {
-                $question_id = $data["id"];
+            $question = $result->getDataRaw();
+            $answers = $question->answers();
+            if ($answers !== null) {
                 $result->setCode(ResponseCodes::RESPONSE_OK);
-                $result->setData(Answer::where("question_id", "=", $question_id)->get());
+                $result->setData($answers);
             } else {
                 $result->setCode(ResponseCodes::ERROR_NOT_FOUND);
                 $result->setData(new Message("The $question_order. question does not have answers!"));
@@ -96,14 +115,14 @@ class Answer extends Table
 
     static function getByQuiz($quiz_id, $question_order, $answer_order): Data
     {
-
-        $result = Answer::getAllByQuiz($quiz_id, $question_order);
+        $result = Question::getByOrder($quiz_id, $question_order);
         if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
+            $question = $result->getDataRaw();
             if (Data::idIsValid($answer_order)) {
-                $data = $result->getDataRaw();
-                if (isset($data[$answer_order - 1])) {
+                $answer = $question->answer($answer_order);
+                if ($answer !== null) {
                     $result->setCode(ResponseCodes::RESPONSE_OK);
-                    $result->setData($data[$answer_order - 1]);
+                    $result->setData($answer);
                 } else {
                     $result->setCode(ResponseCodes::ERROR_NOT_FOUND);
                     $result->setData(new Message("The $question_order. question does not have $answer_order. answer!"));
@@ -131,11 +150,13 @@ class Answer extends Table
         $this->makeHidden(["content"]);
     }
 
-    function question(){
-        return $this->belongsTo(Question::class);
+    function question(): Question
+    {
+        return $this->belongsTo(Question::class)->first();;
     }
 
-    function quiz(){
-        return $this->belongsTo(Question::class)->belongsTo(Quiz::class);
+    function quiz(): Quiz
+    {
+        return $this->question()->belongsTo(Quiz::class)->first();
     }
 }

@@ -77,8 +77,8 @@ class Token extends Model
         return $result;
     }
 
-    function user()
+    function user(): User
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->first();
     }
 }

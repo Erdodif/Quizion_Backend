@@ -8,6 +8,8 @@ use App\Companion\Data;
 use \Error;
 use \Exception;
 use App\Companion\ResponseCodes;
+use Illuminate\Database\Eloquent\Collection;
+use PhpParser\ErrorHandler\Collecting;
 
 class Question extends Table
 {
@@ -22,31 +24,6 @@ class Question extends Table
     static function getRequiredColumns(): array
     {
         return ["quiz_id", "content", "point"];
-    }
-
-    static function getActives(): Data
-    {
-        try {
-            $result = Question::where("active", "=", 1)->get();
-            if (isset($result[0]["id"])) {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $result
-                );
-            } else {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("There is no question!")
-                );
-            }
-        } catch (Error $e) {
-            $data = new Data(
-                ResponseCodes::ERROR_INTERNAL,
-                new Message("An internal error occured! " . $e->getMessage())
-            );
-        } finally {
-            return $data;
-        }
     }
 
     static function getCountByQuiz($quiz_id): Data
@@ -80,17 +57,18 @@ class Question extends Table
     static function getAllByQuiz($quiz_id): Data
     {
         if (Data::idIsValid($quiz_id)) {
-            $actives = Question::where("quiz_id", "=", $quiz_id)->get();
-            if (Quiz::getById($quiz_id)->getCode() == ResponseCodes::RESPONSE_OK) {
-                if ($actives === null || empty($actives)) {
+            $quiz = Quiz::find($quiz_id);
+            if (isset($quiz["id"])) {
+                $questions = $quiz->questions();
+                if ($questions !== null) {
                     $data = new Data(
-                        ResponseCodes::ERROR_NOT_FOUND,
-                        new Message("Empty result!")
+                        ResponseCodes::RESPONSE_OK,
+                        $questions
                     );
                 } else {
                     $data = new Data(
-                        ResponseCodes::RESPONSE_OK,
-                        $actives
+                        ResponseCodes::ERROR_NOT_FOUND,
+                        new Message("Empty result!")
                     );
                 }
             } else {
@@ -110,32 +88,62 @@ class Question extends Table
 
     static function getByOrder($quiz_id, $question_order): Data
     {
-        $result = Question::getAllByQuiz($quiz_id);
-        if ($result->getCode() == ResponseCodes::RESPONSE_OK) {
+        if (Data::idIsValid($quiz_id)) {
+            $quiz = Quiz::find($quiz_id);
             if (Data::idIsValid($question_order)) {
-                $data = $result->getDataRaw();
-                if ($data === null || empty($data) || !isset($data[$question_order - 1])) {
-                    $result->setCode(ResponseCodes::ERROR_NOT_FOUND);
-                    $result->setData(new Message("Quiz #$quiz_id does not have $question_order. question!"));
+                if (isset($quiz["id"])) {
+                    $question = $quiz->question($question_order);
+                    if ($question !== null) {
+                        $data = new Data(
+                            ResponseCodes::RESPONSE_OK,
+                            $question
+                        );
+                    } else {
+                        $data = new Data(
+                            ResponseCodes::ERROR_NOT_FOUND,
+                            new Message("Quiz #$quiz_id does not have $question_order. question!")
+                        );
+                    }
                 } else {
-                    $result->setCode(ResponseCodes::RESPONSE_OK);
-                    $result->setData($data[$question_order - 1]);
+                    $data = new Data(
+                        ResponseCodes::ERROR_NOT_FOUND,
+                        new Message("Quiz #$quiz_id not found!")
+                    );
                 }
             } else {
-                $result->setCode(ResponseCodes::ERROR_BAD_REQUEST);
-                $result->setData(new Message("Invalid question number reference!"));
+                $data = new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Invalid question order reference!")
+                );
             }
+        } else {
+            $data = new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                new Message("Invalid quiz reference!")
+            );
         }
-        return $result;
+        return $data;
     }
 
-    function answers()
+    function answers(): Collection|null
     {
-        return $this->hasMany(Answer::class);
+        $collection = $this->hasMany(Answer::class)->get();
+        return Data::collectionOrNull($collection);
     }
 
-    function quiz()
+    function answer(int $order): Answer|null
     {
-        return $this->belongsTo(Quiz::class);
+        $collection = $this->hasMany(Answer::class)->get();
+        if ($collection->count() < $order) {
+            $out = null;
+        } else {
+            $out = $collection[$order - 1];
+        }
+        return $out;
+    }
+
+    function quiz(): Quiz
+    {
+        return $this->belongsTo(Quiz::class)->first();
     }
 }

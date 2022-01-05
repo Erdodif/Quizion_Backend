@@ -7,6 +7,7 @@ use App\Companion\Message;
 use App\Companion\Data;
 use \Error;
 use App\Companion\ResponseCodes;
+use Illuminate\Database\Eloquent\Collection;
 
 class Quiz extends Table
 {
@@ -49,20 +50,37 @@ class Quiz extends Table
         }
     }
 
-    function questions()
+    function questions(): Collection|null
     {
-        return $this->hasMany(Question::class);
+        $collection = $this->hasMany(Question::class)->get();
+        return Data::collectionOrNull($collection);
     }
 
-    function question(int $order)
+    function question(int $order): Question|null
     {
-        //TODO TESZTELNI
-        return $this->hasMany(Question::class)->get()[$order];
+        $collection = $this->hasMany(Question::class)->get();
+        if ($collection->count() < $order) {
+            $out = null;
+        } else {
+            $out = $collection[$order - 1];
+        }
+        return $out;
     }
 
-    function answers(int $order)
+    function answers(int $order): Collection|null
     {
-        //TODO TESZTELNI
-        return $this->question($order)->hasMany(Answer::class);
+        $question = $this->question($order);
+        if ($question === null) {
+            $out = null;
+        } else {
+            $collection = $question->answers();
+            $out = Data::collectionOrNull($collection);
+        }
+        return $out;
+    }
+
+    function results(): Collection|null
+    {
+        return $this->hasMany(Result::class)->get();
     }
 }

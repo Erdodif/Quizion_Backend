@@ -222,11 +222,13 @@ class Game extends Model
         return new Data(ResponseCodes::RESPONSE_OK, new Message($this->current, "current", MESSAGE_TYPE_INT));
     }
 
-    function quiz(){
-        return $this->hasMany(Quiz::class);
+    function quiz(): Quiz
+    {
+        return $this->belongsTo(Quiz::class)->where("user_id", $this->user_id)->first();
     }
 
-    function user(){
-        return $this->hasMany(User::class);
+    function user(): User
+    {
+        return $this->belongsTo(User::class)->where("quiz_id", $this->quiz_id)->first();
     }
 }

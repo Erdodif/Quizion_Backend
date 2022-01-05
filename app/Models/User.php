@@ -8,6 +8,8 @@ use App\Companion\Data;
 use Error;
 use Exception;
 use App\Companion\ResponseCodes;
+use Illuminate\Database\Eloquent\Collection;
+use phpDocumentor\Reflection\Types\Null_;
 
 class User extends Table
 {
@@ -150,11 +152,14 @@ class User extends Table
         return $result;
     }
 
-    function results(){
-        return $this->hasMany(Result::class);
+    function results(): Collection|null
+    {
+        $collection = $this->hasMany(Result::class)->get();
+        return Data::collectionOrNull($collection);
     }
 
     function tokens(){
-        return $this->hasMany(Token::class);
+        $collection = $this->hasMany(Token::class)->get();
+        return Data::collectionOrNull($collection);
     }
 }

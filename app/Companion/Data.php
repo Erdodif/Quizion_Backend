@@ -46,6 +46,11 @@ class Data
         $this->data = $data;
     }
 
+    /**
+     * Creates a JSON string out of the object's data
+     * 
+     * @return string The JSON-formatted data
+     */
     function toJson():string
     {
         $out = "{}";
@@ -55,6 +60,11 @@ class Data
         return $out;
     }
 
+    /**
+     * Creates a response with the object's response code, and data. 
+     * 
+     * The data is following the application/json mime stantard
+    */
     function toResponse()
     {
         $content = "";
@@ -64,13 +74,31 @@ class Data
         return response($content,$this->getCode())->header("Content-Type", "application/json");
     }
 
+    /**
+     * Basic numeric check on id parameters
+     * @param mixed $id The suspicious id
+     * @return bool True, if the id is a positive number 
+     */
     static function idIsValid($id): bool
     {
         return is_numeric($id) && $id > 0;
     }
 
     /**
-     * @throws Error On invalid Json formatted string
+     * Returns the given collection or null, if empty
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|null
+     */
+    static function collectionOrNull(EloquentCollection|SupportCollection $collection):EloquentCollection|SupportCollection|null
+    {
+        if ($collection->isNotEmpty()) {
+            return $collection;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Tries to JSON-decode the given string
      */
     static function castArray(array|string &$array) {
         try{
@@ -80,7 +108,11 @@ class Data
     }
 
     /**
-     * @throws Error On invalid Json formatted string
+     * Returns those keys from the second array, what the first does not have, 
+     * or false, if the first array has all the keys the second array has.
+     * @param array|null $input The first array 
+     * @param array $lookup The second, lookup array 
+     * @return array|false The missing keys, or false, if there are no missing keys
      */
     static function inputErrors(array|null $input, array $lookup):array|false
     {
