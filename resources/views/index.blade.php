@@ -7,5 +7,5 @@
     <br />
     <a href="register">Regisztráció</a>
     <br />
-    <a href="quizes">Kvízek Listája</a>
+    <a href="quizzes">Kvízek Listája</a>
 @endsection

@@ -32,14 +32,18 @@ Route::get("/login", function () {
     return view("login");
 });
 
+Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
+    return view("leaderboard_quiz", ["quiz_id" => $quiz_id]);
+});
+
 Route::get("/quizzes", function () {
     $quizzes = Quiz::all();
     return view("quizzes", ["quizzes" => $quizzes]);
 });
 
 Route::get("/quiz/{quiz_id}/question/{question_id}", function (int $quiz_id, int $question_id) {
-    // JAVÍTANI
     $question = json_decode(Question::getByOrder($quiz_id, $question_id)->toJson());
     $answers = json_decode(Answer::getAllByQuiz($quiz_id, $question_id)->toJson());
-    return view("quiz", [ "question" => $question, "answers" => $answers]);
+    $count = json_decode(Question::getCountByQuiz($quiz_id)->toJson());
+    return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 });
