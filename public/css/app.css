@@ -170,8 +170,7 @@ body {
     color: var(--on_primary);
     cursor: pointer;
 }
-.time_bar {
-    width: 50%;
+#time_bar {
     height: 0.5rem;
     background-color: var(--warning);
     border-radius: 0.3rem;

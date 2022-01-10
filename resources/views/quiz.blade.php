@@ -11,7 +11,7 @@
         @endphp
     @endif
 
-    <div class="time_bar"></div>
+    <div id="time_bar"></div>
     <div class="report">Report</div>
     <div class="quiz_question">{{ $question->content }}</div>
 
@@ -21,6 +21,8 @@
         </a>
     @endforeach
 
+    <div id="out_of_time"></div>
+
     <a href="../../../quizzes">Kvízek Listája</a>
 
     <div class="progress_bar">
@@ -28,4 +30,19 @@
         <div class="progress_bar_border"></div>
         <div class="progress_bar_text">{{ Request::segment(4) }}/{{ $count->count }}</div>
     </div>
+
+    <script>
+        let maxTime = 1000;
+        let timeLeft = 1000;
+        let timer = setInterval(function() {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById("out_of_time").innerHTML = "Lejárt az idő!";
+            }
+            else {
+                document.getElementById("time_bar").style.width = timeLeft / maxTime * 100 + "%";
+            }
+            timeLeft -= 1;
+        }, 1);
+    </script>
 @endsection
