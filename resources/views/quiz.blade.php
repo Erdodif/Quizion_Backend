@@ -3,14 +3,6 @@
 @section("title", "Quiz")
 
 @section("content")
-    @if(empty($question->content))
-        @php
-            // 1 csere -> {{ Request::segment(2) }}
-            header("Location: ../../../leaderboard/1", true, 302);
-            exit();
-        @endphp
-    @endif
-
     <div id="time_bar"></div>
     <div class="report">Report</div>
     <div class="quiz_question">{{ $question->content }}</div>

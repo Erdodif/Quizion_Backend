@@ -45,5 +45,8 @@ Route::get("/quiz/{quiz_id}/question/{question_id}", function (int $quiz_id, int
     $question = json_decode(Question::getByOrder($quiz_id, $question_id)->toJson());
     $answers = json_decode(Answer::getAllByQuiz($quiz_id, $question_id)->toJson());
     $count = json_decode(Question::getCountByQuiz($quiz_id)->toJson());
+    if (empty($question->content)) {
+        return redirect("/leaderboard/$quiz_id");
+    }
     return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 });
