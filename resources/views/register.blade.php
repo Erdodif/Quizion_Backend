@@ -3,10 +3,11 @@
 @section("title", "Register")
 
 @section("content")
-    <form method="POST">
+    <form method="POST" action="{{ route('users.store') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div>
-            <label for="username_id">Felhasználónév</label>
-            <input type="text" id="username_id" name="username" value="">
+            <label for="name_id">Felhasználónév</label>
+            <input type="text" id="name_id" name="name" value="">
             <div class="error_message"></div>
         </div>
         <div>
@@ -15,15 +16,15 @@
             <div class="error_message"></div>
         </div>
         <div>
-            <label for="password1_id">Jelszó</label>
-            <input type="password" id="password1_id" name="password1" value="">
+            <label for="password_id">Jelszó</label>
+            <input type="password" id="password_id" name="password" value="">
             <div class="error_message"></div>
         </div>
-        <div>
+        <!--<div>
             <label for="password2_id">Jelszó még egyszer</label>
             <input type="password" id="password2_id" name="password2" value="">
             <div class="error_message"></div>
-        </div>
+        </div>-->
         <input type="submit" name="click" value="Regisztráció">
     </form>
     <a href="index">Vissza</a>

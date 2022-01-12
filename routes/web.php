@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Answer;
@@ -30,7 +31,7 @@ Route::get("/register", function () {
 
 Route::get("/login", function () {
     return view("login");
-});
+})->name("login");
 
 Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
     return view("leaderboard_quiz", ["quiz_id" => $quiz_id]);
@@ -50,3 +51,5 @@ Route::get("/quiz/{quiz_id}/question/{question_id}", function (int $quiz_id, int
     }
     return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 });
+
+Route::resource("users", UserController::class);

@@ -4,6 +4,7 @@
 
 @section("content")
     <form method="POST">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div>
             <label for="username_email">Felhasználónév vagy email cím</label>
             <input type="text" id="username_email" name="username_email" value="">
