@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Companion\Data;
 use App\Companion\Message;
+use App\Companion\ResponseCodes;
 use App\Models\Token;
 use Closure;
 use Illuminate\Http\Request;
@@ -22,14 +23,14 @@ class TokenIsValid
         $token = $request->bearerToken();
         if(empty($token)){
             return (new Data(
-                    ERROR_UNAUTHORIZED,
+                    ResponseCodes::ERROR_UNAUTHORIZED,
                     new Message("Login required!")
                 ))->toResponse();
         }
         $result = Token::getTokenByKey($token);
         if (!$result){
             return (new Data(
-                    ERROR_UNAUTHORIZED,
+                    ResponseCodes::ERROR_UNAUTHORIZED,
                     new Message("Invalid or expired token!")
                 ))->toResponse();
         }
