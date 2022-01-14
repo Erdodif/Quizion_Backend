@@ -26,7 +26,7 @@ Route::get("/index", function () {
 });
 
 Route::get("/register", function () {
-    return view("register");
+    return view("register", ["error" => null]);
 });
 
 Route::get("/login", function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Companion\ResponseCodes;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -36,11 +37,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->only(["name", "email", "password"]);
-        $user = new User();
-        $user->fill($data);
-        $user->save();
-        return redirect()->route("login");
+        $data = User::addNew($request->only(["name", "email", "password"]));
+        if ($data->getCode() === ResponseCodes::RESPONSE_CREATED) {
+            return redirect()->route("login");
+        }
+        return view("register", ["error" => $data]);
     }
 
     /**

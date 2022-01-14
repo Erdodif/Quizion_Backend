@@ -27,5 +27,9 @@
         </div>-->
         <input type="submit" name="click" value="Regisztráció">
     </form>
+    <!-- IDEIGLENES -->
+    @if($error !== null)
+        <div>{{ $error->getCode() }}</div>
+    @endif
     <a href="index">Vissza</a>
 @endsection
