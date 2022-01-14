@@ -23,11 +23,11 @@ Route::get("/", function () {
 
 Route::get("/index", function () {
     return view("index");
-});
+})->name("index");
 
 Route::get("/register", function () {
-    return view("register", ["error" => null]);
-});
+    return view("register", ["data" => null]);
+})->name("register");
 
 Route::get("/login", function () {
     return view("login");
@@ -52,4 +52,4 @@ Route::get("/quiz/{quiz_id}/question/{question_id}", function (int $quiz_id, int
     return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 });
 
-Route::resource("users", UserController::class);
+Route::resource("user", UserController::class);

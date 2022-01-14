@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Companion\ResponseCodes;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -15,8 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //$users = User::all();
-        //return view("users.index", [ "users" => $users ]);
+        return redirect()->route("index");
     }
 
     /**
@@ -37,11 +37,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data = User::addNew($request->only(["name", "email", "password"]));
+        $validated = $request->validate([
+            "name" => "required|max:35",
+            "email" => "email:rfc",
+            "password" => ["required", Password::min(8)],
+            "password2" => "same:password",
+        ]);
+        $data = User::addNew($validated);
         if ($data->getCode() === ResponseCodes::RESPONSE_CREATED) {
             return redirect()->route("login");
         }
-        return view("register", ["error" => $data]);
+        return view("register");
     }
 
     /**
