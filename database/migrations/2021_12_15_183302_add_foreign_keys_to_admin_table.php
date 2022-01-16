@@ -14,7 +14,7 @@ class AddForeignKeysToAdminTable extends Migration
     public function up()
     {
         Schema::table('admin', function (Blueprint $table) {
-            $table->foreign(['user_id'], 'admin_ibfk_1')->references(['id'])->on('user');
+            $table->foreign(['user_id'], 'admin_ibfk_1')->references(['id'])->on('users');
         });
     }
 

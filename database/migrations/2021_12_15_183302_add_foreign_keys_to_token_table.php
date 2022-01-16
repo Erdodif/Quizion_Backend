@@ -14,7 +14,7 @@ class AddForeignKeysToTokenTable extends Migration
     public function up()
     {
         Schema::table('token', function (Blueprint $table) {
-            $table->foreign(['user_id'], 'token_ibfk_1')->references(['id'])->on('user')->onDelete('CASCADE');
+            $table->foreign(['user_id'], 'token_ibfk_1')->references(['id'])->on('users')->onDelete('CASCADE');
         });
     }
 

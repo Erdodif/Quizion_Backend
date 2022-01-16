@@ -24,7 +24,7 @@ class Result extends Model
             $result = collect(
                 DB::select(
                     "
-                select `results`.`user_id`,`user`.`name`,`results`.`points`, ranks.rank
+                select `results`.`user_id`,`users`.`name`,`results`.`points`, ranks.rank
                 from
                 `results`
                 JOIN
@@ -39,8 +39,8 @@ class Result extends Model
                     ) as _ranking
                 ) as ranks
                 ON ranks.quiz_id = `results`.`quiz_id` and ranks.points = `results`.`points`
-                JOIN `user`
-                ON `user`.`id` = `results`.`user_id`"
+                JOIN `users`
+                ON `users`.`id` = `results`.`user_id`"
                 )
             );
             if ($result->isEmpty()) {
@@ -69,7 +69,7 @@ class Result extends Model
         $result = collect(
             DB::select(
                 "
-            select `results`.`quiz_id`,`results`.`user_id`,`user`.`name`,`results`.`points`, ranks.rank
+            select `results`.`quiz_id`,`results`.`user_id`,`users`.`name`,`results`.`points`, ranks.rank
             from
             `results`
             JOIN
@@ -84,8 +84,8 @@ class Result extends Model
                 ) as _ranking
             ) as ranks
             ON ranks.quiz_id = `results`.`quiz_id` and ranks.points = `results`.`points`
-            JOIN `user`
-            ON `user`.`id` = `results`.`user_id`
+            JOIN `users`
+            ON `users`.`id` = `results`.`user_id`
             WHERE `results`.`user_id` = $user_id"
             )
         )->first();
@@ -96,7 +96,7 @@ class Result extends Model
             }
             $data = new Data(
                 ResponseCodes::RESPONSE_OK,
-                new Message($result, "user", MESSAGE_TYPE_RAW)
+                new Message($result, "users", MESSAGE_TYPE_RAW)
             );
         } catch (Exception | Error $e) {
             $data = new Data(
@@ -162,7 +162,7 @@ class Result extends Model
                 $result->save();
                 return new Data(
                     ResponseCodes::RESPONSE_CREATED,
-                    new Message("First result by the user.", "result")
+                    new Message("First result by the users.", "result")
                 );
             }
             if ($result->points < $game->right) {

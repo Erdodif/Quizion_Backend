@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class UserTableSeeder extends Seeder
+class UsersTableSeeder extends Seeder
 {
 
     /**
@@ -17,9 +17,9 @@ class UserTableSeeder extends Seeder
     {
         
 
-        DB::table('user')->delete();
+        DB::table('users')->delete();
         
-        DB::table('user')->insert(array (
+        DB::table('users')->insert(array (
             0 => 
             array (
                 'id' => 1,

@@ -1,8 +1,11 @@
-@extends("layouts.app")
+@extends("layouts.layout")
 
 @section("title", "Quizzes")
 
 @section("content")
+
+    <a href="{{ route('index') }}">Index</a>
+
     @foreach($quizzes as $quiz)
         <div class="quiz_list_div">
             <h2 class="quiz_list_header">{{ $quiz->header }}</h2>

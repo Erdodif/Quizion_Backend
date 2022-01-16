@@ -10,17 +10,19 @@ use Exception;
 use App\Companion\ResponseCodes;
 use Illuminate\Database\Eloquent\Collection;
 use phpDocumentor\Reflection\Types\Null_;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Table
+//JAVÍTANI
+class User extends Authenticatable //Table
 {
-    protected $table = "user";
+    protected $table = "users";
     public $timestamps = false;
     protected $guarded = ["id"];
     protected $hidden = ["email", "password"];
 
     static function getName(): string
     {
-        return "User";
+        return "Users";
     }
     static function getRequiredColumns(): array
     {
@@ -154,4 +156,125 @@ class User extends Table
         $collection = $this->hasMany(Token::class)->get();
         return Data::collectionOrNull($collection);
     }
+
+//------------------------------IDEIGLENES------------------------------
+    static function getById($id): Data
+    {
+        try {
+            if (!Data::idIsValid($id)) {
+                $data = new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Invalid id reference!")
+                );
+            } else {
+                $element = self::find($id);
+                if (!isset($element["id"])) {
+                    $data = new Data(
+                        ResponseCodes::ERROR_NOT_FOUND,
+                        new Message(static::getName() . " not found!")
+                    );
+                } else {
+                    $data = new Data(
+                        ResponseCodes::RESPONSE_OK,
+                        $element
+                    );
+                }
+            }
+        } catch (Error $e) {
+            $data = new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            );
+        } finally {
+            return $data;
+        }
+    }
+
+    static function getByIds($ids): Data
+    {
+        try {
+            $idsAreValid = false;
+            try {
+                $i = 0;
+                while ($i < count($ids) && Data::idIsValid($ids[$i])) {
+                    $i++;
+                }
+                $idsAreValid = $i >= count($ids);
+            } catch (Error $e) {
+                $idsAreValid = false;
+            }
+            if (!$idsAreValid) {
+                $data = new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Invalid id reference!")
+                );
+            } else {
+                $element = self::whereIn("id", $ids)->get();
+                if (!isset($element[0]["id"])) {
+                    $data = new Data(
+                        ResponseCodes::ERROR_NOT_FOUND,
+                        new Message(static::getName() . " not found!")
+                    );
+                } else {
+                    $data = new Data(
+                        ResponseCodes::RESPONSE_OK,
+                        $element
+                    );
+                }
+            }
+        } catch (Error $e) {
+            $data = new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            );
+        } finally {
+            return $data;
+        }
+    }
+
+    static function getAll(): Data
+    {
+        try {
+            $result = self::all();
+            if (isset($result[0]["id"])) {
+                $data = new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    $result
+                );
+            } else {
+                $data = new Data(
+                    ResponseCodes::ERROR_NOT_FOUND,
+                    new Message("There is no " . strtolower(static::getName()) . "!")
+                );
+            }
+        } catch (Error $e) {
+            $data = new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            );
+        } finally {
+            return $data;
+        }
+    }
+
+    static function deleteById($id): Data
+    {
+        $result = self::getById($id);
+        try {
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                return $result;
+            }
+            $result->getDataRaw()->delete();
+            return new Data(
+                ResponseCodes::RESPONSE_NO_CONTENT,
+                null
+            );
+        } catch (Error $e) {
+            return new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e)
+            );
+        }
+    }
+//------------------------------IDEIGLENES------------------------------
 }

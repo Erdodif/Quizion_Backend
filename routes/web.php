@@ -24,7 +24,7 @@ Route::get("/", function () {
 Route::get("/index", function () {
     return view("index");
 })->name("index");
-
+/*
 Route::get("/register", function () {
     return view("register", ["data" => null]);
 })->name("register");
@@ -32,7 +32,7 @@ Route::get("/register", function () {
 Route::get("/login", function () {
     return view("login");
 })->name("login");
-
+*/
 Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
     return view("leaderboard_quiz", ["quiz_id" => $quiz_id]);
 });
@@ -52,4 +52,15 @@ Route::get("/quiz/{quiz_id}/question/{question_id}", function (int $quiz_id, int
     return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 });
 
-Route::resource("user", UserController::class);
+//Route::resource("user", UserController::class);
+
+/*
+Route::get('/', function () {
+    return view('welcome');
+});
+*/
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
