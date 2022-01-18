@@ -5,7 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Answer;
-
+use App\Http\Controllers\API\QuizController;
+/*
 Route::group(['prefix' => '/quizzes'], function () {
     Route::get('', function () {
         $result = Quiz::getAll();
@@ -15,14 +16,15 @@ Route::group(['prefix' => '/quizzes'], function () {
         $result = Quiz::getActives();
         return $result->toResponse();
     });
-});
+});*/
+Route::resource('quizzes',QuizController::class);
 Route::group(['prefix' => '/quiz'], function () {
-    Route::post('', function (Request $request) {
+    /*Route::post('', function (Request $request) {
         $result = Quiz::addNew($request->getContent());
         return $result->toResponse();
-    });
+    });*/
     Route::group(['prefix' => '/{id}'], function () {
-        Route::get('', function (int $id) {
+        /*Route::get('', function (int $id) {
             $result = Quiz::getById($id);
             return $result->toResponse();
         });
@@ -33,7 +35,7 @@ Route::group(['prefix' => '/quiz'], function () {
         Route::delete('', function (int $id) {
             $result = Quiz::deleteById($id);
             return $result->toResponse();
-        });
+        });*/
         Route::group(['prefix' => '/questions'], function () {
             Route::get('', function (int $id) {
                 $result = Question::getAllByQuiz($id);
