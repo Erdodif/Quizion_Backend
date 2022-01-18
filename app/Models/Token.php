@@ -38,7 +38,7 @@ class Token extends Model
     }
 
     static function addNewByLogin(string|array $input): Data
-    {//TODO MEGJAVÍTÁS
+    {//TODO átnézni
         Data::castArray($input);
         if ($input === null ||( !isset($input["remember_token"]) && ( !isset($input["userID"]) || !isset($input["password"])))) {
             $result = new Data(
@@ -62,7 +62,7 @@ class Token extends Model
                         );
                     }
                 }
-                $stillNeeded = true; //TODO javítás
+                $stillNeeded = true;
                 while ($stillNeeded) {
                     try {
                         $key = Token::createKey();
