@@ -109,6 +109,27 @@ class User extends Authenticatable //Table
         }
     }
 
+    static function getByRemember($token): Data
+    {//TODO javítás
+        if (!isset($token)) {
+            return new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                new Message("Invalid or expired token!")
+            );
+        }
+        $user = User::where("remember_token", "=", $token)->get();
+        if (!isset($user[0])) {
+            return new Data(
+                ResponseCodes::ERROR_NOT_FOUND,
+                new Message("User not found")
+            );
+        }
+        return new Data(
+            ResponseCodes::RESPONSE_OK,
+            $user[0]
+        );
+    }
+
     static function getByName($identifier): Data
     {
         if (!isset($identifier)) {

@@ -38,25 +38,31 @@ class Token extends Model
     }
 
     static function addNewByLogin(string|array $input): Data
-    {
+    {//TODO MEGJAVÍTÁS
         Data::castArray($input);
-        if ($input === null || !isset($input["userID"]) || !isset($input["password"])) {
+        if ($input === null ||( !isset($input["remember_token"]) && ( !isset($input["userID"]) || !isset($input["password"])))) {
             $result = new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Missing userID or password!")
             );
         } else {
             try {
-                $userID = $input["userID"];
-                $password = $input["password"];
-                $result = User::getByAny($userID);
-                if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !password_verify($password, $result->getDataRaw()->password)) {
-                    return new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("Invalid userID or password!")
-                    );
+                if (isset($input["remember_token"])){
+                    $remember = $input["remember_token"];
+                    $result = User::getByRemember($remember);
                 }
-                $stillNeeded = true;
+                else{
+                    $userID = $input["userID"];
+                    $password = $input["password"];
+                    $result = User::getByAny($userID);
+                    if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !password_verify($password, $result->getDataRaw()->password)) {
+                        return new Data(
+                            ResponseCodes::ERROR_BAD_REQUEST,
+                            new Message("Invalid userID or password!")
+                        );
+                    }
+                }
+                $stillNeeded = true; //TODO javítás
                 while ($stillNeeded) {
                     try {
                         $key = Token::createKey();
