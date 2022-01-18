@@ -18,7 +18,7 @@ class User extends Authenticatable //Table
     protected $table = "users";
     public $timestamps = false;
     protected $guarded = ["id"];
-    protected $hidden = ["email", "password"];
+    protected $hidden = ["email", "password", "remember_token"];
 
     static function getName(): string
     {
