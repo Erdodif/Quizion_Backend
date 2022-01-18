@@ -61,8 +61,24 @@ class User extends Authenticatable //Table
                 $invalids = Data::inputErrors($input, User::getRequiredColumns());
                 $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
                 if (!$invalids) {
-                    $user = User::create($input);
-                    while (!$user->saveWithRememberToken()) {}
+                    $stillNeeded = true;
+                    $problemhere = 0;
+                    $PROBLEM = "";
+                    while ($stillNeeded && $problemhere< 100) {
+                        try{
+                            $input["remember_token"] = Token::createKey();
+                            $user = User::create($input);
+                            $user->save();
+                            $stillNeeded = false;
+                        }
+                        catch(Exception $e){
+                            $problemhere++;
+                            $PROBLEM = $e;
+                        }
+                    }
+                    if($stillNeeded){
+                        throw $PROBLEM;
+                    }
                     $data = new Data(
                         ResponseCodes::RESPONSE_CREATED,
                         $user);
@@ -154,17 +170,6 @@ class User extends Authenticatable //Table
     function tokens(){
         $collection = $this->hasMany(Token::class)->get();
         return Data::collectionOrNull($collection);
-    }
-
-    function saveWithRememberToken():bool{
-        $this->remember_token = $this->name[0].'&'.bin2hex(random_bytes(62));
-        try{
-            $this->save();
-            return true;
-        }
-        catch(Exception $e){
-            return false;
-        }
     }
 
 //------------------------------IDEIGLENES------------------------------
