@@ -6,7 +6,7 @@ use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Answer;
 
-Route::group(['prefix' => '/quizes'], function () {
+Route::group(['prefix' => '/quizzes'], function () {
     Route::get('', function () {
         $result = Quiz::getAll();
         return $result->toResponse();
