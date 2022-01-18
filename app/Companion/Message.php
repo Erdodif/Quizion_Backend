@@ -4,7 +4,7 @@ namespace App\Companion;
 
 class Message
 {
-    private string|array $content;
+    private string|array|null $content;
     private string|array $name;
     private string|array $type;
     public function __construct(?string $content = null,?string $name = null,string $type = MESSAGE_TYPE_STRING)
@@ -18,11 +18,12 @@ class Message
         }
         $this->type = $type;
     }
-    static public function createBundle(...$messages){
-        $out = new Message($messages[0]);
+    static public function createBundle(Message ...$messages): Message{
+        $out = $messages[0];
         for ($i=1; $i < count($messages); $i++) {
             $out->addMessage($messages[$i]);
         }
+        return $out;
     }
 
     public function addMessage(Message $message){
@@ -44,7 +45,7 @@ class Message
 
 
     public function toJson(): string
-    {//TODO javítás
+    {
         if(is_string($this->content)){
             $out = $this->content;
             if($this->type === MESSAGE_TYPE_STRING){
@@ -53,14 +54,18 @@ class Message
             return "{\"$this->name\":$out}";
         }
         $out = "{";
-        for ($i=0; $i < count($this->co); $i++) {
-            $out->addMessage($messages[$i]);
+        for ($i=0; $i < count($this->content); $i++) {
+            $row = $this->content[$i];
+            if($this->type[$i] === MESSAGE_TYPE_STRING){
+                $row = "\"$row\"";
+            }
+            $out .= '"'.$this->name[$i]."\":$row";
+            if($i < count($this->content)-1){
+                $out.= ',';
+            }
         }
-        $row = $this->content;
-        if($this->type === MESSAGE_TYPE_STRING){
-            $row = "\"$row\"";
-        }
-        return "{\"$this->name\":$out}";
+        $out.= "}";
+        return $out;
     }
     public function getContent(): string|array
     {

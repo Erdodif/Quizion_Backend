@@ -74,6 +74,7 @@ class Data
         return response($content,$this->getCode())->header("Content-Type", "application/json");
     }
 
+//Static methods
     /**
      * Basic numeric check on id parameters
      * @param mixed $id The suspicious id

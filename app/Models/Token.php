@@ -38,7 +38,7 @@ class Token extends Model
     }
 
     static function addNewByLogin(string|array $input): Data
-    {//TODO átnézni
+    {
         Data::castArray($input);
         if ($input === null ||( !isset($input["remember_token"]) && ( !isset($input["userID"]) || !isset($input["password"])))) {
             $result = new Data(
@@ -74,9 +74,16 @@ class Token extends Model
                 }
                 $token->makeHidden(["user_id"]);
                 $token->makeVisible(["token"]);
+                if (isset($input["remember_token"])){
+                    return new Data(
+                        ResponseCodes::RESPONSE_CREATED,
+                        $token
+                    );
+                }
+                $remember = $result->getDataRaw()->remember_token;
                 return new Data(
                     ResponseCodes::RESPONSE_CREATED,
-                    $token
+                    Message::createBundle(new Message($token->token,"token"),new Message($remember,"remember_token"))
                 );
             } catch (Error $e) {
                 return new Data(
