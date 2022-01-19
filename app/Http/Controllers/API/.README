@@ -1,0 +1,10 @@
+Módosítás utáni szükséges beállítások
+    composer dump-autoload -o
+    php artisan clear-compiled
+    php artisan optimize
+        Ilyenkor újratöltenek az autoload fájlok, 
+        és legenerálásra kerülnek az adott műveletek elérési útjai.
+        Enélkül új fájlt nem talál meg.
+Sikeresség ellenőrzése
+    php artisan route:list --compact
+        --compact opcionális, nélküle a middleware is(!) megjeleníthető
