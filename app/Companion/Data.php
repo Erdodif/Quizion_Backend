@@ -18,7 +18,7 @@ class Data
     private array|null $hidden;
     private array|null $visible;
 
-    function __construct(int $code = null, Message|Model|EloquentCollection|SupportCollection|array|null $data = null, Message ...$messages)
+    function __construct(int $code = null, Message|Model|EloquentCollection|SupportCollection|null $data = null)
     {
         if ($code == null) {
             $this->code = ResponseCodes::RESPONSE_OK;
@@ -26,11 +26,6 @@ class Data
             $this->code = $code;
         }
         $this->data = $data;
-        if($messages !== null && is_a($data, Message::class)){
-            foreach($messages as $message){
-                $this->data->addMessage($message);
-            }
-        }
     }
 
     function getCode() {
