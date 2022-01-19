@@ -24,28 +24,6 @@ Route::get("/", function () {
 Route::get("/index", function () {
     return view("index");
 })->name("index");
-/*
-Route::get("/register", function () {
-    return view("register", ["data" => null]);
-})->name("register");
-
-Route::get("/login", function () {
-    return view("login");
-})->name("login");
-*/
-
-//Route::resource("user", UserController::class);
-
-/*
-Route::get('/', function () {
-    return view('welcome');
-});
-*/
-
-Route::get("/quizzes", function () {
-    $quizzes = Quiz::all();
-    return view("quizzes", ["quizzes" => $quizzes]);
-});
 
 Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
     return view("leaderboard_quiz", ["quiz_id" => $quiz_id]);
@@ -61,8 +39,9 @@ Route::get("/quiz/{quiz_id}/question/{question_id}", function (int $quiz_id, int
     return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/quizzes', function () {
+    $quizzes = Quiz::all();
+    return view("quizzes", ["quizzes" => $quizzes]);
+})->middleware(['auth'])->name('quizzes');
 
 require __DIR__.'/auth.php';

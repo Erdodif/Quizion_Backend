@@ -1,8 +1,16 @@
-@extends("layouts.layout")
+@extends("layouts.app")
 
 @section("title", "Login")
 
 @section("content")
+    {{--
+    <!-- Session Status -->
+    @if ($status)
+        <div {{ $attributes->merge(['class' => 'font-medium text-sm text-green-600']) }}>
+            {{ $status }}
+        </div>
+    @endif
+    --}}
     @if ($errors->any())
         @foreach ($errors->all() as $error)
             <p>{{ $error }}</p>
@@ -15,7 +23,7 @@
             <input type="text" id="email" name="email" value="{{ old('email') }}" required autofocus>
         </div>
         <div>
-            <label for="password">Jelszó</label>
+            <label for="password">Password</label>
             <input type="password" id="password" name="password" value="" required>
         </div>
         <div>
@@ -31,5 +39,5 @@
             <input type="submit" value="{{ __('Log in') }}">
         </div>
     </form>
-    <a href="index">Vissza</a>
+    <a href="index">Back</a>
 @endsection
