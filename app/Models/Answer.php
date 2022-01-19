@@ -87,50 +87,6 @@ class Answer extends Table
         );
     }
 
-    static function getAllByQuiz($quiz_id, $question_order): Data
-    {
-        $result = Question::getByOrder($quiz_id, $question_order);
-        if ($result->getCode() != ResponseCodes::RESPONSE_OK) {
-            return $result;
-        }
-        $answers = $result->getDataRaw()->answers();
-        if ($answers == null) {
-            return new Data(
-                ResponseCodes::ERROR_NOT_FOUND,
-                new Message("The $question_order. question does not have answers!")
-            );
-        }
-        return new Data(
-            ResponseCodes::RESPONSE_OK,
-            $answers
-        );
-    }
-
-    static function getByQuiz($quiz_id, $question_order, $answer_order): Data
-    {
-        $result = Question::getByOrder($quiz_id, $question_order);
-        if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
-            return $result;
-        }
-        if (!Data::idIsValid($answer_order)) {
-            return new Data(
-                ResponseCodes::ERROR_BAD_REQUEST,
-                new Message("Invalid answer order reference")
-            );
-        }
-        $answer = $result->getDataRaw()->answer($answer_order);
-        if ($answer === null) {
-            return new Data(
-                ResponseCodes::ERROR_NOT_FOUND,
-                new Message("The $question_order. question does not have $answer_order. answer!")
-            );
-        }
-        return new Data(
-            ResponseCodes::RESPONSE_OK,
-            $answer
-        );
-    }
-
     static function getRightAnswersCount(Collection $answers): int
     {
         $count = 0;

@@ -145,7 +145,7 @@ class QuizController extends Controller
         $input = $request->toArray();
         try {
             Data::castArray($input);
-            $result = $this->show($id);
+            $result = Quiz::getById($id);
             if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
                 return $result;
             }
@@ -175,7 +175,7 @@ class QuizController extends Controller
      */
     public function destroy($id)
     {
-        $result = $this->show($id);
+        $result = Quiz::getById($id);
         try {
             if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
                 return $result;
