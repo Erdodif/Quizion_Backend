@@ -34,10 +34,11 @@
         </div>
         <div>
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
+                <a class="forgot_your_password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
             @endif
+            <br />
             <input type="submit" value="{{ __('Log in') }}">
         </div>
+        <a class="button" href="index">Back</a>
     </form>
-    <a href="index">Back</a>
 @endsection

@@ -34,20 +34,21 @@
     font-weight: bold;
     font-style: italic;
 }
-a:link, a:visited {
-    color: rgb(1, 210, 238);
+a {
     background-color: transparent;
     text-decoration: none;
+}
+a:link, a:visited {
+    color: var(--on_primary);
 }
 a:hover {
-    color: rgb(47, 235, 0);
-    background-color: transparent;
-    text-decoration: none;
+    color: var(--white);
 }
 a:active {
-    color: rgb(224, 96, 11);
-    background-color: transparent;
-    text-decoration: none;
+    color: var(--fine);
+}
+html {
+    height: 100%;
 }
 body {
     background-color: var(--primary);
@@ -56,18 +57,38 @@ body {
     margin: auto;
     color: var(--on_primary);
     font-family: Montserrat;
+    height: 100%;
 }
 .container {
     width: 1300px;
     margin: 0 auto 30px auto;
-    padding-bottom: 1rem;
+    padding: 1em 0 1em 0;
     background-color: var(--secondary);
 }
-.error_message {
+.wrapper {
+    height: auto !important;
+    height: calc(100% - 115px);
+    min-height: calc(100% - 115px);
+}
+.button {
+    width: 5em;
+    padding: 0.3em;
+    margin: 0.6em;
+    display: inline-block;
+    text-align: center;
+    background-color: var(--primary_variant);
+    border: 2px solid var(--on_secondary);
+    border-radius: 5px;
+}
+.button:hover {
+    border: 2px solid var(--primary_variant);
+    background-color: var(--secondary_variant);
+}
+/*.error_message {
     color: var(--warning);
     font-size: 0.8em;
-}
-/* header_logo.html */
+}*/
+/* Header Logo */
 .header_logo {
     width: 1300px;
     margin: 0 auto 0 auto;
@@ -82,15 +103,14 @@ body {
     height: 6rem;
     padding: 0.75rem;
 }
-/* header_logo.html */
-/* footer.html */
+/* Header Logo */
+/* Footer */
 .footer {
     background-color: rgb(55, 61, 71);
-    padding: 1px;
+    padding: 1px 1px 15px 1px;
     text-align: center;
-    padding-bottom: 15px;
 }
-/* footer.html */
+/* Footer */
 /* Loader */
 #loader_div {
     width: 99vw;
@@ -123,7 +143,7 @@ body {
         margin: 0;
         padding: 10px 1.5% 15px 1.5%;
     }
-    /* header_logo.html */
+    /* Header Logo */
     .header_logo {
         width: 100%;
     }
@@ -134,7 +154,7 @@ body {
         height: 3.5rem;
         padding: 0.75rem;
     }
-    /* header_logo.html */
+    /* Header Logo */
 }
 @media screen and (max-width: 500px) {
     .header_background {
@@ -154,9 +174,8 @@ body {
 .quiz_answer {
     width: 90%;
     text-align: center;
-    margin: auto;
+    margin: auto auto 1rem auto;
     padding: 1rem;
-    margin-bottom: 1rem;
     text-align: justify;
     font-weight: bold;
     word-wrap: break-word;
@@ -192,7 +211,7 @@ body {
 .progress_bar_text {
     position: absolute;
     width: 1299px;
-    padding-top: 0.16rem;
+    padding: 0.16rem 0 0 0;
     text-align: center;
     font-weight: bold;
     font-size: larger;
@@ -213,12 +232,8 @@ body {
         right: 0;
     }
 }
-/* Kettő között */
-/*
-@media screen and (min-width: 651px) and (max-width: 1359px) {
-    
-}
-*/
+/* Between */
+/*@media screen and (min-width: 651px) and (max-width: 1359px) {}*/
 @media screen and (max-width: 650px) {
     .quiz_question, .quiz_answer {
         text-align: center;
@@ -237,3 +252,43 @@ body {
     text-align: justify;
 }
 /* Quiz List */
+
+/* Form */
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+input {
+    width: 20rem;
+    padding: 1rem;
+    font-size: 1.5rem;
+    border: none;
+    box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
+}
+input[type="checkbox"] {
+    width: auto;
+}
+input[type="submit"] {
+    cursor: pointer;
+    border-radius: 5px;
+}
+input::placeholder {
+    color: #aaa;
+}
+label {
+    margin: 1rem 0 1rem 0;
+    font-size: x-large;
+    display: flex;
+    justify-content: center;
+}
+.already_registered {
+    padding: 1rem 0 1rem 0;
+}
+.forgot_your_password {
+    padding: 1rem 0 0 0;
+    display: flex;
+    justify-content: center;
+}
+/* Form */

@@ -4,5 +4,5 @@
 
 @section("content")
     <h1>This is the {{ $quiz_id }}. quiz's leaderboard.</h1>
-    <a href="{{ route('quizzes') }}">Quizzes</a>
+    <a class="button" href="{{ route('quizzes') }}">Quizzes</a>
 @endsection

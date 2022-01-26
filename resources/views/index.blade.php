@@ -3,9 +3,7 @@
 @section("title", "")
 
 @section("content")
-    <a href="{{ route('login') }}">Log In</a>
-    <br />
-    <a href="{{ route('register') }}">Register</a>
-    <br />
-    <a href="{{ route('quizzes') }}">Quizzes</a>
+    <a class="button" href="{{ route('login') }}">Log In</a>
+    <a class="button" href="{{ route('register') }}">Register</a>
+    <a class="button" href="{{ route('quizzes') }}">Quizzes</a>
 @endsection
