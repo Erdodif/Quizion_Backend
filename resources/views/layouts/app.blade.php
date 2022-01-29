@@ -7,9 +7,9 @@
         <meta name="keywords" content="Quizion, Quiz, Quizzes">
         <meta name="description" content="Quizion, the multi platform quiz app.">
         <meta name="author" content="Quizion">
-        <link rel="icon" href="{{ url('images/quizion.ico') }}">
-        <link rel="stylesheet" href="{{ url('css/style.css') }}">
-        <script src="{{ url('js/loader.js') }}"></script>
+        <link rel="icon" href="{{ url('favicon.ico') }}">
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        <script src="{{ mix('js/loader.js') }}"></script>
         <title>Quizion @yield("title")</title>
     </head>
     <body>
@@ -20,7 +20,6 @@
                     <img class="logo" src="{{ url('images/logo.png') }}" alt="Quizion" title="Quizion">
                 </div>
             </div>
-
             <div class="container">
                 @yield("content")
             </div>

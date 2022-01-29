@@ -1,3 +1,104 @@
+/*
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+*/
+
+:root {
+    --primary: #50508E;
+    --primary_variant: #211A52;
+    --secondary: #7985C1;
+    --secondary_variant: #5B6AB0;
+    --on_primary: #E8E7F5;
+    --on_secondary: #4053A0;
+    --warning: #BA0100;
+    --fine: #1CBA00;
+    --black: #000000;
+    --white: #FFFFFF;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url(../fonts/Montserrat-Regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url(../fonts/Montserrat-Medium.ttf);
+    font-weight: lighter;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url(../fonts/Montserrat-Bold.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url(../fonts/Montserrat-Italic.ttf);
+    font-weight: bold;
+    font-style: italic;
+}
+a {
+    background-color: transparent;
+    text-decoration: none;
+}
+a:link, a:visited {
+    color: var(--on_primary);
+}
+a:hover {
+    color: var(--white);
+}
+a:active {
+    color: var(--fine);
+}
+html {
+    height: 100%;
+}
+body {
+    background-color: var(--primary);
+    font-size: larger;
+    width: 100%;
+    margin: auto;
+    color: var(--on_primary);
+    font-family: Montserrat;
+    height: 100%;
+}
+.container {
+    width: 1300px;
+    margin: 0 auto 30px auto;
+    padding: 1em 0 1em 0;
+    background-color: var(--secondary);
+}
+.wrapper {
+    height: auto !important;
+    height: calc(100% - 115px);
+    min-height: calc(100% - 115px);
+}
+.button {
+    width: 5em;
+    padding: 0.3em;
+    margin: 0.6em;
+    display: inline-block;
+    text-align: center;
+    background-color: var(--primary_variant);
+    border: 2px solid var(--on_secondary);
+    border-radius: 5px;
+}
+.button:hover {
+    border: 2px solid var(--primary_variant);
+    background-color: var(--secondary_variant);
+}
+@media screen and (max-width: 1359px) {
+    .container {
+        width: 97%;
+        margin: 0;
+        padding: 10px 1.5% 15px 1.5%;
+    }
+}
+@media screen and (max-width: 500px) {
+    .header_background {
+        background-image: url("../images/header_background_mobile.svg");
+    }
+}
