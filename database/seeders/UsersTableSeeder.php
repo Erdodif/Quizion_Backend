@@ -46,7 +46,17 @@ class UsersTableSeeder extends Seeder
                 'password' => '$argon2i$v=19$m=65536,t=4,p=1$a09OZzhqbmtnTk5GU0p1Qw$OhSCpp9ncYU6DZ3FXTrkQi1hrhL6aEg9p57t6Fc+/lg',
                 'remember_token' => 'e&260d4edc3746eab9bcbe7f506d37975b11adb7083a719f4807e33ee4a5035a',
                 'xp' => 0,
+            ), 
+            3 =>
+            array (
+                'id' => 5,
+                'name' => 'somass',
+                'email' => 'somasolti@gmail.com',
+                'password' => password_hash("123456789",PASSWORD_BCRYPT),
+                'remember_token' => 'e&260d4edc3746eab9bcbe7f506d37975b11adb7083a719f4807e33ee4a5035b',
+                'xp' => 0,
             ),
+
         ));
 
 
