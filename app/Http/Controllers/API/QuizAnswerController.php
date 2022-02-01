@@ -83,20 +83,12 @@ class QuizAnswerController extends Controller
      */
     public function store($quiz_id, $question_order, Request $request)
     {
-        $input = $request->toArray();
-        $input["question_id"] = QuizQuestionController::getIdByOrder($quiz_id, $question_order);
-        $request = array_merge($request->all(),["question_id"=> QuizQuestionController::getIdByOrder($quiz_id, $question_order)]);
-        /*return (new Data(
-            ResponseCodes::ERROR_IM_A_TEAPOT,
-            Message::createBundle(
-                new Message($input["content"],"content"),
-                new Message($input["is_right"],"is_right",MESSAGE_TYPE_INT),
-                new Message($input["question_id"],"question_id",MESSAGE_TYPE_INT),
-            )
-        ))->toResponse();*/
         return redirect()->action(
             [AnswerController::class,'store'],
-            ['request' => $request]
+            [
+                'request' => $request->only(["content","is_right"]),
+                'question_id' => QuizQuestionController::getIdByOrder($quiz_id, $question_order)
+            ]
         );
     }
 
