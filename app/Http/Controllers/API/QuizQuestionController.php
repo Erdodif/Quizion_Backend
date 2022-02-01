@@ -99,9 +99,9 @@ class QuizQuestionController extends Controller
         );
     }
 
-    static function getIdByOrder($quiz_id, $question_order):int
+    static function getIdByOrder($quiz_id, $question_order): int
     {
-        return static::getByOrder($quiz_id,$question_order)->getDataRaw()->id;
+        return static::getByOrder($quiz_id, $question_order)->getDataRaw()->id;
     }
 
     /**
@@ -120,22 +120,26 @@ class QuizQuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(int $quiz_id,Request $request)
+    public function store(int $quiz, Request $request)
     {
-        $input = $request->toArray();
-        $input["quiz_id"] = $quiz_id;
-        return Question::addNew($input)->toResponse();
+        return redirect()->action(
+            [QuizQuestionController::class, 'store'],
+            [
+                'request' => $request->only(["content", "point"]),
+                'quiz_id' => $quiz
+            ]
+        );
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function count(int $quiz_id)
+    public function count(int $quiz)
     {
-        return static::getCountByQuiz($quiz_id)->toResponse();
+        return static::getCountByQuiz($quiz)->toResponse();
     }
 
     /**
@@ -144,9 +148,9 @@ class QuizQuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(int $quiz_id,int $question_order)
+    public function show(int $quiz, int $question_order)
     {
-        return static::getByOrder($quiz_id,$question_order)->toResponse();
+        return static::getByOrder($quiz, $question_order)->toResponse();
     }
 
     /**
@@ -156,10 +160,16 @@ class QuizQuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(int $quiz_id,int $question_order,Request $request)
+    public function update(int $quiz, int $question_order, Request $request)
     {
-        $id = static::getIdByOrder($quiz_id,$question_order);
-        return Question::alterById($id,$request->toArray())->toResponse();
+        $id = static::getIdByOrder($quiz, $question_order);
+        return redirect()->action(
+            [QuizQuestionController::class, 'update'],
+            [
+                'question' => $id,
+                'request' => $request->only(["content", "point"])
+            ]
+        );
     }
 
     /**
@@ -168,9 +178,14 @@ class QuizQuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $quiz_id,int $question_order)
+    public function destroy(int $quiz, int $question_order)
     {
-        $id = static::getIdByOrder($quiz_id,$question_order);
-        return Question::deleteById($id)->toResponse();
+        $id = static::getIdByOrder($quiz, $question_order);
+        return redirect()->action(
+            [QuizQuestionController::class, 'destroy'],
+            [
+                'question' => $id
+            ]
+        );
     }
 }

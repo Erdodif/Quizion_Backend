@@ -83,11 +83,12 @@ class QuizAnswerController extends Controller
      */
     public function store($quiz_id, $question_order, Request $request)
     {
+        $question_id = QuizQuestionController::getIdByOrder($quiz_id, $question_order);
         return redirect()->action(
-            [AnswerController::class,'store'],
+            [AnswerController::class, 'store'],
             [
-                'request' => $request->only(["content","is_right"]),
-                'question_id' => QuizQuestionController::getIdByOrder($quiz_id, $question_order)
+                'request' => $request->only(["content", "is_right"]),
+                'question_id' => $question_id
             ]
         );
     }
@@ -114,7 +115,7 @@ class QuizAnswerController extends Controller
     {
         $id = static::getIdByQuiz($quiz_id, $question_order, $answer_order);
         return redirect()->action(
-            [AnswerController::class,'update'],
+            [AnswerController::class, 'update'],
             ['answer' => $id, 'request' => $request]
         );
     }
@@ -129,7 +130,7 @@ class QuizAnswerController extends Controller
     {
         $id = static::getIdByQuiz($quiz_id, $question_order, $answer_order);
         return redirect()->action(
-            [AnswerController::class,'destroy'],
+            [AnswerController::class, 'destroy'],
             ['answer' => $id]
         );
     }

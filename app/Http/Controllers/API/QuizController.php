@@ -54,12 +54,12 @@ class QuizController extends Controller
     {
         try {
             $request->validate([
-                'header' => ['required','max:255','min:5'],
-                'description' => ['required','max:255','min:8'],
-                'active' => ['nullable','boolean'],
-                'seconds_per_quiz' => ['nullable','numeric','max:120']
+                'header' => ['required', 'max:255', 'min:5'],
+                'description' => ['required', 'max:255', 'min:8'],
+                'active' => ['nullable', 'boolean'],
+                'seconds_per_quiz' => ['nullable', 'numeric', 'max:120']
             ]);
-            $quiz = Quiz::create($request->only(['header','description','active','seconds_per_quiz']));
+            $quiz = Quiz::create($request->only(['header', 'description', 'active', 'seconds_per_quiz']));
             $quiz->save();
             return (new Data(
                 ResponseCodes::RESPONSE_CREATED,
@@ -67,15 +67,14 @@ class QuizController extends Controller
             ))->toResponse();
         } catch (ValidationException $e) {
             $messagelist = [];
-            foreach($e->errors() as $key => $value){
-                array_push($messagelist, new Message($value[0],$key,MESSAGE_TYPE_STRING));
+            foreach ($e->errors() as $key => $value) {
+                array_push($messagelist, new Message($value[0], $key, MESSAGE_TYPE_STRING));
             }
             return (new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 Message::createBundle(...$messagelist)
             ))->toResponse();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message($e)

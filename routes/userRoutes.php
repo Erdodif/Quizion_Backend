@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-Route::get('/users', function () {
-    $result = User::getAll();
-    return $result->toResponse();
-});
 
-Route::group(['prefix' => '/user'], function(){
+Route::group(['prefix' => '/users'], function(){
+    Route::get('/', function () {
+        $result = User::getAll();
+        return $result->toResponse();
+    });
     Route::post('/register',function(Request $request){
         $result = User::addNew($request->getContent());
         return $result->toResponse();

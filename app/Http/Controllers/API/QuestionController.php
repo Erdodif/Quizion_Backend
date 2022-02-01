@@ -6,12 +6,12 @@ use App\Companion\Data;
 use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Http\Controllers\Controller;
-use App\Models\Answer;
+use App\Models\Question;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class AnswerController extends Controller
+class QuestionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class AnswerController extends Controller
      */
     public function index()
     {
-        return Answer::getAll()->toResponse();
+        return Question::all()->toJson();
     }
 
     /**
@@ -29,15 +29,15 @@ class AnswerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, ?int $question_id = null)
+    public function store(Request $request, ?int $quiz_id = null)
     {
         try {
             $request->validate([
-                'question_id' => isset($question_id) ? ['required', 'numeric'] : ['nullable', 'numeric'],
-                'content' => ['required', 'max:255', 'min:1'],
-                'is_right' => ['required', 'boolean']
+                'quiz_id' => [isset($quiz_id) ? 'required' : 'nullable', 'numeric'],
+                'content' => ['required', 'max:255', 'min:5'],
+                'point' => ['required', 'numeric']
             ]);
-            $answer = Answer::create($request->only(['question_id', 'content', 'is_right']));
+            $answer = Question::create($request->only(['quiz_id', 'content', 'point']));
             if (isset($question_id)) {
                 $answer->question_id = $question_id;
             }
@@ -69,9 +69,9 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(int $answer)
+    public function show(int $question)
     {
-        return Answer::getById($answer)->toResponse();
+        return Question::getById($question)->toResponse();
     }
 
     /**
@@ -81,9 +81,9 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $answer)
+    public function update(int $question, Request $request)
     {
-        return Answer::alterById($answer, $request->toArray())->toResponse();
+        return Question::alterById($question, $request->only(['content', 'point']))->toResponse();
     }
 
     /**
@@ -92,8 +92,8 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $answer)
+    public function destroy(int $question)
     {
-        return Answer::deleteById($answer)->toResponse();
+        return Question::deleteById($question)->toResponse();
     }
 }
