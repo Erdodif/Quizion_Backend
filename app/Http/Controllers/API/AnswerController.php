@@ -70,9 +70,9 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(int $id)
+    public function show(int $answer)
     {
-        return Answer::getById($id)->toResponse();
+        return Answer::getById($answer)->toResponse();
     }
 
     /**
@@ -82,9 +82,9 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,int $id)
+    public function update(Request $request,int $answer)
     {
-        return Answer::alterById($id, $request->toArray())->toResponse();
+        return Answer::alterById($answer, $request->toArray())->toResponse();
     }
 
     /**
@@ -93,8 +93,8 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id)
+    public function destroy(int $answer)
     {
-        return Answer::deleteById($id)->toResponse();
+        return Answer::deleteById($answer)->toResponse();
     }
 }
