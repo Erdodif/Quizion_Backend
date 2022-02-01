@@ -17,7 +17,7 @@ class CreateQuizTable extends Migration
             $table->integer('id', true);
             $table->string('header');
             $table->string('description');
-            $table->integer('active');
+            $table->integer('active')->default(0);
             $table->integer('seconds_per_quiz')->default(10);
         });
     }

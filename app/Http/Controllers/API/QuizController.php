@@ -10,6 +10,7 @@ use App\Models\Quiz;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class QuizController extends Controller
 {
@@ -51,47 +52,34 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->toArray();
         try {
-            if ($input === null) {
-                $data = new Data(
-                    ResponseCodes::ERROR_BAD_REQUEST,
-                    new Message("No data provided!")
-                );
-            } else {
-                Data::castArray($input);
-                $invalids = Data::inputErrors($input, Quiz::getRequiredColumns());
-                if (!$invalids) {
-                    $answer = Quiz::create($input);
-                    $answer->save();
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_CREATED,
-                        $answer
-                    );
-                } else {
-                    $out = "";
-                    foreach ($invalids as $invalid) {
-                        $out .= $invalid . ", ";
-                    }
-                    $out = substr($out, 0, -2);
-                    $data = new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("Missing " . $out)
-                    );
-                }
+            $request->validate([
+                'header' => ['required','max:255','min:5'],
+                'description' => ['required','max:255','min:8'],
+                'active' => ['nullable','boolean'],
+                'seconds_per_quiz' => ['nullable','numeric','max:120']
+            ]);
+            $quiz = Quiz::create($request->only(['header','description','active','seconds_per_quiz']));
+            $quiz->save();
+            return (new Data(
+                ResponseCodes::RESPONSE_CREATED,
+                $quiz
+            ))->toResponse();
+        } catch (ValidationException $e) {
+            $messagelist = [];
+            foreach($e->errors() as $key => $value){
+                array_push($messagelist, new Message($value[0],$key,MESSAGE_TYPE_STRING));
             }
-        } catch (Error $e) {
-            $data = new Data(
+            return (new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
-                new Message($e)
-            );
-        } catch (Exception $e) {
-            $data = new Data(
+                Message::createBundle(...$messagelist)
+            ))->toResponse();
+        }
+        catch (Exception $e) {
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
             );
-        } finally {
-            return $data->toResponse();
         }
     }
 
