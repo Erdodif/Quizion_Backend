@@ -50,6 +50,12 @@ class Token extends Model
                 if (isset($input["remember_token"])){
                     $remember = $input["remember_token"];
                     $result = User::getByRemember($remember);
+                    if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                        return new Data(
+                            ResponseCodes::ERROR_BAD_REQUEST,
+                            new Message("Invalid or expired remember token!")
+                        );
+                    }
                 }
                 else{
                     $userID = $input["userID"];
