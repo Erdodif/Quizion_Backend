@@ -37,14 +37,15 @@ class QuestionController extends Controller
                 'content' => ['required', 'max:255', 'min:5'],
                 'point' => ['required', 'numeric']
             ]);
-            $answer = Question::create($request->only(['quiz', 'content', 'point']));
-            if (isset($quiz_id)) {
-                $answer->question_id = $quiz_id;
+            $question = new Question();
+            $question->fill($request->only(['quiz_id', 'content', 'point']));
+            if ($quiz_id !== null) {
+                $question->quiz_id = $quiz_id;
             }
-            $answer->save();
+            $question->save();
             return (new Data(
                 ResponseCodes::RESPONSE_CREATED,
-                $answer
+                $question
             ))->toResponse();
         } catch (ValidationException $e) {
             $messagelist = [];
@@ -56,10 +57,10 @@ class QuestionController extends Controller
                 Message::createBundle(...$messagelist)
             ))->toResponse();
         } catch (Exception $e) {
-            return new Data(
+            return (new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
-            );
+            ))->toResponse();
         }
     }
 

@@ -126,7 +126,7 @@ class QuizQuestionController extends Controller
             [QuestionController::class, 'store'],
             [
                 'request' => $request->only(["content", "point"]),
-                'quiz' => $quiz_id
+                'quiz_id' => $quiz_id
             ]
         );
     }
