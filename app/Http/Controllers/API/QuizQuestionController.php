@@ -123,7 +123,7 @@ class QuizQuestionController extends Controller
     public function store(int $quiz_id, Request $request)
     {
         return redirect()->action(
-            [QuizQuestionController::class, 'store'],
+            [QuestionController::class, 'store'],
             [
                 'request' => $request->only(["content", "point"]),
                 'quiz' => $quiz_id
@@ -182,7 +182,7 @@ class QuizQuestionController extends Controller
     {
         $id = static::getIdByOrder($quiz_id, $question_order);
         return redirect()->action(
-            [QuizQuestionController::class, 'destroy'],
+            [QuestionController::class, 'destroy'],
             [
                 'question' => $id
             ]
