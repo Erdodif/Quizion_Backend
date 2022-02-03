@@ -33,13 +33,13 @@ class QuestionController extends Controller
     {
         try {
             $request->validate([
-                'quiz_id' => [isset($quiz_id) ? 'required' : 'nullable', 'numeric'],
+                'quiz_id' => [isset($quiz) ? 'required' : 'nullable', 'numeric'],
                 'content' => ['required', 'max:255', 'min:5'],
                 'point' => ['required', 'numeric']
             ]);
-            $answer = Question::create($request->only(['quiz_id', 'content', 'point']));
-            if (isset($question_id)) {
-                $answer->question_id = $question_id;
+            $answer = Question::create($request->only(['quiz', 'content', 'point']));
+            if (isset($quiz_id)) {
+                $answer->question_id = $quiz_id;
             }
             $answer->save();
             return (new Data(
