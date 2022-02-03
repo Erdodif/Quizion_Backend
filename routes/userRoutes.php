@@ -17,7 +17,7 @@ Route::group(['prefix' => '/users'], function(){
     });
     Route::post('/login',function(Request $request){
         $result = Token::addNewByLogin($request->getContent());
-        return $result->toResponse();
+        return $result->toResponse()->cookie(cookie('token',$result->getDataRaw()['token'],secure: true));
     });
     Route::group(['prefix' => '/{id}'], function(){
         Route::get('',function(int $id){

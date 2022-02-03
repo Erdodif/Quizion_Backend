@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Token as LoginToken;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,7 +33,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $input = ["userID" => $request->input("email"), $request->input("password")];
+
+        $result = LoginToken::addNewByLogin($input);
+        return redirect()->intended(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[0], secure: true));
     }
 
     /**
