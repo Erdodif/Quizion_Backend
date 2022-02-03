@@ -41,7 +41,7 @@ class Token extends Model
     {
         Data::castArray($input);
         if ($input === null ||( !isset($input["remember_token"]) && ( !isset($input["userID"]) || !isset($input["password"])))) {
-            $result = new Data(
+            return new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
                 new Message("Missing userID or password!")
             );
