@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\QuizAnswerController;
+use App\Http\Controllers\API\QuizQuestionController;
 use App\Models\Quiz;
-use App\Models\Question;
-use App\Models\Answer;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,9 +29,9 @@ Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
 })->middleware(["auth"]);
 
 Route::get("/quiz/{quiz_id}/question/{question_order}", function (int $quiz_id, int $question_order) {
-    $question = json_decode(Question::getByOrder($quiz_id, $question_order)->toJson());
-    $answers = json_decode(Answer::getAllByQuiz($quiz_id, $question_order)->toJson());
-    $count = json_decode(Question::getCountByQuiz($quiz_id)->toJson());
+    $question = json_decode(QuizQuestionController::getByOrder($quiz_id, $question_order)->toJson());
+    $answers = json_decode(QuizAnswerController::getAllByQuiz($quiz_id, $question_order)->toJson());
+    $count = json_decode(QuizQuestionController::getCountByQuiz($quiz_id)->toJson());
     if (empty($question->content)) {
         return redirect("/leaderboard/$quiz_id");
     }
