@@ -20,21 +20,21 @@ class TokenIsValid
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->bearerToken();
-        if(empty($token)){
+        $token = $request->bearerToken() ?? $request->cookie('token');
+        if (empty($token)) {
             return (new Data(
-                    ResponseCodes::ERROR_UNAUTHORIZED,
-                    new Message("Login required!")
-                ))->toResponse();
+                ResponseCodes::ERROR_UNAUTHORIZED,
+                new Message("Login required!")
+            ))->toResponse();
         }
         $result = Token::getTokenByKey($token);
-        if (!$result){
+        if (!$result) {
             return (new Data(
-                    ResponseCodes::ERROR_UNAUTHORIZED,
-                    new Message("Invalid or expired token!")
-                ))->toResponse();
+                ResponseCodes::ERROR_UNAUTHORIZED,
+                new Message("Invalid or expired token!")
+            ))->toResponse();
         }
-        $request->attributes->add(["userID"=>$result->user_id]);
+        $request->attributes->add(["userID" => $result->user_id]);
         return $next($request);
     }
 }
