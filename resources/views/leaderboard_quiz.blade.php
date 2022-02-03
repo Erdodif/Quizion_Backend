@@ -1,8 +1,8 @@
-@extends("layouts.layout")
+@extends("layouts.app")
 
 @section("title", "Quizzes")
 
 @section("content")
-    <h1>A(z) {{ $quiz_id }}. kvíz rangsora.</h1>
-    <a href="../quizzes">Kvízek Listája</a>
+    <h1>This is the {{ $quiz_id }}. quiz's leaderboard.</h1>
+    <a class="button" href="{{ route('quizzes') }}">Quizzes</a>
 @endsection

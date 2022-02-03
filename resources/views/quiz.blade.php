@@ -1,4 +1,4 @@
-@extends("layouts.layout")
+@extends("layouts.app")
 
 @section("title", "Quiz")
 
@@ -13,9 +13,7 @@
         </a>
     @endforeach
 
-    <div id="out_of_time"></div>
-
-    <a href="../../../quizzes">Kvízek Listája</a>
+    <h1 id="out_of_time"></h1>
 
     <div class="progress_bar">
         <div class="progress_bar_color" style="width: {{ Request::segment(4) / $count->count * 100 }}%"></div>

@@ -1,0 +1,37 @@
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+input {
+    width: 20rem;
+    padding: 1rem;
+    font-size: 1.5rem;
+    border: none;
+    box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
+}
+input[type="checkbox"] {
+    width: auto;
+}
+input[type="submit"] {
+    cursor: pointer;
+    border-radius: 5px;
+}
+input::placeholder {
+    color: #aaa;
+}
+label {
+    margin: 1rem 0 1rem 0;
+    font-size: x-large;
+    display: flex;
+    justify-content: center;
+}
+.already_registered {
+    padding: 1rem 0 1rem 0;
+}
+.forgot_your_password {
+    padding: 1rem 0 0 0;
+    display: flex;
+    justify-content: center;
+}

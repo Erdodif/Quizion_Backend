@@ -1,0 +1,9 @@
+.quiz_list_div {
+    padding: 1rem;
+}
+.quiz_list_header {
+    font-size: larger;
+}
+.quiz_list_description {
+    text-align: justify;
+}

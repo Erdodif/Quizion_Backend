@@ -1,0 +1,27 @@
+.header_logo {
+    width: 1300px;
+    margin: 0 auto 0 auto;
+}
+.header_background {
+    background-image: url("../images/header_background.svg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 7.5rem;
+}
+.logo {
+    height: 6rem;
+    padding: 0.75rem;
+}
+
+@media screen and (max-width: 1359px) {
+    .header_logo {
+        width: 100%;
+    }
+    .header_background {
+        height: 4.75rem;
+    }
+    .logo {
+        height: 3.5rem;
+        padding: 0.75rem;
+    }
+}

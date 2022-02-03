@@ -1,11 +1,9 @@
-@extends("layouts.layout")
+@extends("layouts.app")
 
 @section("title", "")
 
 @section("content")
-    <a href="login">Bejelentkezés</a>
-    <br />
-    <a href="register">Regisztráció</a>
-    <br />
-    <a href="quizzes">Kvízek Listája</a>
+    <a class="button" href="{{ route('login') }}">Log In</a>
+    <a class="button" href="{{ route('register') }}">Register</a>
+    <a class="button" href="{{ route('quizzes') }}">Quizzes</a>
 @endsection
