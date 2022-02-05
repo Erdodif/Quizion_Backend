@@ -89,7 +89,10 @@ class Token extends Model
                 $remember = $result->getDataRaw()->remember_token;
                 return new Data(
                     ResponseCodes::RESPONSE_CREATED,
-                    Message::createBundle(new Message($token->token,"token"),new Message($remember,"remember_token"))
+                    Message::createBundle(
+                        new Message($token->user()->name,"userName"),
+                        new Message($token->token,"token"),
+                        new Message($remember,"remember_token"))
                 );
             } catch (Error $e) {
                 return new Data(
