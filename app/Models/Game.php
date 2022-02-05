@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use App\Companion\ResponseCodes;
+use App\Http\Controllers\API\QuestionController;
+use App\Http\Controllers\API\QuizQuestionController;
 
 class Game extends Model
 {
@@ -100,7 +102,7 @@ class Game extends Model
 
     function getCurrentQuestion(): Data
     {
-        if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
+        if ($this->current > QuizQuestionController::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
             $result = Result::saveFromGame($this);
             $this->delete();
         } else {
@@ -109,7 +111,7 @@ class Game extends Model
                 $this->fill(["started" => true]);
                 $this->save();
             }
-            $result = Question::getByOrder($this->quiz_id, $this->current);
+            $result = QuizQuestionController::getByOrder($this->quiz_id, $this->current);
         }
         return $result;
     }
@@ -148,7 +150,7 @@ class Game extends Model
 
     function pickAnswers(array $picked): Data
     {
-        if ($this->current > Question::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
+        if ($this->current > QuizQuestionController::getAllByQuiz($this->quiz_id)->getDataRaw()->count()) {
             $this->delete();
             return new Data(
                 ResponseCodes::ERROR_NOT_FOUND,
