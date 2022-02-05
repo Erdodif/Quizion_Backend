@@ -43,6 +43,36 @@ class QuizController extends Controller
             return $data->toResponse();
         }
     }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function all()
+    {
+        try {
+            $result = Quiz::all();
+            if (isset($result[0]["id"])) {
+                $data = new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    $result
+                );
+            } else {
+                $data = new Data(
+                    ResponseCodes::ERROR_NOT_FOUND,
+                    new Message("There is no quiz!")
+                );
+            }
+        } catch (Error $e) {
+            $data = new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            );
+        } finally {
+            return $data->toResponse();
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -129,15 +159,19 @@ class QuizController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->toArray();
         try {
-            Data::castArray($input);
+            $request->validate([
+                'header' => ['nullable','max:255', 'min:5'],
+                'description' => ['nullable', 'max:255', 'min:8'],
+                'active' => ['nullable', 'boolean'],
+                'seconds_per_quiz' => ['nullable', 'numeric', 'max:120']
+            ]);
             $result = Quiz::getById($id);
             if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
-                return $result;
+                return $result->toResponse();
             }
             try {
-                $result->getDataRaw()->fill($input);
+                $result->getDataRaw()->fill($request->only(['header','description','active','seconds_per_quiz']));
                 $result->getDataRaw()->save();
                 return $result->toResponse();
             } catch (Error $e) {
@@ -146,10 +180,14 @@ class QuizController extends Controller
                     new Message("An internal error occured: " . $e)
                 ))->toResponse();
             }
-        } catch (Error $e) {
+        } catch (ValidationException $e) {
+            $messagelist = [];
+            foreach ($e->errors() as $key => $value) {
+                array_push($messagelist, new Message($value[0], $key, MESSAGE_TYPE_STRING));
+            }
             return (new Data(
                 ResponseCodes::ERROR_BAD_REQUEST,
-                new Message("The given Data is missing or invalid!")
+                Message::createBundle(...$messagelist)
             ))->toResponse();
         }
     }

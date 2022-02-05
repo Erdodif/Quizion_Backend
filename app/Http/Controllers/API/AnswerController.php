@@ -7,6 +7,7 @@ use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Http\Controllers\Controller;
 use App\Models\Answer;
+use Error;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +21,25 @@ class AnswerController extends Controller
      */
     public function index()
     {
-        return Answer::getAll()->toResponse();
+        try {
+            $result = Answer::all();
+            if (isset($result[0]["id"])) {
+                return (new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    $result
+                ))->toResponse();
+            } else {
+                return (new Data(
+                    ResponseCodes::ERROR_NOT_FOUND,
+                    new Message("There is no answer!")
+                ))->toResponse();
+            }
+        } catch (Error $e) {
+            return (new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            ))->toResponse();
+        } 
     }
 
     /**
@@ -56,10 +75,10 @@ class AnswerController extends Controller
                 Message::createBundle(...$messagelist)
             ))->toResponse();
         } catch (Exception $e) {
-            return new Data(
+            return (new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
-            );
+            ))->toResponse();
         }
     }
 
@@ -83,7 +102,36 @@ class AnswerController extends Controller
      */
     public function update(Request $request, int $answer)
     {
-        return Answer::alterById($answer, $request->toArray())->toResponse();
+        try {
+            $request->validate([
+                'question_id' => ['nullable', 'numeric'],
+                'content' => ['nullable', 'max:255', 'min:1'],
+                'is_right' => ['nullable', 'boolean']
+            ]);
+            $result = Answer::getById($answer);
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                return $result->toResponse();
+            }
+            try {
+                $result->getDataRaw()->fill($request->only(['question_id','content','is_right']));
+                $result->getDataRaw()->save();
+                return $result->toResponse();
+            } catch (Error $e) {
+                return (new Data(
+                    ResponseCodes::ERROR_INTERNAL,
+                    new Message("An internal error occured: " . $e)
+                ))->toResponse();
+            }
+        } catch (ValidationException $e) {
+            $messagelist = [];
+            foreach ($e->errors() as $key => $value) {
+                array_push($messagelist, new Message($value[0], $key, MESSAGE_TYPE_STRING));
+            }
+            return (new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                Message::createBundle(...$messagelist)
+            ))->toResponse();
+        }
     }
 
     /**

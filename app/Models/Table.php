@@ -11,54 +11,6 @@ use App\Companion\ResponseCodes;
 
 abstract class Table extends Model
 {
-    static abstract function getName(): string;
-    static abstract function getRequiredColumns(): array;
-
-    static function addNew(array|string|null $input): Data
-    {
-        try {
-            if ($input === null) {
-                $data = new Data(
-                    ResponseCodes::ERROR_BAD_REQUEST,
-                    new Message("No data provided!")
-                );
-            } else {
-                Data::castArray($input);
-                $invalids = Data::inputErrors($input, static::getRequiredColumns());
-                if (!$invalids) {
-                    $answer = self::create($input);
-                    $answer->save();
-                    $data = new Data(
-                        ResponseCodes::RESPONSE_CREATED,
-                        $answer
-                    );
-                } else {
-                    $out = "";
-                    foreach ($invalids as $invalid) {
-                        $out .= $invalid . ", ";
-                    }
-                    $out = substr($out, 0, -2);
-                    $data = new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("Missing " . $out)
-                    );
-                }
-            }
-        } catch (Error $e) {
-            $data = new Data(
-                ResponseCodes::ERROR_BAD_REQUEST,
-                new Message($e)
-            );
-        } catch (Exception $e) {
-            $data = new Data(
-                ResponseCodes::ERROR_INTERNAL,
-                new Message($e)
-            );
-        } finally {
-            return $data;
-        }
-    }
-
     static function getById($id): Data
     {
         try {
@@ -130,57 +82,6 @@ abstract class Table extends Model
             );
         } finally {
             return $data;
-        }
-    }
-
-    static function getAll(): Data
-    {
-        try {
-            $result = self::all();
-            if (isset($result[0]["id"])) {
-                $data = new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $result
-                );
-            } else {
-                $data = new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("There is no " . strtolower(static::getName()) . "!")
-                );
-            }
-        } catch (Error $e) {
-            $data = new Data(
-                ResponseCodes::ERROR_INTERNAL,
-                new Message("An internal error occured! " . $e->getMessage())
-            );
-        } finally {
-            return $data;
-        }
-    }
-
-    static function alterById($id, array|string $input): Data
-    {
-        try {
-            Data::castArray($input);
-            $result = self::getById($id);
-            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
-                return $result;
-            }
-            try {
-                $result->getDataRaw()->fill($input);
-                $result->getDataRaw()->save();
-                return $result;
-            } catch (Error $e) {
-                return new Data(
-                    ResponseCodes::ERROR_INTERNAL,
-                    new Message("An internal error occured: " . $e)
-                );
-            }
-        } catch (Error $e) {
-            return new Data(
-                ResponseCodes::ERROR_BAD_REQUEST,
-                new Message("The given Data is missing or invalid!")
-            );
         }
     }
 

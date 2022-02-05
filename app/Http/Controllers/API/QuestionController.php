@@ -7,6 +7,7 @@ use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
+use Error;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +21,25 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        return Question::all()->toJson();
+        try {
+            $result = Question::all();
+            if (isset($result[0]["id"])) {
+                return (new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    $result
+                ))->toResponse();
+            } else {
+                return (new Data(
+                    ResponseCodes::ERROR_NOT_FOUND,
+                    new Message("There is no question!")
+                ))->toResponse();
+            }
+        } catch (Error $e) {
+            return (new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            ))->toResponse();
+        } 
     }
 
     /**
@@ -84,7 +103,36 @@ class QuestionController extends Controller
      */
     public function update(int $question, Request $request)
     {
-        return Question::alterById($question, $request->only(['content', 'point']))->toResponse();
+        try {
+            $request->validate([
+                'quiz_id' => ['nullable', 'numeric'],
+                'content' => ['nullable', 'max:255', 'min:5'],
+                'point' => ['nullable', 'numeric']
+            ]);
+            $result = Question::getById($question);
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                return $result->toResponse();
+            }
+            try {
+                $result->getDataRaw()->fill($request->only(['quiz_id','content','point']));
+                $result->getDataRaw()->save();
+                return $result->toResponse();
+            } catch (Error $e) {
+                return (new Data(
+                    ResponseCodes::ERROR_INTERNAL,
+                    new Message("An internal error occured: " . $e)
+                ))->toResponse();
+            }
+        } catch (ValidationException $e) {
+            $messagelist = [];
+            foreach ($e->errors() as $key => $value) {
+                array_push($messagelist, new Message($value[0], $key, MESSAGE_TYPE_STRING));
+            }
+            return (new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                Message::createBundle(...$messagelist)
+            ))->toResponse();
+        }
     }
 
     /**

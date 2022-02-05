@@ -28,6 +28,9 @@ Route::get('/quizzes/{quiz_id}/questions/count', function (int $quiz_id) {
         ['quiz_id' => $quiz_id]
     );
 });
+Route::get('/quizzes/all', function () {
+    return redirect()->action([QuizController::class, 'all']);
+});
 Route::resource('quizzes', QuizController::class);
 Route::resource('quizzes.questions', QuizQuestionController::class);
 Route::resource('quizzes.questions.answers', QuizAnswerController::class);

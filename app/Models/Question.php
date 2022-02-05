@@ -17,17 +17,7 @@ class Question extends Table
     public $timestamps = false;
     protected $guarded = ["id"];
     protected $hidden = ["quiz_id"];
-    static function getName(): string
-    {
-        return "Question";
-    }
-    static function getRequiredColumns(): array
-    {
-        return ["quiz_id", "content", "point"];
-    }
-
     
-
     function answers(): Collection|null
     {
         $collection = $this->hasMany(Answer::class)->get();

@@ -16,15 +16,6 @@ class Answer extends Table
     protected $guarded = ["id"];
     protected $hidden = ["question_id", "is_right"];
 
-    static function getName(): string
-    {
-        return "Answer";
-    }
-    static function getRequiredColumns(): array
-    {
-        return ["question_id", "content", "is_right"];
-    }
-
     static function getAllByQuestion($question_id): Data
     {
         if (!Data::idIsValid($question_id)) {
