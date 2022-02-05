@@ -22,17 +22,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/quizzes/{quiz_id}/questions/count', function (int $quiz_id) {
-    return redirect()->action(
-        [QuizQuestionController::class, 'count'],
-        ['quiz_id' => $quiz_id]
-    );
-});
+Route::get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
 Route::get('/quizzes/all', function () {
     return redirect()->action([QuizController::class, 'all']);
 });
-Route::resource('quizzes', QuizController::class);
-Route::resource('quizzes.questions', QuizQuestionController::class);
-Route::resource('quizzes.questions.answers', QuizAnswerController::class);
-Route::resource('questions', QuestionController::class);
-Route::resource('answers', AnswerController::class);
+Route::apiResource('quizzes', QuizController::class);
+Route::apiResource('quizzes.questions', QuizQuestionController::class);
+Route::apiResource('quizzes.questions.answers', QuizAnswerController::class);
+Route::apiResource('questions', QuestionController::class);
+Route::apiResource('answers', AnswerController::class);

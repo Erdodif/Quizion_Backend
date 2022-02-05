@@ -15,31 +15,29 @@ abstract class Table extends Model
     {
         try {
             if (!Data::idIsValid($id)) {
-                $data = new Data(
+               return new Data(
                     ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("Invalid id reference!")
                 );
             } else {
                 $element = self::find($id);
                 if (!isset($element["id"])) {
-                    $data = new Data(
+                    return new Data(
                         ResponseCodes::ERROR_NOT_FOUND,
-                        new Message(static::getName() . " not found!")
+                        new Message("Resource not found!")
                     );
                 } else {
-                    $data = new Data(
+                    return new Data(
                         ResponseCodes::RESPONSE_OK,
                         $element
                     );
                 }
             }
         } catch (Error $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
-        } finally {
-            return $data;
         }
     }
 
@@ -57,31 +55,29 @@ abstract class Table extends Model
                 $idsAreValid = false;
             }
             if (!$idsAreValid) {
-                $data = new Data(
+                return new Data(
                     ResponseCodes::ERROR_BAD_REQUEST,
                     new Message("Invalid id reference!")
                 );
             } else {
                 $element = self::whereIn("id", $ids)->get();
                 if (!isset($element[0]["id"])) {
-                    $data = new Data(
+                    return new Data(
                         ResponseCodes::ERROR_NOT_FOUND,
                         new Message(static::getName() . " not found!")
                     );
                 } else {
-                    $data = new Data(
+                    return new Data(
                         ResponseCodes::RESPONSE_OK,
                         $element
                     );
                 }
             }
         } catch (Error $e) {
-            $data = new Data(
+            return new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
             );
-        } finally {
-            return $data;
         }
     }
 
