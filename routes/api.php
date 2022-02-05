@@ -23,9 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
-Route::get('/quizzes/all', function () {
-    return redirect()->action([QuizController::class, 'all']);
-});
+Route::get('/quizzes/all', [QuizController::class, 'all']);
 Route::apiResource('quizzes', QuizController::class);
 Route::apiResource('quizzes.questions', QuizQuestionController::class);
 Route::apiResource('quizzes.questions.answers', QuizAnswerController::class);
