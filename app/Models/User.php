@@ -113,7 +113,7 @@ class User extends Authenticatable //Table
     {//TODO javítás
         if (!isset($token)) {
             return new Data(
-                ResponseCodes::ERROR_BAD_REQUEST,
+                ResponseCodes::ERROR_UNAUTHORIZED,
                 new Message("Invalid or expired token!")
             );
         }
