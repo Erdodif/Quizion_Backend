@@ -15,8 +15,8 @@ class AddForeignKeysToGamingTable extends Migration
     {
         Schema::table('gaming', function (Blueprint $table) {
             $table->unique(['user_id','quiz_id']);
-            $table->foreign(['quiz_id'], 'gaming_ibfk_1')->references(['id'])->on('quiz');
-            $table->foreign(['user_id'], 'gaming_ibfk_2')->references(['id'])->on('users');
+            $table->foreign(['quiz_id'], 'gaming_ibfk_1')->references(['id'])->on('quiz')->onDelete('CASCADE');
+            $table->foreign(['user_id'], 'gaming_ibfk_2')->references(['id'])->on('users')->onDelete('CASCADE');
         });
     }
 

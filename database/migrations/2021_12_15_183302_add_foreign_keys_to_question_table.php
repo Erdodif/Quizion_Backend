@@ -14,7 +14,7 @@ class AddForeignKeysToQuestionTable extends Migration
     public function up()
     {
         Schema::table('question', function (Blueprint $table) {
-            $table->foreign(['quiz_id'], 'question_ibfk_1')->references(['id'])->on('quiz');
+            $table->foreign(['quiz_id'], 'question_ibfk_1')->references(['id'])->on('quiz')->onDelete('CASCADE');
         });
     }
 

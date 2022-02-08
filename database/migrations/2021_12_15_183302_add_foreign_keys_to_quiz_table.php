@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeysToAnswerTable extends Migration
+class AddForeignKeysToQuizTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddForeignKeysToAnswerTable extends Migration
      */
     public function up()
     {
-        Schema::table('answer', function (Blueprint $table) {
-            $table->foreign(['question_id'], 'answer_ibfk_1')->references(['id'])->on('question')->onDelete('CASCADE');
+        Schema::table('quiz', function (Blueprint $table) {
+            $table->foreign(['user_id'], 'quiz_ibfk_1')->references(['id'])->on('users')->onDelete('NO ACTION');
         });
     }
 
@@ -25,8 +25,8 @@ class AddForeignKeysToAnswerTable extends Migration
      */
     public function down()
     {
-        Schema::table('answer', function (Blueprint $table) {
-            $table->dropForeign('answer_ibfk_1');
+        Schema::table('quiz', function (Blueprint $table) {
+            $table->dropForeign('quiz_ibfk_1');
         });
     }
 }

@@ -14,11 +14,12 @@ class CreateQuizTable extends Migration
     public function up()
     {
         Schema::create('quiz', function (Blueprint $table) {
-            $table->integer('id', true);
+            $table->integer('id', true)->nullable();
             $table->string('header');
             $table->string('description');
             $table->integer('active')->default(0);
             $table->integer('seconds_per_quiz')->default(10);
+            $table->integer('user_id')->nullable();
         });
     }
 

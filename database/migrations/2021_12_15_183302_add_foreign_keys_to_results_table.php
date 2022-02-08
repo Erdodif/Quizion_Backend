@@ -14,8 +14,8 @@ class AddForeignKeysToResultsTable extends Migration
     public function up()
     {
         Schema::table('results', function (Blueprint $table) {
-            $table->foreign(['user_id'], 'results_ibfk_1')->references(['id'])->on('users');
-            $table->foreign(['quiz_id'], 'results_ibfk_2')->references(['id'])->on('quiz');
+            $table->foreign(['user_id'], 'results_ibfk_1')->references(['id'])->on('users')->onDelete('CASCADE');
+            $table->foreign(['quiz_id'], 'results_ibfk_2')->references(['id'])->on('quiz')->onDelete('CASCADE');
         });
     }
 
