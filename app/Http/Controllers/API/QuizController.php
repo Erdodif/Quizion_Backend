@@ -24,23 +24,21 @@ class QuizController extends Controller
         try {
             $result = Quiz::where("active", "=", 1)->get();
             if (isset($result[0]["id"])) {
-                $data = new Data(
+                return (new Data(
                     ResponseCodes::RESPONSE_OK,
                     $result
-                );
+                ))->toResponse();
             } else {
-                $data = new Data(
+                return (new Data(
                     ResponseCodes::ERROR_NOT_FOUND,
                     new Message("There is no quiz!")
-                );
+                ))->toResponse();
             }
         } catch (Error $e) {
-            $data = new Data(
+            return (new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
-            );
-        } finally {
-            return $data->toResponse();
+            ))->toResponse();
         }
     }
     
@@ -54,23 +52,21 @@ class QuizController extends Controller
         try {
             $result = Quiz::all();
             if (isset($result[0]["id"])) {
-                $data = new Data(
+                return (new Data(
                     ResponseCodes::RESPONSE_OK,
                     $result
-                );
+                ))->toResponse();
             } else {
-                $data = new Data(
+                return (new Data(
                     ResponseCodes::ERROR_NOT_FOUND,
                     new Message("There is no quiz!")
-                );
+                ))->toResponse();
             }
         } catch (Error $e) {
-            $data = new Data(
+            return (new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message("An internal error occured! " . $e->getMessage())
-            );
-        } finally {
-            return $data->toResponse();
+            ))->toResponse();
         }
     }
 
@@ -105,10 +101,10 @@ class QuizController extends Controller
                 Message::createBundle(...$messagelist)
             ))->toResponse();
         } catch (Exception $e) {
-            return new Data(
+            return (new Data(
                 ResponseCodes::ERROR_INTERNAL,
                 new Message($e)
-            );
+            ))->toResponse();
         }
     }
 
