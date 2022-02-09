@@ -12,7 +12,15 @@ input {
     box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
 }
 input[type="checkbox"] {
-    width: auto;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background: var(--white);
+    border-radius: 5px;
+    border: 2px solid #555;
+}
+input[type="checkbox"]:checked {
+    background: var(--primary_variant);
 }
 input[type="submit"] {
     cursor: pointer;
@@ -27,11 +35,17 @@ label {
     display: flex;
     justify-content: center;
 }
-.already_registered {
+#already_registered {
     padding: 1rem 0 1rem 0;
 }
-.forgot_your_password {
-    padding: 1rem 0 0 0;
+#forgot_your_password {
+    padding: 1rem 0 1rem 0;
     display: flex;
     justify-content: center;
+}
+.error_message {
+    color: var(--warning);
+}
+#remember_me_label {
+    align-items: center;
 }

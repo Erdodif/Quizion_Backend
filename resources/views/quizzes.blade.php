@@ -3,7 +3,7 @@
 @section("title", "Quizzes")
 
 @section("content")
-    <a class="button" href="{{ route('index') }}">Index</a>
+    <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
     <p>Username: {{ Auth::user()->name }}</p>
     <p>Email: {{ Auth::user()->email }}</p>
     <form method="POST" action="{{ route('logout') }}">
