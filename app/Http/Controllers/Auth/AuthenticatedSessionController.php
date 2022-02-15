@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $input = ["userID" => $request->input("email"), $request->input("password")];
+        $input = ["userID" => $request->input("email"), "password" => $request->input("password")];
 
         $result = LoginToken::addNewByLogin($input);
         return redirect()->intended(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[0], secure: true));
