@@ -14,7 +14,10 @@
         <div class="quiz_list_div">
             <h2 class="quiz_list_header">{{ $quiz->header }}</h2>
             <p class="quiz_list_description">{{ $quiz->description }}</p>
-            <a class="button" href="quiz/{{ $quiz->id }}/question/1">Play</a>
+            <form method="POST" action="{{ url('api/play/newgame/' . $quiz->id) }}">
+                @csrf
+                <input type="submit" value="{{ __('Play') }}">
+            </form>
         </div>
     @endforeach
 @endsection
