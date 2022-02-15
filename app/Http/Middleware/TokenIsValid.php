@@ -18,9 +18,11 @@ class TokenIsValid
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $token = $request->bearerToken() ?? $request->cookie('token');
+        // $request->cookie('token') nem adja vissza az adatbázisban lévő értéket
+        var_dump($token);
         if (empty($token)) {
             return (new Data(
                 ResponseCodes::ERROR_UNAUTHORIZED,
