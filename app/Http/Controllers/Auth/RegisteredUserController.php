@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Token;
 
 class RegisteredUserController extends Controller
 {
@@ -46,8 +47,12 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        $input = ["userID" => $request->input("email"), "password" => $request->input("password")];
+
+        $result = Token::addNewByLogin($input);
+
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[1], secure: true));
     }
 }
