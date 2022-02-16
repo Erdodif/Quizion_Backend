@@ -20,4 +20,37 @@
             </form>
         </div>
     @endforeach
+        {{--
+            {{ url('api/play/' . $quiz->id . '/question') }}
+            {{ url('api/play/' . $quiz->id . '/answers') }}
+            {{ url('api/play/' . $quiz->id . '/choose') }} name="chosen[]" POST
+
+            quiz/{{ $quiz->id }}/question/1
+        --}}
+    <script>
+        fetch('{{ url('api/play/1/question') }}')
+        .then(response => response.json())
+        .then(data => console.log(data));
+
+        fetch('{{ url('api/play/1/answers') }}')
+        .then(response => response.json())
+        .then(data => console.log(data));
+
+        /*const data = { "chosen": [1] }; // 1 8
+        fetch('{{ url('api/play/1/choose') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });*/
+    </script>
 @endsection
