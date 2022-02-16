@@ -36,7 +36,8 @@ class AuthenticatedSessionController extends Controller
         $input = ["userID" => $request->input("email"), "password" => $request->input("password")];
 
         $result = LoginToken::addNewByLogin($input);
-        return redirect()->intended(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[0], secure: true));
+
+        return redirect()->intended(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[1], secure: true));
     }
 
     /**
