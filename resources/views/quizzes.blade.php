@@ -17,6 +17,9 @@
             <form method="POST" action="{{ url('api/play/newgame/' . $quiz->id) }}">
                 @csrf
                 <input type="submit" value="{{ __('Play') }}">
+                <a id="a" onclick="loadDataQuestion()">loadDataQuestion</a>
+                <a id="b" onclick="loadDataAnswers()">loadDataAnswers</a>
+                <p onclick="newGame()">newGame</p>
             </form>
         </div>
     @endforeach
@@ -28,13 +31,29 @@
             quiz/{{ $quiz->id }}/question/1
         --}}
     <script>
-        fetch('{{ url('api/play/1/question') }}')
-        .then(response => response.json())
-        .then(data => console.log(data));
+        async function loadDataQuestion() {
+            //URL::to('admin/posts/edit/' . $post->id)
 
-        fetch('{{ url('api/play/1/answers') }}')
-        .then(response => response.json())
-        .then(data => console.log(data));
+            //let url = "{{!! url() }}";
+            //let a = document.getElementById("a");
+            //a.setAttribute("href", "api/play/" + id + "/question");
+
+            //let id = {{ $quiz->id }};
+            //console.log(id);
+
+            let Response = await fetch('{{ url('api/play/' . $quiz->id . '/question') }}');
+            let data = await Response.json();
+            console.log("Question");
+            console.log(data);
+        }
+
+        async function loadDataAnswers(id) {
+            console.log(id);
+            let Response = await fetch('{{ url('api/play/id/answers') }}');
+            let data = await Response.json();
+            console.log("Answers");
+            console.log(data);
+        }
 
         /*const data = { "chosen": [1] }; // 1 8
         fetch('{{ url('api/play/1/choose') }}', {
@@ -52,5 +71,18 @@
         .catch((error) => {
             console.error('Error:', error);
         });*/
+
+        async function newGame() {
+            let data = await fetch('{{ url('api/play/1/choose') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            console.log(data);
+            //await this.loadData()
+        }
+
     </script>
 @endsection
