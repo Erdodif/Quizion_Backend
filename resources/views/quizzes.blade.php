@@ -14,17 +14,32 @@
         <div class="quiz_list_div">
             <h2 class="quiz_list_header">{{ $quiz->header }}</h2>
             <p class="quiz_list_description">{{ $quiz->description }}</p>
-            <form method="POST" action="{{ url('api/play/newgame/' . $quiz->id) }}">
+            <form method="POST" action="{{ route('gaming.store') }}">
                 @csrf
+                <div>
+                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                    @error('user_id')
+                        <p>{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <input type="hidden" name="quiz_id" value="{{ $quiz->id }}">
+                    @error('quiz_id')
+                        <p>{{ $message }}</p>
+                    @enderror
+                </div>
                 <input type="submit" value="{{ __('Play') }}">
             </form>
+            {{--
             <p id="a" onclick="loadDataQuestion(@php echo $quiz->id; @endphp)">loadDataQuestion</p>
             <p id="b" onclick="loadDataAnswers(@php echo $quiz->id; @endphp)">loadDataAnswers</p>
             <p onclick="newGame(@php echo $quiz->id; @endphp)">nextQuestion</p>
+            --}}
         </div>
     @endforeach
+    {{--{{ url('api/play/newgame/' . $quiz->id) }}--}}
+    {{--
     <input type="number" id="pickAnswer">
-        {{--quiz/{{ $quiz->id }}/question/1--}}
     <script>
         async function loadDataQuestion(id) {
             //let Response = await fetch({!! '\'' . url('api/play/' . $quiz->id . '/question') . '\'' !!});
@@ -64,4 +79,5 @@
             });
         }
     </script>
+    --}}
 @endsection
