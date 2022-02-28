@@ -24,6 +24,10 @@
     color: var(--on_primary);
     cursor: pointer;
 }
+.selected {
+    background-color: var(--fine);
+    color: var(--white);
+}
 #time_bar {
     height: 0.5rem;
     background-color: var(--warning);
