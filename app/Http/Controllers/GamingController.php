@@ -21,31 +21,4 @@ class GamingController extends Controller
         $game->save();
         return redirect(url("quiz/" . $game->quiz_id . "/question/1"));
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Game $game
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Game $game)
-    {
-        $data = $request->only(["user_id", "quiz_id"]);
-        $game->fill($data);
-        $game->save();
-        return redirect(url("quiz/" . $game->quiz_id . "/question/" . $game->current));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Game $game
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Game $game)
-    {
-        $game->delete();
-        return redirect(url("leaderboard/" . $game->quiz_id));
-    }
 }
