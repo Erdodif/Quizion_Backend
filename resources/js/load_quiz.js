@@ -5,7 +5,12 @@ async function loadDataQuestion(id)
 {
     let Response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
     let data = await Response.json();
-    document.getElementById("question").innerHTML = data.content;
+    if (data.content == null) {
+        window.location = `http://127.0.0.1:8000/leaderboard/${id}`;
+    }
+    else {
+        document.getElementById("question").innerHTML = data.content;
+    }
 }
 
 async function loadDataAnswers(id)
@@ -39,14 +44,8 @@ async function play(id)
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        if (data.message == "Game haven't started yet or have already ended!") {
-            window.location = `http://127.0.0.1:8000/leaderboard/${id}`;
-        }
-        else {
-            //window.location = `http://127.0.0.1:8000/quiz/${id}/question/${count + 1}`;
-            loadDataQuestion(window.quizCount);
-            loadDataAnswers(window.quizCount);
-        }
+        loadDataQuestion(window.quizCount);
+        loadDataAnswers(window.quizCount);
     })
     .catch(error => {
         console.error('Error:', error);
