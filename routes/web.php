@@ -41,9 +41,14 @@ Route::get("/quiz/{quiz_id}/question/{question_order}", function (int $quiz_id, 
     return view("quiz", ["question" => $question, "answers" => $answers, "count" => $count]);
 })->middleware(["auth"]);
 */
+/*
 Route::get("/quiz/{quiz_id}/question/{question_order}", function (int $quiz_id, int $question_order) {
     $count = json_decode(QuizQuestionController::getCountByQuiz($quiz_id)->toJson());
     return view("quiz", ["count" => $count]);
+})->middleware(["auth"]);
+*/
+Route::get("/quiz/{quiz_id}/question/{question_order}", function () {
+    return view("quiz");
 })->middleware(["auth"]);
 
 Route::get("/quizzes", function () {
