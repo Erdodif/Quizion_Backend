@@ -24,4 +24,5 @@
         <div class="progress_bar_text">{{ Request::segment(4) }}/{{ $count->count }}</div>
     </div>
     --}}
+    <div id="error"></div>
 @endsection

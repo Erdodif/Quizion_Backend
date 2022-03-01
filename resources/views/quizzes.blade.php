@@ -8,7 +8,7 @@
     <p>Email: {{ Auth::user()->email }}</p>
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <input type="submit" value="{{ __('Log Out') }}">
+        <input type="submit" value="{{ __('Logout') }}">
     </form>
     @foreach($quizzes as $quiz)
         <div class="quiz_list_div">
@@ -18,13 +18,13 @@
                 @csrf
                 <div>
                     <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                    @error('user_id')
+                    @error("user_id")
                         <p>{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <input type="hidden" name="quiz_id" value="{{ $quiz->id }}">
-                    @error('quiz_id')
+                    @error("quiz_id")
                         <p>{{ $message }}</p>
                     @enderror
                 </div>

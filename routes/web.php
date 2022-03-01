@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\QuizAnswerController;
-use App\Http\Controllers\API\QuizQuestionController;
 use App\Http\Controllers\GamingController;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\Route;
@@ -27,17 +25,17 @@ Route::get("/index", function () {
     return view("index");
 })->name("index");
 
-Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
-    return view("leaderboard_quiz", ["quiz_id" => $quiz_id]);
-})->middleware(["auth"]);
-
-Route::get("/quiz/{quiz_id}/question/{question_order}", function () {
-    return view("quiz");
-})->middleware(["auth"]);
-
 Route::get("/quizzes", function () {
     $quizzes = Quiz::all();
     return view("quizzes", ["quizzes" => $quizzes]);
 })->middleware(["auth"])->name("quizzes");
+
+Route::get("/quiz/{quiz_id}", function () {
+    return view("quiz");
+})->middleware(["auth"]);
+
+Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
+    return view("leaderboard", ["quiz_id" => $quiz_id]);
+})->middleware(["auth"]);
 
 require __DIR__."/auth.php";

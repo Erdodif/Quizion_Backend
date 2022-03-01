@@ -19,6 +19,6 @@ class GamingController extends Controller
         $game = new Game();
         $game->fill($data);
         $game->save();
-        return redirect(url("quiz/" . $game->quiz_id . "/question/1"));
+        return redirect(url("quiz/" . $game->quiz_id));
     }
 }

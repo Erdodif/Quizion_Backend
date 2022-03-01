@@ -6,6 +6,7 @@ async function loadDataQuestion(id)
     let Response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
     let data = await Response.json();
     if (data.content == null) {
+        //data.result átadása -> leaderboard
         window.location = `http://127.0.0.1:8000/leaderboard/${id}`;
     }
     else {
@@ -42,13 +43,12 @@ async function play(id)
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
+    .then(() => {
         loadDataQuestion(window.quizCount);
         loadDataAnswers(window.quizCount);
     })
     .catch(error => {
-        console.error('Error:', error);
+        document.getElementById("error").innerHTML = error;
     });
 }
 
@@ -72,9 +72,9 @@ function idToChosen()
     return array;
 }
 
-function answerOnClick(number)
+function answerOnClick(selectedAnswerId)
 {
-    document.getElementById(number).classList.toggle("selected");
+    document.getElementById(selectedAnswerId).classList.toggle("selected");
 }
 
 function init()
