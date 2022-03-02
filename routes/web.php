@@ -34,8 +34,8 @@ Route::get("/quiz/{quiz_id}", function () {
     return view("quiz");
 })->middleware(["auth"]);
 
-Route::get("/leaderboard/{quiz_id}", function (int $quiz_id) {
-    return view("leaderboard", ["quiz_id" => $quiz_id]);
+Route::get("/leaderboard/{quiz_id}", function () {
+    return view("leaderboard");
 })->middleware(["auth"]);
 
 require __DIR__."/auth.php";
