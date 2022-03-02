@@ -6,7 +6,7 @@ async function loadDataQuestion(id)
     let Response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
     let data = await Response.json();
     if (data.content == null) {
-        //data.result átadása -> leaderboard
+        sessionStorage.setItem("result", data.result);
         window.location = `http://127.0.0.1:8000/leaderboard/${id}`;
     }
     else {
