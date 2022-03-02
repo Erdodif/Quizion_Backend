@@ -1,6 +1,13 @@
 
 let dataLength = 0;
 
+async function loadDataSecondsPerQuiz(id)
+{
+    let Response = await fetch(`http://127.0.0.1:8000/api/quizzes/${id}`);
+    let data = await Response.json();
+    return data.seconds_per_quiz * 250;
+}
+
 async function loadDataQuestion(id)
 {
     let Response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
@@ -44,12 +51,29 @@ async function play(id)
     })
     .then(response => response.json())
     .then(() => {
+        //reset invertal
+        //https://stackoverflow.com/questions/8126466/how-do-i-reset-the-setinterval-timer
         loadDataQuestion(window.quizCount);
         loadDataAnswers(window.quizCount);
     })
     .catch(error => {
         document.getElementById("error").innerHTML = error;
     });
+}
+
+async function timerFunction() {
+    let maxTime = await loadDataSecondsPerQuiz(window.quizCount);
+    let timeLeft = maxTime;
+    let timer = setInterval(function() {
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            document.getElementById("out_of_time").innerHTML = "Out of time!";
+        }
+        else {
+            document.getElementById("time_bar").style.width = timeLeft / maxTime * 100 + "%";
+        }
+        timeLeft -= 1;
+    }, 1);
 }
 
 function idToChosen()
@@ -79,6 +103,7 @@ function answerOnClick(selectedAnswerId)
 
 function init()
 {
+    timerFunction();
     loadDataQuestion(window.quizCount);
     loadDataAnswers(window.quizCount);
     const nextButton = document.getElementById("quiz_next_button");

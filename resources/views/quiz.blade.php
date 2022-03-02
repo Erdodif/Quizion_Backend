@@ -7,7 +7,6 @@
         window.quizCount = {{ Request::segment(2) }};
     </script>
     <script src="{{ mix('js/load_quiz.js') }}"></script>
-    <script src="{{ mix('js/progress_bar.js') }}"></script>
 
     <div id="time_bar"></div>
     <div class="report">Report</div>
