@@ -13,7 +13,7 @@ Route::get('/leaderboard/{quiz_id}', function (int $quiz_id) {
 
 Route::prefix('/ranking')->middleware('auth.token')->group(function () {
     Route::get('/{quiz_id}', function (Request $request, int $quiz_id) {
-        $UID = $request->attributes->get("userID");
+        $UID = $request->userID;
         return Result::getUserRanking($quiz_id,$UID)->toResponse();
     });
 });
