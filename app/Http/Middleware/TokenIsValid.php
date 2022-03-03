@@ -34,7 +34,7 @@ class TokenIsValid
                 new Message("Invalid or expired token!")
             ))->toResponse();
         }
-        $request->attributes->add(["userID" => $result->user_id]);
+        $request->userID = $result->user_id;
         return $next($request);
     }
 }
