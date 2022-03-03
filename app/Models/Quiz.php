@@ -2,11 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Companion\Message;
 use App\Companion\Data;
-use \Error;
-use App\Companion\ResponseCodes;
 use Illuminate\Database\Eloquent\Collection;
 
 class Quiz extends Table
@@ -15,7 +11,7 @@ class Quiz extends Table
     public $timestamps = false;
     protected $guarded = ["id"];
     protected $hidden = ["active"];
-    
+
     function questions(): Collection|null
     {
         $collection = $this->hasMany(Question::class)->get();
@@ -44,5 +40,10 @@ class Quiz extends Table
     function results(): Collection|null
     {
         return $this->hasMany(Result::class)->get();
+    }
+
+    function UserIdQuizIdValid(int $id): bool
+    {
+        return $this->user_id === $id;
     }
 }
