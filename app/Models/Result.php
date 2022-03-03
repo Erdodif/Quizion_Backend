@@ -40,7 +40,8 @@ class Result extends Model
                 ) as ranks
                 ON ranks.quiz_id = `results`.`quiz_id` and ranks.points = `results`.`points`
                 JOIN `users`
-                ON `users`.`id` = `results`.`user_id`"
+                ON `users`.`id` = `results`.`user_id` 
+                ORDER BY ranks.rank"
                 )
             );
             if ($result->isEmpty()) {
