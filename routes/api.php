@@ -27,5 +27,3 @@ Route::get('/quizzes/all', [QuizController::class, 'all']);
 Route::apiResource('quizzes', QuizController::class);
 Route::apiResource('quizzes.questions', QuizQuestionController::class);
 Route::apiResource('quizzes.questions.answers', QuizAnswerController::class);
-Route::apiResource('questions', QuestionController::class);
-Route::apiResource('answers', AnswerController::class);
