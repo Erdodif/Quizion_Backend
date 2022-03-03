@@ -48,9 +48,19 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, ?int $question_id = null)
+    public function store(Request $request, ?int $user_id = null)
     {
         
+    }
+
+    public function login(Request $request)
+    {
+        $result = Token::addNewByLogin($request->getContent());
+    }
+
+    public function register(Request $request)
+    {
+        $result = User::addNew($request->getContent());
     }
 
     /**
@@ -71,7 +81,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $answer)
+    public function update(Request $request, int $user)
     {
         
     }
