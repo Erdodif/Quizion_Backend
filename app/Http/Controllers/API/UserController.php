@@ -6,11 +6,11 @@ use App\Companion\Data;
 use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
+use App\Models\Token;
 use App\Models\User;
 use Error;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -45,10 +45,10 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, ?int $user_id = null)
+    public function store(UserRequest $request, ?int $user_id = null)
     {
         
     }
@@ -77,11 +77,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\UserRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $user)
+    public function update(UserRequest $request, int $user)
     {
         
     }

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 use App\Models\Token;
 
 class RegisteredUserController extends Controller
@@ -31,14 +30,8 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:25|unique:users',
-            'email' => 'required|email|max:50|unique:users',
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
-        ]);
-
         $user = User::addNew([
             'name' => $request->name,
             'email' => $request->email,
