@@ -22,8 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
-Route::get('/quizzes/all', [QuizController::class, 'all']);
-Route::apiResource('quizzes', QuizController::class);
-Route::apiResource('quizzes.questions', QuizQuestionController::class);
-Route::apiResource('quizzes.questions.answers', QuizAnswerController::class);
+Route::middleware('auth.token')->get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
+Route::middleware('auth.token')->get('/quizzes/all', [QuizController::class, 'all']);
+Route::middleware('auth.token')->apiResource('quizzes', QuizController::class);
+Route::middleware('auth.token')->apiResource('quizzes.questions', QuizQuestionController::class);
+Route::middleware('auth.token')->apiResource('quizzes.questions.answers', QuizAnswerController::class);
