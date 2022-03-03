@@ -20,5 +20,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::apiResource('questions', QuestionController::class);
-Route::apiResource('answers', AnswerController::class);
+Route::middleware(['auth.token','auth.admin'])->apiResource('questions', QuestionController::class);
+Route::middleware(['auth.token','auth.admin'])->apiResource('answers', AnswerController::class);
