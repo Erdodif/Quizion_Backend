@@ -1,11 +1,21 @@
 
 let dataLength = 0;
 
-async function loadDataSecondsPerQuiz(id)
+function loadDataSecondsPerQuiz(id)
 {
+    /*
     let Response = await fetch(`http://127.0.0.1:8000/api/quizzes/${id}`);
     let data = await Response.json();
     return data.seconds_per_quiz * 250;
+    */
+    return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.seconds_per_quiz * 250;
+    })
+    .catch(error => {
+        document.getElementById("error").innerHTML = error;
+    });
 }
 
 async function loadDataQuestion(id)
@@ -51,8 +61,7 @@ async function play(id)
     })
     .then(response => response.json())
     .then(() => {
-        //reset invertal
-        //https://stackoverflow.com/questions/8126466/how-do-i-reset-the-setinterval-timer
+        window.timer.reset(1);
         loadDataQuestion(window.quizCount);
         loadDataAnswers(window.quizCount);
     })
@@ -61,19 +70,37 @@ async function play(id)
     });
 }
 
-async function timerFunction() {
-    let maxTime = await loadDataSecondsPerQuiz(window.quizCount);
-    let timeLeft = maxTime;
-    let timer = setInterval(function() {
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            document.getElementById("out_of_time").innerHTML = "Out of time!";
+function Timer(fn, t) {
+    let timerObj = setInterval(fn, t);
+    this.stop = function() {
+        if (timerObj) {
+            clearInterval(timerObj);
+            timerObj = null;
         }
-        else {
-            document.getElementById("time_bar").style.width = timeLeft / maxTime * 100 + "%";
+        return this;
+    }
+    this.start = function() {
+        if (!timerObj) {
+            this.stop();
+            timerObj = setInterval(fn, t);
         }
-        timeLeft -= 1;
-    }, 1);
+        return this;
+    }
+    this.reset = function(newT = t) {
+        t = newT;
+        return this.stop().start();
+    }
+}
+
+function setInvertalFunction(maxTime, timeLeft) {
+    if (timeLeft <= 0) {
+        window.timer.stop();
+        document.getElementById("out_of_time").innerHTML = "Out of time!";
+    }
+    else {
+        document.getElementById("time_bar").style.width = timeLeft / maxTime * 100 + "%";
+    }
+    timeLeft -= 1;
 }
 
 function idToChosen()
@@ -103,7 +130,11 @@ function answerOnClick(selectedAnswerId)
 
 function init()
 {
-    timerFunction();
+    //JAVÍT maxTime
+    let maxTime = loadDataSecondsPerQuiz(window.quizCount).then(response => {return response;});
+    let timeLeft = maxTime;
+    window.timer = new Timer(setInvertalFunction(maxTime, timeLeft), 1);
+    window.timer.start();
     loadDataQuestion(window.quizCount);
     loadDataAnswers(window.quizCount);
     const nextButton = document.getElementById("quiz_next_button");
