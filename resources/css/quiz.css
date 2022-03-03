@@ -24,6 +24,13 @@
     color: var(--on_primary);
     cursor: pointer;
 }
+.selected {
+    background-color: var(--fine);
+    color: var(--white);
+}
+.next_question {
+    cursor: pointer;
+}
 #time_bar {
     height: 0.5rem;
     background-color: var(--warning);

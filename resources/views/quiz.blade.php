@@ -3,36 +3,25 @@
 @section("title", "Quiz")
 
 @section("content")
+    <script>
+        window.quizCount = {{ Request::segment(2) }};
+    </script>
+    <script src="{{ mix('js/load_quiz.js') }}"></script>
+
     <div id="time_bar"></div>
     <div class="report">Report</div>
-    <div class="quiz_question">{{ $question->content }}</div>
 
-    @foreach($answers as $answer)
-        <a href="../../../quiz/{{ Request::segment(2) }}/question/{{ Request::segment(4) + 1 }}">
-            <div class="quiz_answer">{{ $answer->content }}</div>
-        </a>
-    @endforeach
+    <div id="question" class="quiz_question"></div>
+    <div id="answers"></div>
+    <div class="button next_question" id="quiz_next_button" data-quiz-id="{{ Request::segment(2) }}">Next</div>
 
     <h1 id="out_of_time"></h1>
-
+    {{--
     <div class="progress_bar">
         <div class="progress_bar_color" style="width: {{ Request::segment(4) / $count->count * 100 }}%"></div>
         <div class="progress_bar_border"></div>
         <div class="progress_bar_text">{{ Request::segment(4) }}/{{ $count->count }}</div>
     </div>
-
-    <script>
-        let maxTime = 1000;
-        let timeLeft = 1000;
-        let timer = setInterval(function() {
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                document.getElementById("out_of_time").innerHTML = "Lejárt az idő!";
-            }
-            else {
-                document.getElementById("time_bar").style.width = timeLeft / maxTime * 100 + "%";
-            }
-            timeLeft -= 1;
-        }, 1);
-    </script>
+    --}}
+    <div id="error"></div>
 @endsection

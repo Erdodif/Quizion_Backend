@@ -3,42 +3,29 @@
 @section("title", "Login")
 
 @section("content")
-    {{--
-    <!-- Session Status -->
-    @if ($status)
-        <div {{ $attributes->merge(['class' => 'font-medium text-sm text-green-600']) }}>
-            {{ $status }}
-        </div>
-    @endif
-    --}}
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
-    @endif
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <div>
             <label for="email">Email</label>
-            <input type="text" id="email" name="email" value="{{ old('email') }}" required autofocus>
+            <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}" required>
         </div>
         <div>
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" value="" required>
+            <input type="password" id="password" name="password" value="" placeholder="{{ __('Password') }}" required>
         </div>
         <div>
-            <label for="remember_me">
+            <label id="remember_me_label" for="remember_me">
                 <input id="remember_me" type="checkbox" name="remember">
                 <span>{{ __('Remember me') }}</span>
             </label>
         </div>
-        <div>
-            @if (Route::has('password.request'))
-                <a class="forgot_your_password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
-            @endif
-            <br />
-            <input type="submit" value="{{ __('Log in') }}">
-        </div>
-        <a class="button" href="index">Back</a>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div class="error_message">{{ $error }}</div>
+            @endforeach
+        @endif
+        <a id="forgot_your_password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
+        <input type="submit" value="{{ __('Log in') }}">
+        <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
     </form>
 @endsection

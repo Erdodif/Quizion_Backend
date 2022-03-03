@@ -1,0 +1,7 @@
+#leaderboard {
+    width: fit-content;
+    margin: auto;
+}
+.leaderboard_my_name {
+    background-color: var(--fine);
+}
