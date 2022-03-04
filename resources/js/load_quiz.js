@@ -3,18 +3,9 @@ let dataLength = 0;
 
 function loadDataSecondsPerQuiz(id)
 {
-    /*
-    let Response = await fetch(`http://127.0.0.1:8000/api/quizzes/${id}`);
-    let data = await Response.json();
-    return data.seconds_per_quiz * 250;
-    */
     return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
-    .then((response) => response.json())
-    .then((data) => {
-      return data.seconds_per_quiz * 250;
-    })
-    .catch(error => {
-        document.getElementById("error").innerHTML = error;
+    .then(function (response) {
+        return response.json();
     });
 }
 
@@ -47,60 +38,38 @@ async function loadDataAnswers(id)
     }
 }
 
-async function play(id)
+function play(id, maxTime, timer)
 {
     let array = idToChosen();
-    const data = { "chosen": array };
-    await fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
-        method: 'POST',
+    const data = { chosen: array };
+    fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            "Content-Type": "application/json",
+            Accept: "application/json",
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(() => {
-        window.timer.reset(1);
+        clearInterval(timer);
+        let timeLeft = maxTime;
+        timer = setInterval(function () {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById("out_of_time").innerHTML = "Out of time!";
+            }
+            else {
+                document.getElementById("time_bar").style.width = (timeLeft / maxTime) * 100 + "%";
+                timeLeft -= 1;
+            }
+        }, 1);
         loadDataQuestion(window.quizCount);
         loadDataAnswers(window.quizCount);
     })
-    .catch(error => {
+    .catch((error) => {
         document.getElementById("error").innerHTML = error;
     });
-}
-
-function Timer(fn, t) {
-    let timerObj = setInterval(fn, t);
-    this.stop = function() {
-        if (timerObj) {
-            clearInterval(timerObj);
-            timerObj = null;
-        }
-        return this;
-    }
-    this.start = function() {
-        if (!timerObj) {
-            this.stop();
-            timerObj = setInterval(fn, t);
-        }
-        return this;
-    }
-    this.reset = function(newT = t) {
-        t = newT;
-        return this.stop().start();
-    }
-}
-
-function setInvertalFunction(maxTime, timeLeft) {
-    if (timeLeft <= 0) {
-        window.timer.stop();
-        document.getElementById("out_of_time").innerHTML = "Out of time!";
-    }
-    else {
-        document.getElementById("time_bar").style.width = timeLeft / maxTime * 100 + "%";
-    }
-    timeLeft -= 1;
 }
 
 function idToChosen()
@@ -113,7 +82,7 @@ function idToChosen()
         catch (error) {}
     }
     answerIds = answerIds.trim();
-    let array = answerIds.split(" ").map(item => item.trim());
+    let array = answerIds.split(" ").map((item) => item.trim());
     for (let i = array.length - 1; i >= 0; i--) {
         if (array[i].includes("answer")) {
             array.splice(i, 1);
@@ -130,17 +99,27 @@ function answerOnClick(selectedAnswerId)
 
 function init()
 {
-    //JAVÍT maxTime
-    let maxTime = loadDataSecondsPerQuiz(window.quizCount).then(response => {return response;});
-    let timeLeft = maxTime;
-    window.timer = new Timer(setInvertalFunction(maxTime, timeLeft), 1);
-    window.timer.start();
+    loadDataSecondsPerQuiz(window.quizCount).then(function (response) {
+        (response) => response.json();
+        let maxTime = response.seconds_per_quiz * 250;
+        let timeLeft = maxTime;
+        let timer = setInterval(function () {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById("out_of_time").innerHTML = "Out of time!";
+            }
+            else {
+                document.getElementById("time_bar").style.width = (timeLeft / maxTime) * 100 + "%";
+                timeLeft -= 1;
+            }
+        }, 1);
+        const nextButton = document.getElementById("quiz_next_button");
+        if (nextButton) {
+            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, maxTime, timer));
+        }
+    });
     loadDataQuestion(window.quizCount);
     loadDataAnswers(window.quizCount);
-    const nextButton = document.getElementById("quiz_next_button");
-    if (nextButton) {
-        nextButton.addEventListener("click", () => play(nextButton.dataset.quizId));
-    }
 }
 
 document.addEventListener("DOMContentLoaded", init);
