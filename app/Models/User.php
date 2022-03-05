@@ -2,28 +2,30 @@
 
 namespace App\Models;
 
-use App\Models\Table;
 use App\Companion\Message;
 use App\Companion\Data;
 use Error;
 use Exception;
 use App\Companion\ResponseCodes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
-use phpDocumentor\Reflection\Types\Null_;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-//JAVÍTANI
-class User extends Authenticatable //Table
+class User extends Authenticatable implements MustVerifyEmail
 {
+    use Notifiable;
     protected $table = "users";
     public $timestamps = false;
     protected $guarded = ["id"];
     protected $hidden = ["email", "password", "remember_token"];
+    protected $casts = ["email_verified_at" => "datetime"];
 
     static function getName(): string
     {
         return "Users";
     }
+
     static function getRequiredColumns(): array
     {
         return ["name", "email", "password"];
@@ -192,8 +194,7 @@ class User extends Authenticatable //Table
         $collection = $this->hasMany(Token::class)->get();
         return Data::collectionOrNull($collection);
     }
-
-//------------------------------IDEIGLENES------------------------------
+//------------------------------TABLE MODEL------------------------------
     static function getById($id): Data
     {
         try {
@@ -312,5 +313,5 @@ class User extends Authenticatable //Table
             );
         }
     }
-//------------------------------IDEIGLENES------------------------------
+//------------------------------TABLE MODEL------------------------------
 }

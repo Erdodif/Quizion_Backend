@@ -28,14 +28,14 @@ Route::get("/index", function () {
 Route::get("/quizzes", function () {
     $quizzes = Quiz::all();
     return view("quizzes", ["quizzes" => $quizzes]);
-})->middleware(["auth"])->name("quizzes");
+})->middleware(["auth", "verified"])->name("quizzes");
 
 Route::get("/quiz/{quiz_id}", function () {
     return view("quiz");
-})->middleware(["auth"]);
+})->middleware(["auth", "verified"]);
 
 Route::get("/leaderboard/{quiz_id}", function () {
     return view("leaderboard");
-})->middleware(["auth"]);
+})->middleware(["auth", "verified"]);
 
 require __DIR__."/auth.php";
