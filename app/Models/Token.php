@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use App\Companion\Message;
 use App\Companion\Data;
 use \Error;
 use App\Companion\ResponseCodes;
+use Illuminate\Support\Facades\Hash;
 
 class Token extends Model
 {
@@ -16,7 +18,7 @@ class Token extends Model
 
     static function createKey(): string
     {
-        return bin2hex(random_bytes(64));
+        return bin2hex(Str::random(64));
     }
 
     static function getTokenByKey(string $key): Token|false
@@ -61,7 +63,7 @@ class Token extends Model
                     $userID = $input["userID"];
                     $password = $input["password"];
                     $result = User::getByAny($userID);
-                    if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !password_verify($password, $result->getDataRaw()->password)) {
+                    if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !Hash::check($password, $result->getDataRaw()->password)) {
                         return new Data(
                             ResponseCodes::ERROR_BAD_REQUEST,
                             new Message("Invalid userID or password!")
