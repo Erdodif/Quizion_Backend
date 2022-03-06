@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -38,7 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
             try {
                 Data::castArray($input);
                 if (isset($input["password"])) {
-                    $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
+                    $input["password"] = Hash::make($input["password"]);
                 }
                 $result->getDataRaw()->fill($input);
                 $result->getDataRaw()->save();
@@ -61,7 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
             } else {
                 Data::castArray($input);
                 $invalids = Data::inputErrors($input, User::getRequiredColumns());
-                $input["password"] = password_hash($input["password"], PASSWORD_ARGON2I);
+                $input["password"] = Hash::make($input["password"]);
                 if (!$invalids) {
                     $stillNeeded = true;
                     $problemhere = 0;
