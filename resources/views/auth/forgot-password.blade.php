@@ -4,9 +4,8 @@
 
 @section("content")
     {{--
-    <!-- Session Status -->
     @if ($status)
-        <div {{ $attributes->merge(['class' => 'font-medium text-sm text-green-600']) }}>
+        <div>
             {{ $status }}
         </div>
     @endif
@@ -20,7 +19,7 @@
         @csrf
         <div>
             <label for="email">Email</label>
-            <input type="text" id="email" name="email" value="{{ old('email') }}" required autofocus>
+            <input type="text" id="email" name="email" value="{{ old('email') }}" required>
         </div>
         <input type="submit" value="{{ __('Email Password Reset Link') }}">
     </form>

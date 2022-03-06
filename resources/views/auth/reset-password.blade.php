@@ -13,7 +13,7 @@
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
         <div>
             <label for="email">Email</label>
-            <input type="text" id="email" name="email" value="{{ old('email') }}" required autofocus>
+            <input type="text" id="email" name="email" value="{{ old('email') }}" required>
         </div>
         <div>
             <label for="password">Password</label>
@@ -21,7 +21,7 @@
         </div>
         <div>
             <label for="password_confirmation_id">Confirm Password </label>
-            <input type="password" id="password_confirmation_id" name="password_confirmation" value="{{--{{ __('Confirm Password') }}--}}" required>
+            <input type="password" id="password_confirmation_id" name="password_confirmation" value="" required>
         </div>
         <input type="submit" value="{{ __('Reset Password') }}">
     </form>

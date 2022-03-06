@@ -13,7 +13,7 @@
         @csrf
         <div>
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" value="{{--{{ __('Password') }}--}}" required>
+            <input type="password" id="password" name="password" value="" required>
         </div>
         <input type="submit" value="{{ __('Confirm') }}">
     </form>
