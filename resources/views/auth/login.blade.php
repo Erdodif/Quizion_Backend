@@ -6,8 +6,8 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <div>
-            <label for="email">Email</label>
-            <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}" required>
+            <label for="login">Username or Email</label>
+            <input type="text" id="login" name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Email') }}" required>
         </div>
         <div>
             <label for="password">Password</label>
@@ -25,7 +25,7 @@
             @endforeach
         @endif
         <a id="forgot_your_password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
-        <input type="submit" value="{{ __('Log in') }}">
+        <input type="submit" value="{{ __('Login') }}">
         <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
     </form>
 @endsection
