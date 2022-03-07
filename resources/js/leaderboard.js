@@ -38,8 +38,11 @@ function createTableTh(table)
 
 function init()
 {
-    document.getElementById("result").innerHTML = sessionStorage.getItem("result");
-    sessionStorage.removeItem("result");
+    document.getElementById("title").innerHTML = "This is the " + window.quizId + ". quiz's leaderboard.";
+    if (sessionStorage.getItem("result")) {
+        document.getElementById("result").innerHTML = sessionStorage.getItem("result");
+        sessionStorage.removeItem("result");
+    }
     loadDataLeaderboard(window.quizId);
 }
 
