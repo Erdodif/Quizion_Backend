@@ -1,7 +1,8 @@
 
 let dataLength = 0;
 
-function getNumberOfQuestions() {
+function getNumberOfQuestions()
+{
     return fetch(`http://127.0.0.1:8000/api/quizzes/${window.quizCount}/questions/count`)
     .then(function (response) {
         return response.json();
