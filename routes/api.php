@@ -3,8 +3,7 @@
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizQuestionController;
 use App\Http\Controllers\API\QuizAnswerController;
-use App\Http\Controllers\API\QuestionController;
-use App\Http\Controllers\API\AnswerController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +21,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/users/login', [UserController::class, 'login']);
+Route::post('/users/register', [UserController::class, 'store']);
 Route::middleware('auth.token')->get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
 Route::middleware('auth.token')->get('/quizzes', [QuizController::class, 'index']);
-Route::middleware('auth.token')->get('/quizzes/{quiz}', [QuizQuestionController::class, 'show']);
+Route::middleware('auth.token')->get('/quizzes/{quiz}', [QuizController::class, 'show']);
 Route::middleware('auth.token')->apiResource('quizzes.questions', QuizQuestionController::class);
 Route::middleware('auth.token')->apiResource('quizzes.questions.answers', QuizAnswerController::class);

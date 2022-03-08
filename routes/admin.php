@@ -1,11 +1,9 @@
 <?php
 
 use App\Http\Controllers\API\QuizController;
-use App\Http\Controllers\API\QuizQuestionController;
-use App\Http\Controllers\API\QuizAnswerController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\AnswerController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth.token','auth.admin'])->get('/quizzes/all', [QuizController::class, 'all']);
-Route::middleware(['auth.token','auth.admin'])->apiResource('quizzes', QuizController::class);
-Route::middleware(['auth.token','auth.admin'])->apiResource('questions', QuestionController::class);
-Route::middleware(['auth.token','auth.admin'])->apiResource('answers', AnswerController::class);
+Route::middleware(['auth.token', 'auth.admin'])->get('/quizzes/all', [QuizController::class, 'all']);
+Route::middleware(['auth.token', 'auth.admin'])->apiResource('quizzes', QuizController::class);
+Route::middleware(['auth.token', 'auth.admin'])->apiResource('questions', QuestionController::class);
+Route::middleware(['auth.token', 'auth.admin'])->apiResource('answers', AnswerController::class);
+Route::middleware(['auth.token', 'auth.admin'])->apiResource('users', UserController::class);
