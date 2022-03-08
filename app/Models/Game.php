@@ -5,14 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Companion\Message;
 use App\Companion\Data;
-use App\Models\Question;
 use \Error;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use App\Companion\ResponseCodes;
-use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\QuizQuestionController;
 
 class Game extends Model
