@@ -8,6 +8,7 @@ use App\Companion\Message;
 use App\Companion\Data;
 use \Error;
 use App\Companion\ResponseCodes;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Hash;
 
 class Token extends Model
@@ -51,7 +52,7 @@ class Token extends Model
             try {
                 if (isset($input["remember_token"])){
                     $remember = $input["remember_token"];
-                    $result = User::getByRemember($remember);
+                    $result = UserController::getByRemember($remember);
                     if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
                         return new Data(
                             ResponseCodes::ERROR_BAD_REQUEST,
@@ -62,7 +63,7 @@ class Token extends Model
                 else{
                     $userID = $input["userID"];
                     $password = $input["password"];
-                    $result = User::getByAny($userID);
+                    $result = UserController::getByAny($userID);
                     if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !Hash::check($password, $result->getDataRaw()->password)) {
                         return new Data(
                             ResponseCodes::ERROR_BAD_REQUEST,
