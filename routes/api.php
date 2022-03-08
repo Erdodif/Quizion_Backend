@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::middleware('auth.token')->get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
-Route::middleware('auth.token')->get('/quizzes/all', [QuizController::class, 'all']);
 Route::middleware('auth.token')->apiResource('quizzes', QuizController::class);
 Route::middleware('auth.token')->apiResource('quizzes.questions', QuizQuestionController::class);
 Route::middleware('auth.token')->apiResource('quizzes.questions.answers', QuizAnswerController::class);

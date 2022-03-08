@@ -19,6 +19,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::middleware(['auth.token','auth.admin'])->get('/quizzes', [QuizController::class, 'all']);
 Route::middleware(['auth.token','auth.admin'])->apiResource('questions', QuestionController::class);
 Route::middleware(['auth.token','auth.admin'])->apiResource('answers', AnswerController::class);
