@@ -16,6 +16,49 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    static function addNew(UserRequest $request) : Data
+    {
+        try {
+            if ($request === null) {
+                return new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("No data provided!")
+                );
+            }
+            $request["password"] = Hash::make($request["password"]);
+            $request["remember_token"] = Token::createKey();
+            $stillNeeded = true;
+            $problemhere = 0;
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => $request->password,
+            ]);
+            $user->save();
+            while ($stillNeeded && $problemhere < 100) {
+                try {
+                    $user->remember_token = Token::createKey();
+                    $user->save();
+                    $stillNeeded = false;
+                } catch (Exception $e) {
+                    $problemhere++;
+                }
+            }
+            if ($problemhere == 100) {
+                throw new Error("Unsuccessful operation!");
+            }
+            return new Data(
+                ResponseCodes::RESPONSE_CREATED,
+                $user
+            );
+        } catch (Error | Exception $e) {
+            return new Data(
+                ResponseCodes::ERROR_BAD_REQUEST,
+                new Message($e)
+            );
+        }
+    }
+
     static function getById($id): Data
     {
         try {
@@ -161,50 +204,12 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\UserRequest  $request
+     * @param  \App\Http\Requests\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserRequest $request)
     {
-        try {
-            if ($request === null) {
-                return (new Data(
-                    ResponseCodes::ERROR_BAD_REQUEST,
-                    new Message("No data provided!")
-                ))->toResponse();
-            }
-            $request["password"] = Hash::make($request["password"]);
-            $request["remember_token"] = Token::createKey();
-            $stillNeeded = true;
-            $problemhere = 0;
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => $request->password,
-            ]);
-            $user->save();
-            while ($stillNeeded && $problemhere < 100) {
-                try {
-                    $user->remember_token = Token::createKey();
-                    $user->save();
-                    $stillNeeded = false;
-                } catch (Exception $e) {
-                    $problemhere++;
-                }
-            }
-            if ($problemhere == 100) {
-                throw new Error("Unsuccessful operation");
-            }
-            return (new Data(
-                ResponseCodes::RESPONSE_CREATED,
-                $user
-            ))->toResponse();
-        } catch (Error | Exception $e) {
-            return (new Data(
-                ResponseCodes::ERROR_BAD_REQUEST,
-                new Message($e)
-            ))->toResponse();
-        }
+        return static::addNew($request)->toResponse();
     }
 
     public function login(Request $request)

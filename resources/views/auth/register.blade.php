@@ -26,6 +26,9 @@
                 <div class="error_message">{{ $error }}</div>
             @endforeach
         @endif
+        @if ($userError ?? null)
+            <div class="error_message">{{ $userError }}</div>
+        @endif
         <div id="already_registered"><a href="{{ route('login') }}">{{ __('Already registered?') }}</a></div>
         <input type="submit" value="{{ __('Register') }}">
         <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
