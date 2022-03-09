@@ -3,6 +3,7 @@
 @section("title", "Register")
 
 @section("content")
+    <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <div>
@@ -30,7 +31,7 @@
             <div class="error_message">{{ $userError }}</div>
         @endif
         <div id="already_registered"><a href="{{ route('login') }}">{{ __('Already registered?') }}</a></div>
-        <input type="submit" value="{{ __('Register') }}">
+        <input id="button_one_click" type="submit" value="{{ __('Register') }}">
         <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
     </form>
 @endsection
