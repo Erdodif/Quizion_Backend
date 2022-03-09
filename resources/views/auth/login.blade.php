@@ -3,6 +3,7 @@
 @section("title", "Login")
 
 @section("content")
+    <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <div>
@@ -27,7 +28,7 @@
             @endforeach
         @endif
         <a id="forgot_your_password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
-        <input type="submit" value="{{ __('Login') }}">
+        <input id="button_one_click" type="submit" value="{{ __('Login') }}">
         <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
     </form>
 @endsection
