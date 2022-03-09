@@ -6,7 +6,6 @@ use App\Companion\ResponseCodes;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +26,7 @@ class RegisteredUserController extends Controller
     /**
      * Handle an incoming registration request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UserRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -48,7 +47,7 @@ class RegisteredUserController extends Controller
 
         $result = Token::addNewByLogin($input);
 
-        Auth::login($user, $this->boolean('remember'));
+        Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[1], secure: true));
     }
