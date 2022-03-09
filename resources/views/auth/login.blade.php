@@ -14,14 +14,12 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password" value="" placeholder="{{ __('Password') }}" required>
         </div>
-        {{--
         <div>
             <label id="remember_me_label" for="remember_me">
                 <input id="remember_me" type="checkbox" name="remember">
                 <span>{{ __('Remember me') }}</span>
             </label>
         </div>
-        --}}
         @if ($errors->any())
             @foreach ($errors->all() as $error)
                 <div class="error_message">{{ $error }}</div>

@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
 
         $result = Token::addNewByLogin($input);
 
-        Auth::login($user);
+        Auth::login($user, $this->boolean('remember'));
 
         return redirect(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[1], secure: true));
     }

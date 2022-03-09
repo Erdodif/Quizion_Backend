@@ -46,6 +46,6 @@ label {
 .error_message {
     color: var(--warning);
 }
-/*#remember_me_label {
+#remember_me_label {
     align-items: center;
-}*/
+}
