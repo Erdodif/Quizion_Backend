@@ -25,14 +25,12 @@ class UserController extends Controller
                     new Message("No data provided!")
                 );
             }
-            $request["password"] = Hash::make($request["password"]);
-            $request["remember_token"] = Token::createKey();
             $stillNeeded = true;
             $problemhere = 0;
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => $request->password,
+                'password' => Hash::make($request->password),
             ]);
             $user->save();
             while ($stillNeeded && $problemhere < 100) {
