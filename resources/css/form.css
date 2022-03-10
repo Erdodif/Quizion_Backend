@@ -21,6 +21,7 @@ input[type="checkbox"] {
     background: var(--white);
     border-radius: 5px;
     border: 2px solid #555;
+    cursor: pointer;
 }
 input[type="checkbox"]:checked {
     background: var(--primary_variant);
@@ -37,20 +38,24 @@ input::placeholder {
     color: rgb(135, 135, 135);
 }
 #forgot_your_password {
-    padding: 1rem 0 1rem 0;
-    display: flex;
-    justify-content: center;
+    width: fit-content;
 }
 .error_message {
+    font-size: larger;
     color: var(--warning);
 }
+#error_message_margin_remember_me {
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
 #remember_me_label {
-    margin: 0.5rem 0 0.5rem 0;
+    margin: 0rem 0 0.3rem 0;
     font-size: x-large;
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 #remember_me {
-    margin: 0;
+    margin: 0 0.5rem 0 0;
 }
