@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Companion\ResponseCodes;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -25,18 +26,20 @@ class RegisteredUserController extends Controller
     /**
      * Handle an incoming registration request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UserRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(UserRequest $request)
     {
-        $user = User::addNew([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-        ])->getDataRaw();
+        $result = UserController::addNew($request);
+
+        if (!$result->getCode(ResponseCodes::RESPONSE_CREATED)) {
+            return redirect('auth.register', ["userError" => "Registration failed!"]);
+        }
+
+        $user = $result->getDataRaw();
 
         event(new Registered($user));
 

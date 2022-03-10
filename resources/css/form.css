@@ -7,9 +7,12 @@ form {
 input {
     width: 20rem;
     padding: 1rem;
+    margin: 0 0 1.5rem 0;
     font-size: 1.5rem;
     border: none;
+    border-radius: 10px;
     box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
+    background-color: var(--on_primary);
 }
 input[type="checkbox"] {
     -webkit-appearance: none;
@@ -18,34 +21,41 @@ input[type="checkbox"] {
     background: var(--white);
     border-radius: 5px;
     border: 2px solid #555;
+    cursor: pointer;
 }
 input[type="checkbox"]:checked {
     background: var(--primary_variant);
 }
 input[type="submit"] {
+    margin: 1rem;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 8px;
+}
+input[type="submit"]:hover {
+    background-color: #cfcfdb;
 }
 input::placeholder {
-    color: #aaa;
+    color: rgb(135, 135, 135);
 }
-label {
-    margin: 1rem 0 1rem 0;
+#forgot_your_password {
+    width: fit-content;
+}
+.error_message {
+    font-size: larger;
+    color: var(--warning);
+}
+#error_message_margin_remember_me {
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+#remember_me_label {
+    margin: 0rem 0 0.3rem 0;
     font-size: x-large;
     display: flex;
     justify-content: center;
-}
-#already_registered {
-    padding: 1rem 0 1rem 0;
-}
-#forgot_your_password {
-    padding: 1rem 0 1rem 0;
-    display: flex;
-    justify-content: center;
-}
-.error_message {
-    color: var(--warning);
-}
-/*#remember_me_label {
     align-items: center;
-}*/
+    cursor: pointer;
+}
+#remember_me {
+    margin: 0 0.5rem 0 0;
+}
