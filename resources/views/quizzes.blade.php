@@ -3,13 +3,15 @@
 @section("title", "Quizzes")
 
 @section("content")
-    <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
-    <p>Username: {{ Auth::user()->name }}</p>
-    <p>Email: {{ Auth::user()->email }}</p>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <input type="submit" value="{{ __('Logout') }}">
-    </form>
+    <script src="{{ mix('js/quizzes.js') }}"></script>
+    <div class="user_div">
+        <div id="username">{{ Auth::user()->name }}</div>
+        <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <input type="submit" value="{{ __('Logout') }}">
+        </form>
+    </div>
     @foreach($quizzes as $quiz)
         <div class="quiz_list_div">
             <h2 class="quiz_list_header">{{ $quiz->header }}</h2>

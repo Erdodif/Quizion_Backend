@@ -68,7 +68,7 @@ body {
 .container {
     width: 1300px;
     margin: 0 auto 30px auto;
-    padding: 1em 0 1em 0;
+    padding: 0 0 1em 0;
     background-color: var(--secondary);
 }
 .wrapper {
