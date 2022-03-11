@@ -19,12 +19,6 @@ class UserController extends Controller
     static function addNew(UserRequest $request) : Data
     {
         try {
-            if ($request === null) {
-                return new Data(
-                    ResponseCodes::ERROR_BAD_REQUEST,
-                    new Message("No data provided!")
-                );
-            }
             $stillNeeded = true;
             $problemhere = 0;
             $user = User::create([
