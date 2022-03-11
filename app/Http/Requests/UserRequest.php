@@ -25,11 +25,9 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'min:5', 'max:25', 'unique:users'],
+            'name' => ['required', 'string', 'min:5', 'max:25', 'unique:users', 'regex:/^[a-zA-ZÁÉÍÓÖŐÚÜŰáéíóöőúüű]+$/u'],
             'email' => ['required', 'email', 'min:6', 'max:50', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/(\W|\d)+/u'],
         ];
-        //'regex:/^[a-zA-Z]$/u'
-        //'regex:(/^/W|/d$/u)+'
     }
 }
