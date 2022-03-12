@@ -10,22 +10,34 @@
     padding: 1rem 3rem 1rem 3rem;
     margin: 0 0 0 auto;
 }
+#all_quizzes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    padding: 1rem;
+}
 .quiz_list_div {
     background-color: var(--primary_variant);
     border: 3px solid var(--on_secondary);
     border-radius: 10px;
     padding: 1rem;
     margin: 1rem;
-    width: fit-content;
-    max-width: 20rem;
-    /*max-height: 20rem;*/
-    word-break: break-all;
+}
+#play_button {
+    max-width: 95%;
+}
+.quiz_list_header, .quiz_list_description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
 }
 .quiz_list_header {
     text-align: center;
     font-size: larger;
+    -webkit-line-clamp: 2;
 }
 .quiz_list_description {
     text-align: justify;
     padding: 0 1rem 0 1rem;
+    -webkit-line-clamp: 3;
 }

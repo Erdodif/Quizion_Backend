@@ -20,7 +20,6 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
 */
 mix
 .js('resources/js/quiz.js', 'public/js/quiz.js')
-.js('resources/js/quizzes.js', 'public/js/quizzes.js')
 .js('resources/js/leaderboard.js', 'public/js/leaderboard.js')
 .js('resources/js/form.js', 'public/js/form.js')
 .js('resources/js/loader.js', 'public/js/loader.js')
