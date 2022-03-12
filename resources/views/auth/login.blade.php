@@ -6,7 +6,7 @@
     <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('login') }}">
         @csrf
-        <div>
+        <div class="margin_top">
             <input type="text" name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Email') }}" required>
         </div>
         <div>
