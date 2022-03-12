@@ -14,6 +14,29 @@ use Illuminate\Validation\ValidationException;
 
 class QuizController extends Controller
 {
+    public static function showActive()
+    {
+        try {
+            $result = Quiz::where("active", "=", 1)->get();
+            if (isset($result[0]["id"])) {
+                return new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    $result
+                );
+            } else {
+                return new Data(
+                    ResponseCodes::ERROR_NOT_FOUND,
+                    new Message("There is no quiz!")
+                );
+            }
+        } catch (Error $e) {
+            return new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            );
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,25 +44,7 @@ class QuizController extends Controller
      */
     public function index()
     {
-        try {
-            $result = Quiz::where("active", "=", 1)->get();
-            if (isset($result[0]["id"])) {
-                return (new Data(
-                    ResponseCodes::RESPONSE_OK,
-                    $result
-                ))->toResponse();
-            } else {
-                return (new Data(
-                    ResponseCodes::ERROR_NOT_FOUND,
-                    new Message("There is no quiz!")
-                ))->toResponse();
-            }
-        } catch (Error $e) {
-            return (new Data(
-                ResponseCodes::ERROR_INTERNAL,
-                new Message("An internal error occured! " . $e->getMessage())
-            ))->toResponse();
-        }
+        return QuizController::showActive()->toResponse();
     }
     
     /**
