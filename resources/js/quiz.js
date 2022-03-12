@@ -1,7 +1,7 @@
 
 let dataLength = 0;
 
-function getNumberOfQuestions()
+function loadNumberOfQuestions()
 {
     return fetch(`http://127.0.0.1:8000/api/quizzes/${window.quizCount}/questions/count`)
     .then(function (response) {
@@ -9,7 +9,7 @@ function getNumberOfQuestions()
     });
 }
 
-function loadDataSecondsPerQuiz(id)
+function loadSecondsPerQuiz(id)
 {
     return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
     .then(function (response) {
@@ -17,7 +17,7 @@ function loadDataSecondsPerQuiz(id)
     });
 }
 
-async function loadDataQuestion(id)
+async function loadQuestion(id)
 {
     let response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
     let data = await response.json();
@@ -31,7 +31,7 @@ async function loadDataQuestion(id)
     }
 }
 
-async function loadDataAnswers(id)
+async function loadAnswers(id)
 {
     let response = await fetch(`http://127.0.0.1:8000/api/play/${id}/answers`);
     let data = await response.json();
@@ -62,8 +62,8 @@ function play(id, maxTime, timer)
     .then((response) => response.json())
     .then(() => {
         clearInterval(timer);
-        loadDataQuestion(id);
-        loadDataAnswers(id);
+        loadQuestion(id);
+        loadAnswers(id);
         let timeLeft = maxTime;
         timer = setInterval(function () {
             if (timeLeft <= 0) {
@@ -118,10 +118,11 @@ function answerOnClick(selectedAnswerId)
 
 function init()
 {
-    loadDataQuestion(window.quizCount);
-    loadDataAnswers(window.quizCount);
-    loadDataSecondsPerQuiz(window.quizCount).then(function (response) {
+    loadQuestion(window.quizCount);
+    loadAnswers(window.quizCount);
+    loadSecondsPerQuiz(window.quizCount).then(function (response) {
         (response) => response.json();
+        sessionStorage.setItem("header", response.header);
         let maxTime = response.seconds_per_quiz * 250;
         let timeLeft = maxTime;
         let timer = setInterval(function () {
@@ -139,7 +140,7 @@ function init()
             nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, maxTime, timer));
         }
     });
-    getNumberOfQuestions().then(function (response) {
+    loadNumberOfQuestions().then(function (response) {
         (response) => response.json();
         progressBar(1, response.count);
         sessionStorage.setItem("count", response.count);

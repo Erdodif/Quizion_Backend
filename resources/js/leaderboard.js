@@ -1,8 +1,16 @@
 
-async function loadDataLeaderboard(id)
+function loadQuizHeader(id)
 {
-    let Response = await fetch(`http://127.0.0.1:8000/api/leaderboard/${id}`);
-    let data = await Response.json();
+    return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
+    .then(function (response) {
+        return response.json();
+    });
+}
+
+async function loadLeaderboard(id)
+{
+    let response = await fetch(`http://127.0.0.1:8000/api/leaderboard/${id}`);
+    let data = await response.json();
     document.getElementById("leaderboard").innerHTML = "";
     let rows = Object.keys(data).length;
     let table = document.createElement("table");
@@ -38,12 +46,21 @@ function createTableTh(table)
 
 function init()
 {
-    document.getElementById("title").innerHTML = "This is the " + window.quizId + ". quiz's leaderboard.";
+    if (sessionStorage.getItem("header")) {
+        document.getElementById("title").innerHTML = sessionStorage.getItem("header");
+        sessionStorage.removeItem("header");
+    }
+    else {
+        loadQuizHeader(window.quizId).then(function (response) {
+            (response) => response.json();
+            document.getElementById("title").innerHTML = response.header;
+        });
+    }
     if (sessionStorage.getItem("result")) {
         document.getElementById("result").innerHTML = sessionStorage.getItem("result");
         sessionStorage.removeItem("result");
     }
-    loadDataLeaderboard(window.quizId);
+    loadLeaderboard(window.quizId);
 }
 
 document.addEventListener("DOMContentLoaded", init);

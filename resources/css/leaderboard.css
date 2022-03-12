@@ -1,3 +1,13 @@
+#title {
+    margin: 0;
+    padding: 0.5rem 0 0 0;
+    text-align: center;
+}
+#result {
+    text-align: center;
+    font-size: larger;
+    margin: 1rem;
+}
 #leaderboard {
     width: fit-content;
     margin: auto;
