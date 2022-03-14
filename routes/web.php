@@ -32,7 +32,7 @@ Route::get("/quizzes", function () {
 
 Route::get("/quiz/{quiz_id}", function () {
     return view("quiz");
-})->middleware(["auth", "verified"]);
+})->middleware(["auth", "verified"])->name("quiz");
 
 Route::get("/leaderboard/{quiz_id}", function () {
     return view("leaderboard");

@@ -3,14 +3,6 @@
 @section("title", "Quizzes")
 
 @section("content")
-    <div class="user_div">
-        <div id="username">{{ Auth::user()->name }}</div>
-        <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <input type="submit" value="{{ __('Logout') }}">
-        </form>
-    </div>
     <div id="all_quizzes">
         @foreach($quizzes as $quiz)
             <div class="quiz_list_div">

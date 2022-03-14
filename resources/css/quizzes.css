@@ -1,15 +1,3 @@
-.user_div {
-    text-align: right;
-}
-#username {
-    background-color: var(--primary_variant);
-    border: 3px solid var(--on_secondary);
-    border-radius: 10px;
-    font-size: larger;
-    width: fit-content;
-    padding: 1rem 3rem 1rem 3rem;
-    margin: 0 0 0 auto;
-}
 #all_quizzes {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
