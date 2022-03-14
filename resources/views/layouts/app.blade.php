@@ -22,24 +22,24 @@
                     <img id="logo" src="{{ url('images/logo.png') }}" alt="Quizion Logo" title="Quizion">
                 </div>
             </div>
+            <ul id="navbar_ul">
+                @if (Route::is("quiz"))
+                @elseif (Auth::user())
+                    <li class="navbar_li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
+                    <li class="navbar_li">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <input id="logout" type="submit" value="{{ __('Logout') }}">
+                        </form>
+                    </li>
+                    <li id="navbar_name">{{ Auth::user()->name }}</li>
+                @else
+                    <li class="navbar_li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
+                    <li class="navbar_li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                    <li class="navbar_li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                @endif
+            </ul>
             <div id="container">
-                <ul id="navbar_ul">
-                    @if (Route::is("quiz"))
-                    @elseif (Auth::user())
-                        <li class="navbar_li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
-                        <li class="navbar_li">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <input id="logout" type="submit" value="{{ __('Logout') }}">
-                            </form>
-                        </li>
-                        <li id="navbar_name">{{ Auth::user()->name }}</li>
-                    @else
-                        <li class="navbar_li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
-                        <li class="navbar_li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                        <li class="navbar_li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
-                    @endif
-                </ul>
                 @yield("content")
             </div>
         </div>
