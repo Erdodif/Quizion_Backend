@@ -2,6 +2,7 @@ function buttonDisable(button)
 {
     button.disabled = true;
     button.style.cursor = "auto";
+    button.style.backgroundColor = getComputedStyle(button).getPropertyValue("--on_primary");
     button.form.submit();
 }
 
