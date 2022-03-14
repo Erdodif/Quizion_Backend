@@ -25,5 +25,4 @@
         @endif
         <input type="submit" value="{{ __('Reset Password') }}">
     </form>
-    <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
 @endsection

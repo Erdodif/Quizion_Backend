@@ -15,5 +15,4 @@
         @csrf
         <input type="submit" value="{{ __('Logout') }}">
     </form>
-    <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
 @endsection
