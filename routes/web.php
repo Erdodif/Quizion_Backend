@@ -36,6 +36,6 @@ Route::get("/quiz/{quiz_id}", function () {
 
 Route::get("/leaderboard/{quiz_id}", function () {
     return view("leaderboard");
-})->middleware(["auth", "verified"]);
+})->middleware(["auth", "verified"])->name("leaderboard");
 
 require __DIR__."/auth.php";

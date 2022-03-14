@@ -6,10 +6,11 @@
     <div id="all_quizzes">
         @foreach($quizzes as $quiz)
             <div class="quiz_list_div">
-                <div class="wrapper">
+                <div class="wrapper_quizzes">
                     <h2 class="quiz_list_header">{{ $quiz->header }}</h2>
                     <p class="quiz_list_description">{{ $quiz->description }}</p>
                 </div>
+                <a class="leaderboard_button" href="{{ route('leaderboard', ["quiz_id" => $quiz->id]) }}">Leaderboard</a>
                 <form method="POST" action="{{ route('gaming.store') }}">
                     @csrf
                     <div>

@@ -7,7 +7,7 @@
     background-color: var(--primary_variant);
     border: 3px solid var(--on_secondary);
     border-radius: 10px;
-    padding: 1rem;
+    padding: 0 0.6rem 0.5rem 0.6rem;
     margin: 1rem;
 }
 #play_button {
@@ -28,4 +28,14 @@
     text-align: justify;
     padding: 0 1rem 0 1rem;
     -webkit-line-clamp: 3;
+}
+.leaderboard_button {
+    display: block;
+    margin: auto;
+    width: fit-content;
+}
+.wrapper_quizzes {
+    height: auto !important;
+    height: calc(100% - 140px);
+    min-height: calc(100% - 140px);
 }
