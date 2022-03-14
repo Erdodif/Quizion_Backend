@@ -26,8 +26,7 @@
                 <ul id="navbar_ul">
                     @if (Route::is("quiz"))
                     @elseif (Auth::user())
-                        <li class="navbar_li"><a href="{{ route('index') }}">Index</a></li>
-                        <li class="navbar_li"><a href="{{ route('quizzes') }}">Quizzes</a></li>
+                        <li class="navbar_li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
                         <li class="navbar_li">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -36,8 +35,9 @@
                         </li>
                         <li id="navbar_name">{{ Auth::user()->name }}</li>
                     @else
-                        <li class="navbar_li"><a href="{{ route('login') }}">Login</a></li>
-                        <li class="navbar_li"><a href="{{ route('register') }}">Register</a></li>
+                        <li class="navbar_li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
+                        <li class="navbar_li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                        <li class="navbar_li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
                     @endif
                 </ul>
                 @yield("content")
