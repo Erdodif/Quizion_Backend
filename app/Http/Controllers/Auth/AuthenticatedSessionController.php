@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
 
         $result = LoginToken::addNewByLogin($input);
 
-        return redirect()->intended(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[1], secure: true));
+        return redirect()->intended(RouteServiceProvider::HOME)->cookie(cookie('token', $result->getDataRaw()->getContent()[1], 3000000, secure: true));
     }
 
     /**
