@@ -47,8 +47,9 @@ async function loadAnswers(id)
     }
 }
 
-function play(id, maxTime, timer)
+function play(id, maxTime, timer, nextButton)
 {
+    nextButton.style.pointerEvents = "none";
     let array = idToChosen();
     const data = { chosen: array };
     fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
@@ -79,6 +80,7 @@ function play(id, maxTime, timer)
         currentQuestion = currentQuestion.split("/")[0];
         currentQuestion++;
         progressBar(currentQuestion, sessionStorage.getItem("count"));
+        nextButton.style.pointerEvents = "auto";
     })
     .catch((error) => {
         document.getElementById("error").innerHTML = error;
@@ -137,7 +139,7 @@ function init()
         }, 1);
         const nextButton = document.getElementById("quiz_next_button");
         if (nextButton) {
-            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, maxTime, timer));
+            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, maxTime, timer, nextButton));
         }
     });
     loadNumberOfQuestions().then(function (response) {
