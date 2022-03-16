@@ -7,10 +7,34 @@ use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use Error;
 use Illuminate\Http\Request;
 
 class UserSetAdminController extends Controller
 {
+    public function index()
+    {
+        try {
+            $result = Admin::all();
+            if (isset($result[0]["id"])) {
+                return (new Data(
+                    ResponseCodes::RESPONSE_OK,
+                    $result
+                ))->toResponse();
+            } else {
+                return (new Data(
+                    ResponseCodes::ERROR_NOT_FOUND,
+                    new Message("There is no admin!")
+                ))->toResponse();
+            }
+        } catch (Error $e) {
+            return (new Data(
+                ResponseCodes::ERROR_INTERNAL,
+                new Message("An internal error occured! " . $e->getMessage())
+            ))->toResponse();
+        }
+    }
+
     public function grantPrivilege($user)
     {
         $result = UserController::getById($user);
