@@ -31,11 +31,6 @@
 .next_question {
     cursor: pointer;
 }
-#time_bar {
-    height: 0.5rem;
-    background-color: var(--warning);
-    border-radius: 0.3rem;
-}
 #progress_bar {
     display: flex;
 }
@@ -79,4 +74,25 @@
     .quiz_question, .quiz_answer {
         text-align: center;
     }
+}
+:root {
+    --quiz_seconds: "";
+}
+#time_bar {
+    height: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+#time_bar span {
+    display: block;
+    height: 100%;
+}
+#time_progress {
+    background-color: var(--warning);
+    animation: progressBar var(--quiz_seconds) ease-out;
+    animation-fill-mode: both;
+}
+@keyframes progressBar {
+    0% { width: 100%; }
+    100% { width: 0%; }
 }

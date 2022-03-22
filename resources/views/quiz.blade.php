@@ -8,7 +8,12 @@
     </script>
     <script src="{{ mix('js/quiz.js') }}"></script>
 
-    <div id="time_bar"></div>
+    <div id="time_bar">
+        <span style="width: 100%;">
+            <span id="time_progress"></span>
+        </span>
+    </div>
+
     <div class="report">Report</div>
 
     <div id="question" class="quiz_question"></div>
