@@ -64,7 +64,7 @@ function play(id, nextButton)
     .then(() => {
         loadQuestion(id);
         loadAnswers(id);
-        resetTimeBar();
+        resetTimeBarProgress();
         let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
         currentQuestion = currentQuestion.split("/")[0];
         currentQuestion++;
@@ -76,8 +76,8 @@ function play(id, nextButton)
     });
 }
 
-function resetTimeBar() {
-    let animation = document.getElementById('time_progress');
+function resetTimeBarProgress() {
+    let animation = document.getElementById('time_bar_progress');
     animation.style.animation = 'none';
     animation.offsetHeight;
     animation.style.animation = null;
@@ -121,8 +121,6 @@ function init()
     loadSecondsPerQuiz(window.quizCount).then(function (response) {
         (response) => response.json();
         document.documentElement.style.setProperty('--quiz_seconds', response.seconds_per_quiz + "s");
-        /*document.getElementById("time_progress").style.animation =
-            "progressBar " + response.seconds_per_quiz + "s ease-out";*/
         sessionStorage.setItem("header", response.header);
         const nextButton = document.getElementById("quiz_next_button");
         if (nextButton) {
