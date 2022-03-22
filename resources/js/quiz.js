@@ -47,7 +47,7 @@ async function loadAnswers(id)
     }
 }
 
-function play(id, maxTime, timer, nextButton)
+function play(id, nextButton)
 {
     nextButton.style.pointerEvents = "none";
     let array = idToChosen();
@@ -62,20 +62,9 @@ function play(id, maxTime, timer, nextButton)
     })
     .then((response) => response.json())
     .then(() => {
-        clearInterval(timer);
         loadQuestion(id);
         loadAnswers(id);
-        let timeLeft = maxTime;
-        timer = setInterval(function () {
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                document.getElementById("out_of_time").innerHTML = "Out of time!";
-            }
-            else {
-                document.getElementById("time_bar").style.width = (timeLeft / maxTime) * 100 + "%";
-                timeLeft -= 1;
-            }
-        }, 1);
+        resetTimeBar();
         let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
         currentQuestion = currentQuestion.split("/")[0];
         currentQuestion++;
@@ -85,6 +74,13 @@ function play(id, maxTime, timer, nextButton)
     .catch((error) => {
         document.getElementById("error").innerHTML = error;
     });
+}
+
+function resetTimeBar() {
+    let animation = document.getElementById('time_progress');
+    animation.style.animation = 'none';
+    animation.offsetHeight;
+    animation.style.animation = null;
 }
 
 async function progressBar(currentQuestion, numberOfQuestions)
@@ -124,22 +120,13 @@ function init()
     loadAnswers(window.quizCount);
     loadSecondsPerQuiz(window.quizCount).then(function (response) {
         (response) => response.json();
+        document.documentElement.style.setProperty('--quiz_seconds', response.seconds_per_quiz + "s");
+        /*document.getElementById("time_progress").style.animation =
+            "progressBar " + response.seconds_per_quiz + "s ease-out";*/
         sessionStorage.setItem("header", response.header);
-        let maxTime = response.seconds_per_quiz * 250;
-        let timeLeft = maxTime;
-        let timer = setInterval(function () {
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                document.getElementById("out_of_time").innerHTML = "Out of time!";
-            }
-            else {
-                document.getElementById("time_bar").style.width = (timeLeft / maxTime) * 100 + "%";
-                timeLeft -= 1;
-            }
-        }, 1);
         const nextButton = document.getElementById("quiz_next_button");
         if (nextButton) {
-            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, maxTime, timer, nextButton));
+            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, nextButton));
         }
     });
     loadNumberOfQuestions().then(function (response) {
