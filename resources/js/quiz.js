@@ -47,35 +47,6 @@ async function loadAnswers(id)
     }
 }
 
-function play(id, nextButton)
-{
-    nextButton.style.pointerEvents = "none";
-    let array = idToChosen();
-    const data = { chosen: array };
-    fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        body: JSON.stringify(data)
-    })
-    .then((response) => response.json())
-    .then(() => {
-        loadQuestion(id);
-        loadAnswers(id);
-        resetTimeBarProgress();
-        let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
-        currentQuestion = currentQuestion.split("/")[0];
-        currentQuestion++;
-        progressBar(currentQuestion, sessionStorage.getItem("count"));
-        nextButton.style.pointerEvents = "auto";
-    })
-    .catch((error) => {
-        document.getElementById("error").innerHTML = error;
-    });
-}
-
 function resetTimeBarProgress() {
     let animation = document.getElementById('time_bar_progress');
     animation.style.animation = 'none';
@@ -112,6 +83,40 @@ function idToChosen()
 function answerOnClick(selectedAnswerId)
 {
     document.getElementById(selectedAnswerId).classList.toggle("selected");
+}
+
+function nextProgressBar() {
+    let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
+    currentQuestion = currentQuestion.split("/")[0];
+    currentQuestion++;
+    progressBar(currentQuestion, sessionStorage.getItem("count"));
+}
+
+function play(id, nextButton)
+{
+    nextButton.style.pointerEvents = "none";
+    let array = idToChosen();
+    const data = { chosen: array };
+    fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    .then((response) => {
+        if (response.ok) {
+            loadQuestion(id);
+            loadAnswers(id);
+            resetTimeBarProgress();
+            nextProgressBar();
+        }
+        nextButton.style.pointerEvents = "auto";
+    })
+    .catch((error) => {
+        document.getElementById("error").innerHTML = error;
+    });
 }
 
 function init()
