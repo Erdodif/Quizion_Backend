@@ -14,19 +14,38 @@
     </head>
     <body>
         <div class="wrapper">
-            <div id="loader_div"><div id="loader"></div></div>
-            <div class="header_logo">
-                <div class="header_background">
-                    <img class="logo" src="{{ url('images/logo.png') }}" alt="Quizion" title="Quizion">
+            <div id="loader_div">
+                <div id="loader"></div>
+            </div>
+            <div id="header_logo">
+                <div id="header_background">
+                    <img id="logo" src="{{ url('images/logo.png') }}" alt="Quizion Logo" title="Quizion">
                 </div>
             </div>
-            <div class="container">
+            <ul id="navbar_ul">
+                @if (Route::is("quiz"))
+                @elseif (Auth::user())
+                    <li class="navbar_li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
+                    <li class="navbar_li">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <input id="logout" type="submit" value="{{ __('Logout') }}">
+                        </form>
+                    </li>
+                    <li id="navbar_name">{{ Auth::user()->name }}</li>
+                @else
+                    <li class="navbar_li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
+                    <li class="navbar_li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                    <li class="navbar_li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                @endif
+            </ul>
+            <div id="container">
                 @yield("content")
             </div>
         </div>
-        <div class="footer">
+        <div id="footer">
             <h4>© Copyright - quizion.hu - All rights reserved.</h4>
-            <a href="#" target="copyright">Legal and data protection statement.</a>
+            <a href="" target="copyright">Legal and data protection statement.</a>
         </div>
     </body>
 </html>

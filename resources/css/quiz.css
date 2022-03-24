@@ -1,3 +1,6 @@
+:root {
+    --quiz_seconds: "";
+}
 .quiz_question {
     margin: auto;
     font-size: xx-large;
@@ -33,8 +36,20 @@
 }
 #time_bar {
     height: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+#time_bar span {
+    display: block;
+    height: 100%;
+}
+#time_bar_span_width_100 {
+    width: 100%;
+}
+#time_bar_progress {
     background-color: var(--warning);
-    border-radius: 0.3rem;
+    animation: timeBarProgress var(--quiz_seconds) ease-out;
+    animation-fill-mode: both;
 }
 #progress_bar {
     display: flex;
@@ -74,9 +89,12 @@
         right: 0;
     }
 }
-/*@media screen and (min-width: 651px) and (max-width: 1359px) {}*/
 @media screen and (max-width: 650px) {
     .quiz_question, .quiz_answer {
         text-align: center;
     }
+}
+@keyframes timeBarProgress {
+    0% { width: 100%; }
+    100% { width: 0%; }
 }

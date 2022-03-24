@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware(['auth.token', 'auth.admin'])->get('/admins', [UserSetAdminController::class, 'index']);
 Route::middleware(['auth.token', 'auth.admin'])->post('/users/grant/{user}', [UserSetAdminController::class, 'grantPrivilege']);
 Route::middleware(['auth.token', 'auth.admin'])->post('/users/revoke/{user}', [UserSetAdminController::class, 'revokePrivilege']);
 Route::middleware(['auth.token', 'auth.admin'])->get('/quizzes/all', [QuizController::class, 'all']);

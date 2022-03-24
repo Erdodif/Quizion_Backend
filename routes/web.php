@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\GamingController;
-use App\Models\Quiz;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,16 +26,16 @@ Route::get("/index", function () {
 })->name("index");
 
 Route::get("/quizzes", function () {
-    $quizzes = Quiz::all();
+    $quizzes = QuizController::showActive()->getDataRaw();
     return view("quizzes", ["quizzes" => $quizzes]);
 })->middleware(["auth", "verified"])->name("quizzes");
 
 Route::get("/quiz/{quiz_id}", function () {
     return view("quiz");
-})->middleware(["auth", "verified"]);
+})->middleware(["auth", "verified"])->name("quiz");
 
 Route::get("/leaderboard/{quiz_id}", function () {
     return view("leaderboard");
-})->middleware(["auth", "verified"]);
+})->middleware(["auth", "verified"])->name("leaderboard");
 
 require __DIR__."/auth.php";

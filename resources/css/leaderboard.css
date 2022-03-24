@@ -1,7 +1,42 @@
+#title {
+    margin: 0;
+    padding: 0.5rem 0 0 0;
+    text-align: center;
+}
+#result {
+    text-align: center;
+    font-size: larger;
+    margin: 1rem;
+}
 #leaderboard {
     width: fit-content;
     margin: auto;
 }
 .leaderboard_my_name {
-    background-color: var(--fine);
+    background-color: var(--fine) !important;
+}
+table {
+    border-collapse: collapse;
+    cursor: default;
+}
+tr {
+    box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
+}
+th {
+    background-color: var(--secondary);
+    color: var(--on_primary);
+}
+th, td {
+    border: 2px solid var(--primary_variant);
+    padding: 1rem;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-align: center;
+}
+tr:nth-child(even) {
+    background-color: var(--primary);
+}
+tr:hover {
+    background-color: var(--on_primary) !important;
+    color: var(--primary_variant);
 }

@@ -59,3 +59,6 @@ input::placeholder {
 #remember_me {
     margin: 0 0.5rem 0 0;
 }
+.margin_top {
+    margin-top: 1rem;
+}

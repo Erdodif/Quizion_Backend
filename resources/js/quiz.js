@@ -1,7 +1,7 @@
 
 let dataLength = 0;
 
-function getNumberOfQuestions()
+function loadNumberOfQuestions()
 {
     return fetch(`http://127.0.0.1:8000/api/quizzes/${window.quizCount}/questions/count`)
     .then(function (response) {
@@ -9,7 +9,7 @@ function getNumberOfQuestions()
     });
 }
 
-function loadDataSecondsPerQuiz(id)
+function loadSecondsPerQuiz(id)
 {
     return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
     .then(function (response) {
@@ -17,7 +17,7 @@ function loadDataSecondsPerQuiz(id)
     });
 }
 
-async function loadDataQuestion(id)
+async function loadQuestion(id)
 {
     let response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
     let data = await response.json();
@@ -31,7 +31,7 @@ async function loadDataQuestion(id)
     }
 }
 
-async function loadDataAnswers(id)
+async function loadAnswers(id)
 {
     let response = await fetch(`http://127.0.0.1:8000/api/play/${id}/answers`);
     let data = await response.json();
@@ -47,42 +47,11 @@ async function loadDataAnswers(id)
     }
 }
 
-function play(id, maxTime, timer)
-{
-    let array = idToChosen();
-    const data = { chosen: array };
-    fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        body: JSON.stringify(data)
-    })
-    .then((response) => response.json())
-    .then(() => {
-        clearInterval(timer);
-        loadDataQuestion(id);
-        loadDataAnswers(id);
-        let timeLeft = maxTime;
-        timer = setInterval(function () {
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                document.getElementById("out_of_time").innerHTML = "Out of time!";
-            }
-            else {
-                document.getElementById("time_bar").style.width = (timeLeft / maxTime) * 100 + "%";
-                timeLeft -= 1;
-            }
-        }, 1);
-        let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
-        currentQuestion = currentQuestion.split("/")[0];
-        currentQuestion++;
-        progressBar(currentQuestion, sessionStorage.getItem("count"));
-    })
-    .catch((error) => {
-        document.getElementById("error").innerHTML = error;
-    });
+function resetTimeBarProgress() {
+    let animation = document.getElementById('time_bar_progress');
+    animation.style.animation = 'none';
+    animation.offsetHeight;
+    animation.style.animation = null;
 }
 
 async function progressBar(currentQuestion, numberOfQuestions)
@@ -116,30 +85,54 @@ function answerOnClick(selectedAnswerId)
     document.getElementById(selectedAnswerId).classList.toggle("selected");
 }
 
+function nextProgressBar() {
+    let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
+    currentQuestion = currentQuestion.split("/")[0];
+    currentQuestion++;
+    progressBar(currentQuestion, sessionStorage.getItem("count"));
+}
+
+function play(id, nextButton)
+{
+    nextButton.style.pointerEvents = "none";
+    let array = idToChosen();
+    const data = { chosen: array };
+    fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    .then((response) => {
+        if (response.ok) {
+            loadQuestion(id);
+            loadAnswers(id);
+            resetTimeBarProgress();
+            nextProgressBar();
+        }
+        nextButton.style.pointerEvents = "auto";
+    })
+    .catch((error) => {
+        document.getElementById("error").innerHTML = error;
+    });
+}
+
 function init()
 {
-    loadDataQuestion(window.quizCount);
-    loadDataAnswers(window.quizCount);
-    loadDataSecondsPerQuiz(window.quizCount).then(function (response) {
+    loadQuestion(window.quizCount);
+    loadAnswers(window.quizCount);
+    loadSecondsPerQuiz(window.quizCount).then(function (response) {
         (response) => response.json();
-        let maxTime = response.seconds_per_quiz * 250;
-        let timeLeft = maxTime;
-        let timer = setInterval(function () {
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                document.getElementById("out_of_time").innerHTML = "Out of time!";
-            }
-            else {
-                document.getElementById("time_bar").style.width = (timeLeft / maxTime) * 100 + "%";
-                timeLeft -= 1;
-            }
-        }, 1);
+        document.documentElement.style.setProperty('--quiz_seconds', response.seconds_per_quiz + "s");
+        sessionStorage.setItem("header", response.header);
         const nextButton = document.getElementById("quiz_next_button");
         if (nextButton) {
-            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, maxTime, timer));
+            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, nextButton));
         }
     });
-    getNumberOfQuestions().then(function (response) {
+    loadNumberOfQuestions().then(function (response) {
         (response) => response.json();
         progressBar(1, response.count);
         sessionStorage.setItem("count", response.count);

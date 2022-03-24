@@ -6,7 +6,7 @@
     <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('register') }}">
         @csrf
-        <div>
+        <div class="margin_top">
             <input type="text" name="name" value="{{ old('name') }}" placeholder="{{ __('Username') }}" required>
         </div>
         <div>
@@ -27,7 +27,5 @@
             <div class="error_message">{{ $userError }}</div>
         @endif
         <input id="button_one_click" type="submit" value="{{ __('Register') }}">
-        <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
-        <a class="button" href="{{ route('login') }}">{{ __('Login') }}</a>
     </form>
 @endsection

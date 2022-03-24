@@ -15,7 +15,7 @@ class CreateAdminTable extends Migration
     {
         Schema::create('admin', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('user_id')->index('user_id');
+            $table->integer('user_id')->index('user_id')->onDelete('CASCADE');
         });
     }
 

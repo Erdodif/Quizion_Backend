@@ -39,8 +39,8 @@ class QuizTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'header' => 'Harmadik kvíz',
-                'description' => 'Harmadik kvíz leírás',
+                'header' => 'Harmadik kvíz header aminek nagyon hosszú lesz a címe azért hogy lehessen látni hogy fog kinézni',
+                'description' => 'Harmadik kvíz leírás ami egy nagyon hosszú leírás lesz hogy lehessen látni hogy mi történik amikor ilyen hosszú leírást kiiratunk',
                 'active' => 1,
                 'seconds_per_quiz' => 10,
             ),

@@ -23,5 +23,4 @@
         </div>
         <input type="submit" value="{{ __('Email Password Reset Link') }}">
     </form>
-    <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
 @endsection

@@ -6,7 +6,7 @@
     <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('login') }}">
         @csrf
-        <div>
+        <div class="margin_top">
             <input type="text" name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Email') }}" required>
         </div>
         <div>
@@ -24,8 +24,6 @@
             <span>{{ __('Remember me') }}</span>
         </label>
         <input id="button_one_click" type="submit" value="{{ __('Login') }}">
-        <a class="button" href="{{ route('index') }}">{{ __('Index') }}</a>
-        <a class="button" href="{{ route('register') }}">{{ __('Register') }}</a>
         <a id="forgot_your_password" class="button" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
     </form>
 @endsection

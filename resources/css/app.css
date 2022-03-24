@@ -1,9 +1,3 @@
-/*
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-*/
-
 :root {
     --primary: #50508E;
     --primary_variant: #211A52;
@@ -65,10 +59,10 @@ body {
     font-family: Montserrat;
     height: 100%;
 }
-.container {
+#container {
     width: 1300px;
     margin: 0 auto 30px auto;
-    padding: 1em 0 1em 0;
+    padding: 0 0 1em 0;
     background-color: var(--secondary);
 }
 .wrapper {
@@ -91,14 +85,9 @@ body {
     background-color: var(--secondary_variant);
 }
 @media screen and (max-width: 1359px) {
-    .container {
+    #container {
         width: 97%;
         margin: 0;
         padding: 10px 1.5% 15px 1.5%;
-    }
-}
-@media screen and (max-width: 500px) {
-    .header_background {
-        background-image: url("../images/header_background_mobile.svg");
     }
 }
