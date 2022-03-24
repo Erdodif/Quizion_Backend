@@ -11,12 +11,13 @@ use App\Models\Token;
 use App\Models\User;
 use Error;
 use Exception;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    static function addNew(UserRequest $request) : Data
+    static function addNew(UserRequest $request): Data
     {
         try {
             if ($request === null) {
@@ -159,6 +160,17 @@ class UserController extends Controller
         return UserController::getByName($identifier);
     }
 
+    public function isEmailVerified(Request $request)
+    {
+        $result = $this->login($request);
+        if ($result->status() !== ResponseCodes::ERROR_FORBIDDEN && $result->status() !== ResponseCodes::RESPONSE_CREATED) {
+            return $result;
+        }
+        return (new Data(
+            ResponseCodes::RESPONSE_OK,
+            new Message($result->status() == ResponseCodes::ERROR_FORBIDDEN ? "false" : "true", "verified", MESSAGE_TYPE_RAW)
+        ))->toResponse();
+    }
 
     /**
      * Display a listing of the resource.
@@ -238,11 +250,21 @@ class UserController extends Controller
                     ))->toResponse();
                 }
             }
+            $user = $result->getDataRaw();
+            if ($user->email_verified_at == null) {
+                return (new Data(
+                    ResponseCodes::ERROR_FORBIDDEN,
+                    Message::createBundle(
+                        new Message("Email not verified!", "error"),
+                        new Message("email", "cause")
+                    )
+                ))->toResponse();
+            }
             $stillNeeded = true;
             while ($stillNeeded) {
                 try {
                     $key = Token::createKey();
-                    $token = Token::create(array("user_id" => $result->getDataRaw()->id, "token" => $key));
+                    $token = Token::create(array("user_id" => $user->id, "token" => $key));
                     $token->save();
                     $stillNeeded = false;
                 } catch (Error $e) {
