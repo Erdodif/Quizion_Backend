@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/users/login', [UserController::class, 'login']);
+Route::post('/users/verified', [UserController::class, 'isEmailVerified']);
 Route::post('/users/register', [UserController::class, 'store']);
 Route::middleware('auth.token')->get('/quizzes/{quiz}/questions/count', [QuizQuestionController::class, 'count']);
 Route::middleware('auth.token')->get('/quizzes', [QuizController::class, 'index']);
