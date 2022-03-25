@@ -6,7 +6,6 @@
     <script>
         window.quizId = {{ Request::segment(2) }};
     </script>
-    <script src="{{ mix('js/variables.js') }}"></script>
     <script src="{{ mix('js/quiz.js') }}"></script>
 
     <div id="time_bar">

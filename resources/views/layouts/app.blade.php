@@ -10,6 +10,7 @@
         <link rel="icon" href="{{ url('favicon.ico') }}">
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
         <script src="{{ mix('js/loader.js') }}"></script>
+        <script src="{{ mix('js/variables.js') }}"></script>
         <title>Quizion @yield("title")</title>
     </head>
     <body>

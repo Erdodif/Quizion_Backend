@@ -1,7 +1,7 @@
 
 function loadQuizHeader(id)
 {
-    return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
+    return fetch(`${window.url}/api/quizzes/${id}`)
     .then(function (response) {
         return response.json();
     });
@@ -9,7 +9,7 @@ function loadQuizHeader(id)
 
 async function loadLeaderboard(id)
 {
-    let response = await fetch(`http://127.0.0.1:8000/api/leaderboard/${id}`);
+    let response = await fetch(`${window.url}/api/leaderboard/${id}`);
     let data = await response.json();
     document.getElementById("leaderboard").innerHTML = "";
     let rows = Object.keys(data).length;
