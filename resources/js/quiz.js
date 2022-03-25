@@ -1,65 +1,6 @@
 
 let dataLength = 0;
 
-function loadNumberOfQuestions()
-{
-    return fetch(`http://127.0.0.1:8000/api/quizzes/${window.quizCount}/questions/count`)
-    .then(function (response) {
-        return response.json();
-    });
-}
-
-function loadSecondsPerQuiz(id)
-{
-    return fetch(`http://127.0.0.1:8000/api/quizzes/${id}`)
-    .then(function (response) {
-        return response.json();
-    });
-}
-
-async function loadQuestion(id)
-{
-    let response = await fetch(`http://127.0.0.1:8000/api/play/${id}/question`);
-    let data = await response.json();
-    if (data.content == null) {
-        sessionStorage.removeItem("count");
-        sessionStorage.setItem("result", data.result);
-        window.location = `http://127.0.0.1:8000/leaderboard/${id}`;
-    }
-    else {
-        document.getElementById("question").innerHTML = data.content;
-    }
-}
-
-async function loadAnswers(id)
-{
-    let response = await fetch(`http://127.0.0.1:8000/api/play/${id}/answers`);
-    let data = await response.json();
-    document.getElementById("answers").innerHTML = "";
-    dataLength = Object.keys(data).length;
-    for (let i = 0; i < dataLength; i++) {
-        let answer = document.createElement("div");
-        answer.innerHTML = data[i].content;
-        answer.classList.add("quiz_answer");
-        answer.setAttribute("id", "answer" + (i + 1) + " " + data[i].id);
-        answer.addEventListener("click", () => answerOnClick("answer" + (i + 1) + " " + data[i].id));
-        document.getElementById("answers").appendChild(answer);
-    }
-}
-
-function resetTimeBarProgress() {
-    let animation = document.getElementById('time_bar_progress');
-    animation.style.animation = 'none';
-    animation.offsetHeight;
-    animation.style.animation = null;
-}
-
-async function progressBar(currentQuestion, numberOfQuestions)
-{
-    document.getElementById("progress_bar_color").style.width = (currentQuestion / numberOfQuestions * 100) + "%";
-    document.getElementById("progress_bar_text").innerHTML = currentQuestion + "/" + numberOfQuestions;
-}
-
 function idToChosen()
 {
     let answerIds = "";
@@ -85,6 +26,12 @@ function answerOnClick(selectedAnswerId)
     document.getElementById(selectedAnswerId).classList.toggle("selected");
 }
 
+function progressBar(currentQuestion, numberOfQuestions)
+{
+    document.getElementById("progress_bar_color").style.width = (currentQuestion / numberOfQuestions * 100) + "%";
+    document.getElementById("progress_bar_text").innerHTML = currentQuestion + "/" + numberOfQuestions;
+}
+
 function nextProgressBar() {
     let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
     currentQuestion = currentQuestion.split("/")[0];
@@ -92,12 +39,36 @@ function nextProgressBar() {
     progressBar(currentQuestion, sessionStorage.getItem("count"));
 }
 
+function resetTimeBarProgress() {
+    let animation = document.getElementById("time_bar_progress");
+    animation.style.animation = "none";
+    animation.offsetHeight;
+    animation.style.animation = null;
+}
+
+function showQuestion(question) {
+    document.getElementById("question").innerHTML = question;
+}
+
+function showAnswers(answers) {
+    dataLength = Object.keys(answers).length;
+    document.getElementById("answers").innerHTML = "";
+    for (let i = 0; i < dataLength; i++) {
+        let answer = document.createElement("div");
+        answer.innerHTML = answers[i].content;
+        answer.classList.add("quiz_answer");
+        answer.setAttribute("id", "answer" + (i + 1) + " " + answers[i].id);
+        answer.addEventListener("click", () => answerOnClick("answer" + (i + 1) + " " + answers[i].id));
+        document.getElementById("answers").appendChild(answer);
+    }
+}
+
 function play(id, nextButton)
 {
     nextButton.style.pointerEvents = "none";
     let array = idToChosen();
     const data = { chosen: array };
-    fetch(`http://127.0.0.1:8000/api/play/${id}/choose`, {
+    fetch(`${window.url}/api/play/${id}/choose`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -107,10 +78,7 @@ function play(id, nextButton)
     })
     .then((response) => {
         if (response.ok) {
-            loadQuestion(id);
-            loadAnswers(id);
-            resetTimeBarProgress();
-            nextProgressBar();
+            nextQuestion(id);
         }
         nextButton.style.pointerEvents = "auto";
     })
@@ -119,24 +87,54 @@ function play(id, nextButton)
     });
 }
 
+function nextQuestion(id) {
+    fetch(`${window.url}/api/play/${id}/question`)
+    .then((responseQuestion) => responseQuestion.json())
+    .then((responseQuestion) => {
+        if (responseQuestion.content == null) {
+            sessionStorage.removeItem("count");
+            sessionStorage.setItem("result", responseQuestion.result);
+            window.location = `${window.url}/leaderboard/${id}`;
+        }
+        else {
+            fetch(`${window.url}/api/play/${id}/answers`)
+            .then((responseAnswers) => responseAnswers.json())
+            .then((responseAnswers) => {
+                fetch(`${window.url}/api/quizzes/${id}`)
+                .then((responseSeconds) => responseSeconds.json())
+                .then((responseSeconds) => {
+                    fetch(`${window.url}/api/quizzes/${id}/questions/count`)
+                    .then((responseCount) => responseCount.json())
+                    .then((responseCount) => {
+                        document.documentElement.style.setProperty('--quiz_seconds', responseSeconds.seconds_per_quiz + "s");
+                        sessionStorage.setItem("header", responseSeconds.header);
+                        sessionStorage.setItem("count", responseCount.count);
+                        showQuestion(responseQuestion.content);
+                        showAnswers(responseAnswers);
+                        resetTimeBarProgress();
+                        if (sessionStorage.getItem("startProgressBar") > 1) {
+                            nextProgressBar();
+                        }
+                        else if (sessionStorage.getItem("startProgressBar") == 1) {
+                            progressBar(1, responseCount.count);
+                            sessionStorage.setItem("startProgressBar", 2);
+                        }
+                    });
+                });
+            });
+        }
+    })
+    .catch((error) => {
+        document.getElementById("error").innerHTML = error;
+    });
+}
+
 function init()
 {
-    loadQuestion(window.quizCount);
-    loadAnswers(window.quizCount);
-    loadSecondsPerQuiz(window.quizCount).then(function (response) {
-        (response) => response.json();
-        document.documentElement.style.setProperty('--quiz_seconds', response.seconds_per_quiz + "s");
-        sessionStorage.setItem("header", response.header);
-        const nextButton = document.getElementById("quiz_next_button");
-        if (nextButton) {
-            nextButton.addEventListener("click", () => play(nextButton.dataset.quizId, nextButton));
-        }
-    });
-    loadNumberOfQuestions().then(function (response) {
-        (response) => response.json();
-        progressBar(1, response.count);
-        sessionStorage.setItem("count", response.count);
-    });
+    const nextButton = document.getElementById("quiz_next_button");
+    nextButton.addEventListener("click", () => play(window.quizId, nextButton));
+    sessionStorage.setItem("startProgressBar", 1);
+    nextQuestion(window.quizId);
 }
 
 document.addEventListener("DOMContentLoaded", init);

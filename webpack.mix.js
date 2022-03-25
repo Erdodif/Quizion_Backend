@@ -16,4 +16,5 @@ mix
 .js('resources/js/leaderboard.js', 'public/js/leaderboard.js')
 .js('resources/js/form.js', 'public/js/form.js')
 .js('resources/js/loader.js', 'public/js/loader.js')
+.js('resources/js/variables.js', 'public/js/variables.js')
 .combine('resources/css/*.css','public/css/app.css');
