@@ -17,8 +17,7 @@ function idToChosen()
             array.splice(i, 1);
         }
     }
-    array = array.map(Number);
-    return array;
+    return array[0] != "" ? array.map(Number) : false;
 }
 
 function answerOnClick(selectedAnswerId)
@@ -67,24 +66,28 @@ function play(id, nextButton)
 {
     nextButton.style.pointerEvents = "none";
     let array = idToChosen();
-    const data = { chosen: array };
-    fetch(`${window.url}/api/play/${id}/choose`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        body: JSON.stringify(data)
-    })
-    .then((response) => {
-        if (response.ok) {
-            nextQuestion(id, nextButton);
-        }
+    if (array) {
+        const data = { chosen: array };
+        fetch(`${window.url}/api/play/${id}/choose`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+        .then((response) => {
+            if (response.ok) {
+                nextQuestion(id, nextButton);
+            }
+        })
+        .catch((error) => {
+            document.getElementById("error").innerHTML = error;
+        });
+    }
+    else {
         nextButton.style.pointerEvents = "auto";
-    })
-    .catch((error) => {
-        document.getElementById("error").innerHTML = error;
-    });
+    }
 }
 
 function nextQuestion(id, nextButton) {
