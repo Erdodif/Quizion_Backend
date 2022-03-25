@@ -62,3 +62,7 @@ input::placeholder {
 .margin_top {
     margin-top: 1rem;
 }
+#show_password {
+    width: 2rem;
+    cursor: pointer;
+}
