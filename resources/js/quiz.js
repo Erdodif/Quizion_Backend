@@ -78,16 +78,15 @@ function play(id, nextButton)
     })
     .then((response) => {
         if (response.ok) {
-            nextQuestion(id);
+            nextQuestion(id, nextButton);
         }
-        nextButton.style.pointerEvents = "auto";
     })
     .catch((error) => {
         document.getElementById("error").innerHTML = error;
     });
 }
 
-function nextQuestion(id) {
+function nextQuestion(id, nextButton) {
     fetch(`${window.url}/api/play/${id}/question`)
     .then((responseQuestion) => responseQuestion.json())
     .then((responseQuestion) => {
@@ -119,6 +118,7 @@ function nextQuestion(id) {
                             progressBar(1, responseCount.count);
                             sessionStorage.setItem("startProgressBar", 2);
                         }
+                        nextButton.style.pointerEvents = "auto";
                     });
                 });
             });
@@ -133,8 +133,9 @@ function init()
 {
     const nextButton = document.getElementById("quiz_next_button");
     nextButton.addEventListener("click", () => play(window.quizId, nextButton));
+    nextButton.style.pointerEvents = "none";
     sessionStorage.setItem("startProgressBar", 1);
-    nextQuestion(window.quizId);
+    nextQuestion(window.quizId, nextButton);
 }
 
 document.addEventListener("DOMContentLoaded", init);
