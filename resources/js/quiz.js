@@ -80,6 +80,7 @@ function play(id, nextButton)
         if (response.ok) {
             nextQuestion(id, nextButton);
         }
+        nextButton.style.pointerEvents = "auto";
     })
     .catch((error) => {
         document.getElementById("error").innerHTML = error;
