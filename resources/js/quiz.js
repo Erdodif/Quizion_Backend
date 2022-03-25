@@ -112,12 +112,12 @@ function nextQuestion(id, nextButton) {
                         showQuestion(responseQuestion.content);
                         showAnswers(responseAnswers);
                         resetTimeBarProgress();
-                        if (sessionStorage.getItem("startProgressBar") > 1) {
+                        if (!sessionStorage.getItem("startProgressBar")) {
                             nextProgressBar();
                         }
-                        else if (sessionStorage.getItem("startProgressBar") == 1) {
+                        else {
                             progressBar(1, responseCount.count);
-                            sessionStorage.setItem("startProgressBar", 2);
+                            sessionStorage.removeItem("startProgressBar");
                         }
                         nextButton.style.pointerEvents = "auto";
                     });
