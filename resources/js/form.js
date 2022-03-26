@@ -1,14 +1,6 @@
-function formDisable(button)
+function buttonDisable(button)
 {
-    let inputs = document.getElementsByTagName("input");
-    for (let i = 1; i < inputs.length; i++) {
-        inputs[i].disabled = true;
-    }
-    try {
-        document.getElementById("remember_me_label").style.cursor = "auto";
-        document.getElementById("remember_me").style.cursor = "auto";
-    }
-    catch (error) {}
+    button.disabled = true;
     button.style.cursor = "auto";
     button.style.backgroundColor = getComputedStyle(button).getPropertyValue("--on_primary");
     button.form.submit();
@@ -32,7 +24,7 @@ function showPassword() {
 function init()
 {
     let formButton = document.getElementById("button_one_click");
-    formButton.addEventListener("click", () => formDisable(formButton));
+    formButton.addEventListener("click", () => buttonDisable(formButton));
     document.getElementById("show_password").addEventListener("click", () => showPassword());
 }
 
