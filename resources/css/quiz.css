@@ -79,6 +79,9 @@
     font-size: small;
     cursor: pointer;
 }
+.disable {
+    pointer-events: none;
+}
 @media screen and (max-width: 1359px) {
     #progress_bar_border, #progress_bar_text {
         width: 97%;

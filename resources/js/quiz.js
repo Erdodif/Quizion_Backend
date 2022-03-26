@@ -38,8 +38,7 @@ function nextProgressBar() {
     progressBar(currentQuestion, sessionStorage.getItem("count"));
 }
 
-function resetTimeBarProgress() {
-    let animation = document.getElementById("time_bar_progress");
+function resetTimeBarProgress(animation) {
     animation.style.animation = "none";
     animation.offsetHeight;
     animation.style.animation = null;
@@ -62,9 +61,9 @@ function showAnswers(answers) {
     }
 }
 
-function play(id, nextButton, timedOut)
+function play(id, nextButton, animationTimeBar, timedOut)
 {
-    nextButton.style.pointerEvents = "none";
+    nextButton.classList.toggle("disable");
     let array = idToChosen();
     if (array || timedOut) {
         if (timedOut) {
@@ -81,7 +80,7 @@ function play(id, nextButton, timedOut)
         })
         .then((response) => {
             if (response.ok || response.status == 408) {
-                nextQuestion(id, nextButton);
+                nextQuestion(id, nextButton, animationTimeBar);
             }
         })
         .catch((error) => {
@@ -89,11 +88,11 @@ function play(id, nextButton, timedOut)
         });
     }
     else {
-        nextButton.style.pointerEvents = "auto";
+        nextButton.classList.toggle("disable");
     }
 }
 
-function nextQuestion(id, nextButton) {
+function nextQuestion(id, nextButton, animationTimeBar) {
     fetch(`${window.url}/api/play/${id}/question`)
     .then((responseQuestion) => responseQuestion.json())
     .then((responseQuestion) => {
@@ -117,17 +116,16 @@ function nextQuestion(id, nextButton) {
                         sessionStorage.setItem("count", responseCount.count);
                         showQuestion(responseQuestion.content);
                         showAnswers(responseAnswers);
-                        resetTimeBarProgress();
+                        resetTimeBarProgress(animationTimeBar);
                         if (!sessionStorage.getItem("start")) {
                             nextProgressBar();
                         }
                         else {
-                            let animation = document.getElementById("time_bar_progress");
-                            animation.addEventListener("animationend", () => play(id, nextButton, true));
+                            animationTimeBar.addEventListener("animationend", () => play(id, nextButton, animationTimeBar, true));
                             progressBar(1, responseCount.count);
                             sessionStorage.removeItem("start");
                         }
-                        nextButton.style.pointerEvents = "auto";
+                        nextButton.classList.toggle("disable");
                     });
                 });
             });
@@ -140,11 +138,12 @@ function nextQuestion(id, nextButton) {
 
 function init()
 {
+    const animationTimeBar = document.getElementById("time_bar_progress");
     const nextButton = document.getElementById("quiz_next_button");
-    nextButton.addEventListener("click", () => play(window.quizId, nextButton, false));
-    nextButton.style.pointerEvents = "none";
+    nextButton.addEventListener("click", () => play(window.quizId, nextButton, animationTimeBar, false));
+    nextButton.classList.toggle("disable");
     sessionStorage.setItem("start", 1);
-    nextQuestion(window.quizId, nextButton);
+    nextQuestion(window.quizId, nextButton, animationTimeBar);
 }
 
 document.addEventListener("DOMContentLoaded", init);
