@@ -16,7 +16,7 @@ class Question extends Table
     protected $table = "question";
     public $timestamps = false;
     protected $guarded = ["id"];
-    protected $hidden = ["quiz_id"];
+    /*protected $hidden = ["quiz_id"];*/
     
     function answers(): Collection|null
     {
