@@ -62,11 +62,14 @@ function showAnswers(answers) {
     }
 }
 
-function play(id, nextButton)
+function play(id, nextButton, timedOut)
 {
     nextButton.style.pointerEvents = "none";
     let array = idToChosen();
-    if (array) {
+    if (array || timedOut) {
+        if (timedOut) {
+            array = [0];
+        }
         const data = { chosen: array };
         fetch(`${window.url}/api/play/${id}/choose`, {
             method: "POST",
@@ -77,7 +80,7 @@ function play(id, nextButton)
             body: JSON.stringify(data)
         })
         .then((response) => {
-            if (response.ok) {
+            if (response.ok || response.status == 408) {
                 nextQuestion(id, nextButton);
             }
         })
@@ -115,12 +118,14 @@ function nextQuestion(id, nextButton) {
                         showQuestion(responseQuestion.content);
                         showAnswers(responseAnswers);
                         resetTimeBarProgress();
-                        if (!sessionStorage.getItem("startProgressBar")) {
+                        if (!sessionStorage.getItem("start")) {
                             nextProgressBar();
                         }
                         else {
+                            let animation = document.getElementById("time_bar_progress");
+                            animation.addEventListener("animationend", () => play(id, nextButton, true));
                             progressBar(1, responseCount.count);
-                            sessionStorage.removeItem("startProgressBar");
+                            sessionStorage.removeItem("start");
                         }
                         nextButton.style.pointerEvents = "auto";
                     });
@@ -136,9 +141,9 @@ function nextQuestion(id, nextButton) {
 function init()
 {
     const nextButton = document.getElementById("quiz_next_button");
-    nextButton.addEventListener("click", () => play(window.quizId, nextButton));
+    nextButton.addEventListener("click", () => play(window.quizId, nextButton, false));
     nextButton.style.pointerEvents = "none";
-    sessionStorage.setItem("startProgressBar", 1);
+    sessionStorage.setItem("start", 1);
     nextQuestion(window.quizId, nextButton);
 }
 
