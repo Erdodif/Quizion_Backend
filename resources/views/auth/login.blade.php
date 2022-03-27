@@ -7,10 +7,10 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="margin_top">
-            <input type="text" name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Email') }}" required>
+            <input type="text" name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Email') }}">
         </div>
         <div>
-            <input class="password" type="password" name="password" placeholder="{{ __('Password') }}" required>
+            <input class="password" type="password" name="password" placeholder="{{ __('Password') }}">
         </div>
         <img id="show_password" src="{{ url('images/show_password.png') }}" alt="Show Password" title="Show Password">
         @if ($errors->any())
