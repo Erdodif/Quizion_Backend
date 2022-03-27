@@ -40,6 +40,7 @@ class UserController extends Controller
             if ($problemhere == 100) {
                 throw new Error("Unsuccessful operation!");
             }
+            $user->sendEmailVerificationNotification();
             return new Data(
                 ResponseCodes::RESPONSE_CREATED,
                 $user
@@ -166,6 +167,20 @@ class UserController extends Controller
         ))->toResponse();
     }
 
+    public function resendEmailVerification(Request $request)
+    {
+        $result = $this->validateUserLogin($request);
+        if ($result->getCode() !== ResponseCodes::RESPONSE_OK){
+            return $result->toResponse();
+        }
+        $user = $result->getDataRaw();
+        $user->sendEmailVerificationNotification();
+        return (new Data(
+            ResponseCodes::RESPONSE_OK,
+            new Message("Email sent!")
+        ))->toResponse();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -216,6 +231,62 @@ class UserController extends Controller
         return static::addNew($request)->toResponse();
     }
 
+    public function validateUserLogin(Request $request):Data
+    {
+        if (isset($request->remember_token)) {
+            $remember = $request->remember_token;
+            $result = UserController::getByRemember($remember);
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
+                return new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Invalid or expired remember token!")
+                );
+            }
+        } else {
+            $userID = $request->userID;
+            $password = $request->password;
+            $result = UserController::getByAny($userID);
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !Hash::check($password, $result->getDataRaw()->password)) {
+                return new Data(
+                    ResponseCodes::ERROR_BAD_REQUEST,
+                    new Message("Invalid userID or password!")
+                );
+            }
+        }
+        return $result;
+    }
+
+    public function createTokenWithData(Request $request,User $user):Data
+    {
+        $stillNeeded = true;
+        while ($stillNeeded) {
+            try {
+                $key = Token::createKey();
+                $token = Token::create(array("user_id" => $user->id, "token" => $key));
+                $token->save();
+                $stillNeeded = false;
+            } catch (Error $e) {
+            }
+        }
+        $token->makeHidden(["user_id"]);
+        $token->makeVisible(["token"]);
+        if (isset($request->remember_token)) {
+            return new Data(
+                ResponseCodes::RESPONSE_CREATED,
+                $token
+            );
+        }
+        $remember = $user->remember_token;
+        return new Data(
+            ResponseCodes::RESPONSE_CREATED,
+            Message::createBundle(
+                new Message($token->user()->name, "userName"),
+                new Message($token->token, "token"),
+                new Message($remember, "remember_token")
+            )
+        );
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -224,25 +295,9 @@ class UserController extends Controller
             "password" => ['required_without:remember_token'],
         ]);
         try {
-            if (isset($request->remember_token)) {
-                $remember = $request->remember_token;
-                $result = UserController::getByRemember($remember);
-                if ($result->getCode() !== ResponseCodes::RESPONSE_OK) {
-                    return (new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("Invalid or expired remember token!")
-                    ))->toResponse();
-                }
-            } else {
-                $userID = $request->userID;
-                $password = $request->password;
-                $result = UserController::getByAny($userID);
-                if ($result->getCode() !== ResponseCodes::RESPONSE_OK || !Hash::check($password, $result->getDataRaw()->password)) {
-                    return (new Data(
-                        ResponseCodes::ERROR_BAD_REQUEST,
-                        new Message("Invalid userID or password!")
-                    ))->toResponse();
-                }
+            $result = $this->validateUserLogin($request);
+            if ($result->getCode() !== ResponseCodes::RESPONSE_OK){
+                return $result->toResponse();
             }
             $user = $result->getDataRaw();
             if ($user->email_verified_at == null) {
@@ -254,33 +309,7 @@ class UserController extends Controller
                     )
                 ))->toResponse();
             }
-            $stillNeeded = true;
-            while ($stillNeeded) {
-                try {
-                    $key = Token::createKey();
-                    $token = Token::create(array("user_id" => $user->id, "token" => $key));
-                    $token->save();
-                    $stillNeeded = false;
-                } catch (Error $e) {
-                }
-            }
-            $token->makeHidden(["user_id"]);
-            $token->makeVisible(["token"]);
-            if (isset($request->remember_token)) {
-                return (new Data(
-                    ResponseCodes::RESPONSE_CREATED,
-                    $token
-                ))->toResponse();
-            }
-            $remember = $result->getDataRaw()->remember_token;
-            return (new Data(
-                ResponseCodes::RESPONSE_CREATED,
-                Message::createBundle(
-                    new Message($token->user()->name, "userName"),
-                    new Message($token->token, "token"),
-                    new Message($remember, "remember_token")
-                )
-            ))->toResponse();
+            return $this->createTokenWithData($request,$user)->toResponse();
         } catch (Error $e) {
             return (new Data(
                 ResponseCodes::ERROR_INTERNAL,
