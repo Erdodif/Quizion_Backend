@@ -5,14 +5,14 @@
 @section("content")
     <script src="{{ mix('js/form.js') }}"></script>
     @if (session('status'))
-        <div id="forgot_password_status">
+        <div id="info">
             {{ session('status') }}
         </div>
     @endif
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
         <div class="margin_top">
-            <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required>
+            <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}">
         </div>
         @if ($errors->any())
             @foreach ($errors->all() as $error)

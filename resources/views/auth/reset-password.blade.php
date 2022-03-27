@@ -3,26 +3,25 @@
 @section("title", "Reset Password")
 
 @section("content")
+    <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
-        <div>
-            <label for="email">Email</label>
-            <input type="text" id="email" name="email" value="{{ old('email') }}" required>
+        <div class="margin_top">
+            <input type="text" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}">
         </div>
         <div>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" value="" required>
+            <input class="password" type="password" name="password" placeholder="{{ __('Password') }}">
         </div>
         <div>
-            <label for="password_confirmation_id">Confirm Password </label>
-            <input type="password" id="password_confirmation_id" name="password_confirmation" value="" required>
+            <input class="password" type="password" name="password_confirmation" placeholder="{{ __('Confirm Password') }}">
         </div>
+        <img id="show_password" src="{{ url('images/show_password.png') }}" alt="Show Password" title="Show Password">
         @if ($errors->any())
             @foreach ($errors->all() as $error)
                 <div class="error_message">{{ $error }}</div>
             @endforeach
         @endif
-        <input type="submit" value="{{ __('Reset Password') }}">
+        <input id="button_one_click" type="submit" value="{{ __('Reset Password') }}">
     </form>
 @endsection
