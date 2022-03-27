@@ -7,17 +7,18 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <div class="margin_top">
-            <input type="text" name="name" value="{{ old('name') }}" placeholder="{{ __('Username') }}" required>
+            <input type="text" name="name" value="{{ old('name') }}" placeholder="{{ __('Username') }}">
         </div>
         <div>
-            <input type="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}" required>
+            <input type="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}">
         </div>
         <div>
-            <input type="password" name="password" placeholder="{{ __('Password') }}" required>
+            <input class="password" type="password" name="password" placeholder="{{ __('Password') }}">
         </div>
         <div>
-            <input type="password" name="password_confirmation" placeholder="{{ __('Confirm Password') }}" required>
+            <input class="password" type="password" name="password_confirmation" placeholder="{{ __('Confirm Password') }}">
         </div>
+        <img id="show_password" src="{{ url('images/show_password.png') }}" alt="Show Password" title="Show Password">
         @if ($errors->any())
             @foreach ($errors->all() as $error)
                 <div class="error_message">{{ $error }}</div>

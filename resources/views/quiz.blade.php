@@ -4,7 +4,7 @@
 
 @section("content")
     <script>
-        window.quizCount = {{ Request::segment(2) }};
+        window.quizId = {{ Request::segment(2) }};
     </script>
     <script src="{{ mix('js/quiz.js') }}"></script>
 
@@ -18,7 +18,7 @@
 
     <div id="question" class="quiz_question"></div>
     <div id="answers"></div>
-    <div class="button next_question" id="quiz_next_button" data-quiz-id="{{ Request::segment(2) }}">Next</div>
+    <div class="button next_question" id="quiz_next_button">Next</div>
 
     <div id="progress_bar">
         <div id="progress_bar_color"></div>

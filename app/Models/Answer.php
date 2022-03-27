@@ -14,7 +14,7 @@ class Answer extends Table
     protected $table = "answer";
     public $timestamps = false;
     protected $guarded = ["id"];
-    protected $hidden = ["question_id", "is_right"];
+    /*protected $hidden = ["question_id", "is_right"];*/
 
     static function getAllByQuestion($question_id): Data
     {
