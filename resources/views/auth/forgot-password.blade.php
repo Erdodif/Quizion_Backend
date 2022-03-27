@@ -3,24 +3,22 @@
 @section("title", "Forgot Password")
 
 @section("content")
-    {{--
-    @if ($status)
-        <div>
-            {{ $status }}
+    <script src="{{ mix('js/form.js') }}"></script>
+    @if (session('status'))
+        <div id="forgot_password_status">
+            {{ session('status') }}
         </div>
-    @endif
-    --}}
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
     @endif
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
-        <div>
-            <label for="email">Email</label>
-            <input type="text" id="email" name="email" value="{{ old('email') }}" required>
+        <div class="margin_top">
+            <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required>
         </div>
-        <input type="submit" value="{{ __('Email Password Reset Link') }}">
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div class="error_message">{{ $error }}</div>
+            @endforeach
+        @endif
+        <input id="button_one_click" type="submit" value="{{ __('Email Password Reset Link') }}">
     </form>
 @endsection
