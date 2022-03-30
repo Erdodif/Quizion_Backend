@@ -25,6 +25,18 @@ function answerOnClick(selectedAnswerId)
     document.getElementById(selectedAnswerId).classList.toggle("selected");
 }
 
+function setQuizSecondsToAnimationTimeBar(seconds) {
+    document.documentElement.style.setProperty('--quiz_seconds', seconds + "s");
+}
+
+function setSessionStorageHeader(header) {
+    sessionStorage.setItem("header", header);
+}
+
+function setSessionStorageCount(count) {
+    sessionStorage.setItem("count", count);
+}
+
 function progressBar(currentQuestion, numberOfQuestions)
 {
     document.getElementById("progress_bar_color").style.width = (currentQuestion / numberOfQuestions * 100) + "%";
@@ -61,7 +73,7 @@ function showAnswers(answers) {
     }
 }
 
-function play(id, nextButton, animationTimeBar, timedOut)
+function chooseAnswer(id, nextButton, animationTimeBar, timedOut)
 {
     nextButton.classList.toggle("disable");
     let array = idToChosen();
@@ -105,29 +117,31 @@ function nextQuestion(id, nextButton, animationTimeBar) {
             fetch(`${window.url}/api/play/${id}/answers`)
             .then((responseAnswers) => responseAnswers.json())
             .then((responseAnswers) => {
-                fetch(`${window.url}/api/quizzes/${id}`)
-                .then((responseSeconds) => responseSeconds.json())
-                .then((responseSeconds) => {
-                    fetch(`${window.url}/api/quizzes/${id}/questions/count`)
-                    .then((responseCount) => responseCount.json())
-                    .then((responseCount) => {
-                        document.documentElement.style.setProperty('--quiz_seconds', responseSeconds.seconds_per_quiz + "s");
-                        sessionStorage.setItem("header", responseSeconds.header);
-                        sessionStorage.setItem("count", responseCount.count);
-                        showQuestion(responseQuestion.content);
-                        showAnswers(responseAnswers);
-                        resetTimeBarProgress(animationTimeBar);
-                        if (!sessionStorage.getItem("start")) {
-                            nextProgressBar();
-                        }
-                        else {
-                            animationTimeBar.addEventListener("animationend", () => play(id, nextButton, animationTimeBar, true));
+                if (!sessionStorage.getItem("start")) {
+                    showQuestion(responseQuestion.content);
+                    showAnswers(responseAnswers);
+                    nextProgressBar();
+                    resetTimeBarProgress(animationTimeBar);
+                    nextButton.classList.toggle("disable");
+                }
+                else {
+                    fetch(`${window.url}/api/quizzes/${id}`)
+                    .then((responseQuiz) => responseQuiz.json())
+                    .then((responseQuiz) => {
+                        fetch(`${window.url}/api/quizzes/${id}/questions/count`)
+                        .then((responseCount) => responseCount.json())
+                        .then((responseCount) => {
+                            setQuizSecondsToAnimationTimeBar(responseQuiz.seconds_per_quiz);
                             progressBar(1, responseCount.count);
+                            setSessionStorageHeader(responseQuiz.header);
+                            setSessionStorageCount(responseCount.count);
+                            showQuestion(responseQuestion.content);
+                            showAnswers(responseAnswers);
                             sessionStorage.removeItem("start");
-                        }
-                        nextButton.classList.toggle("disable");
+                            nextButton.classList.toggle("disable");
+                        });
                     });
-                });
+                }
             });
         }
     })
@@ -138,9 +152,10 @@ function nextQuestion(id, nextButton, animationTimeBar) {
 
 function init()
 {
-    const animationTimeBar = document.getElementById("time_bar_progress");
     const nextButton = document.getElementById("quiz_next_button");
-    nextButton.addEventListener("click", () => play(window.quizId, nextButton, animationTimeBar, false));
+    const animationTimeBar = document.getElementById("time_bar_progress");
+    nextButton.addEventListener("click", () => chooseAnswer(window.quizId, nextButton, animationTimeBar, false));
+    animationTimeBar.addEventListener("animationend", () => chooseAnswer(window.quizId, nextButton, animationTimeBar, true));
     nextButton.classList.toggle("disable");
     sessionStorage.setItem("start", 1);
     nextQuestion(window.quizId, nextButton, animationTimeBar);
