@@ -26,6 +26,7 @@ function answerOnClick(selectedAnswerId)
 }
 
 function setQuizSecondsToAnimationTimeBar(seconds) {
+    seconds++;
     document.documentElement.style.setProperty('--quiz_seconds', seconds + "s");
 }
 
