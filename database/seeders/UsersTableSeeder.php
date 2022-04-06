@@ -76,6 +76,16 @@ class UsersTableSeeder extends Seeder
                 'password' => '$argon2i$v=19$m=16,t=2,p=1$MTIzNDU2Nzg$f0d2gwsV1GILlR7zQjSplw', //test
                 'remember_token' => 'e&265d1dac3746eab9acbe7f506d389752b26adb7193a719f4807e33ee4a5035c',
                 'xp' => 0,
+            ),
+            6 =>
+            array (
+                'id' => 8,
+                'name' => 'testverified',
+                'email' => 'testverified@testverified.com',
+                'email_verified_at' => null,
+                'password' => '$argon2i$v=19$m=16,t=2,p=1$MTIzNDU2Nzg$f0d2gwsV1GILlR7zQjSplw', //test
+                'remember_token' => 'e&265d1dac3746eab9acbe7f506d389752b26adb7193a719f4807e33ee4a5035d',
+                'xp' => 0,
             )
         ));
     }

@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 use App\Companion\Data;
 use App\Companion\Message;
+use App\Http\Controllers\API\QuestionController;
+use App\Http\Controllers\API\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizQuestionController;
 use Database\Seeders\QuestionTableSeeder;
@@ -24,4 +26,15 @@ class QuizTest extends DataTestCase
         $response =  QuizQuestionController::getCountByQuiz(100);
         $this->responseAssertion($response,404,'{"message":"Quiz #100 not found!"}');
     }
+
+    public function test_first_quiz_count_question_warning()
+    {
+        $this->assertNotEquals('{"count":3}', QuizQuestionController::getCountByQuiz(1)->toResponse()->content());
+    }
+
+    public function test_notEmptyQuizClass()
+    {
+        $this->assertNotEmpty(Quiz::class);
+    }
+
 }
