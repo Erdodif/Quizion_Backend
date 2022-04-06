@@ -37,7 +37,7 @@ class AdminTableSeeder extends Seeder
             0 =>
             array (
                 'id' => 3,
-                'user_id' => 6,
+                'user_id' => 7,
             ),
         ));
 
