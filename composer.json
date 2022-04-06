@@ -34,6 +34,11 @@
         }
     },
     "scripts": {
+        "clear-optimize":[
+            "composer dump-autoload",
+            "@php artisan clear-compile",
+            "@php artisan optimize"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -60,6 +65,9 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
+    },
+    "scripts-descriptions": {
+        "clear-optimize":"Refreshes the autoload files, and clears the cashe used to save route and test modifications"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
