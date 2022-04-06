@@ -15,7 +15,7 @@ class CreateGamingTable extends Migration
     {
         Schema::create('gaming', function (Blueprint $table) {
             $table->integer('id',true);
-            $table->integer('user_id')->index('user_id');
+            $table->integer('user_id')->index();
             $table->integer('quiz_id');
             $table->integer('current')->default(1);
             $table->integer('right')->default(0);
@@ -23,7 +23,7 @@ class CreateGamingTable extends Migration
             $table->timestamp('updated_at')->useCurrent();
             $table->boolean('question_started')->default(false);
 
-            $table->unique(['quiz_id', 'user_id'], 'quiz_id');
+            $table->unique(['quiz_id', 'user_id']);
         });
     }
 

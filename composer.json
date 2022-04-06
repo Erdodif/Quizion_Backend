@@ -51,6 +51,15 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "test": [
+            "@php artisan config:clear && @php artisan test"
+        ],
+        "test-web": [
+            "@php artisan config:clear && @php artisan test --testsuite Feature"
+        ],
+        "test-database": [ 
+            "@php artisan config:clear && @php artisan test --testsuite Unit"
         ]
     },
     "extra": {

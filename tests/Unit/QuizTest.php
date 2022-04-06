@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+<<<<<<< HEAD
 use App\Http\Controllers\API\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizQuestionController;
@@ -11,13 +12,29 @@ use Tests\TestCase;
 
 
 class QuizTest extends TestCase
-{
-    use RefreshDatabase;
+=======
+use App\Companion\Data;
+use App\Companion\Message;
+use App\Http\Controllers\API\QuizController;
+use App\Http\Controllers\API\QuizQuestionController;
+use Database\Seeders\QuestionTableSeeder;
+use Database\Seeders\QuizTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-    public function test_first_quiz_count_question()
+class QuizTest extends DataTestCase
+>>>>>>> 2c1da35749c8e731aa4ce7e640086798be42237d
+{
+    public function test_first_quiz_count_existing()
     {
-        $this->seed();
-        $this->assertEquals('{"count":2}', QuizQuestionController::getCountByQuiz(1)->toResponse()->content());
+        $response =  QuizQuestionController::getCountByQuiz(1);
+        $this->responseAssertion($response,200,'{"count":2}');
+    }
+
+    public function test_first_quiz_count_missing()
+    {
+        $response =  QuizQuestionController::getCountByQuiz(100);
+        $this->responseAssertion($response,404,'{"message":"Quiz #100 not found!"}');
     }
 
     public function test_first_quiz_count_question_warning()
