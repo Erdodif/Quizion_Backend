@@ -54,6 +54,12 @@
         ],
         "test": [
             "@php artisan config:clear && @php artisan test"
+        ],
+        "test-web": [
+            "@php artisan config:clear && @php artisan test --testsuite Feature"
+        ],
+        "test-database": [ 
+            "@php artisan config:clear && @php artisan test --testsuite Unit"
         ]
     },
     "extra": {
