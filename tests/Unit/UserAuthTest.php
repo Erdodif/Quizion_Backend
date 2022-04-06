@@ -30,7 +30,7 @@ class UserAuthTest extends DataTestCase
         ]);
         $this->testResponseAssertion($response,400);
     }
-    
+
     public function test_register_number()
     {
         $response = $this->post('/api/users/register', [
@@ -124,7 +124,7 @@ class UserAuthTest extends DataTestCase
         $response = $this->post('/api/users/register', [
             'name' => 'RegisterTestUser',
             'email' => 'registertest@test.com',
-            'password' => 'PASSWORD123',
+            'password' => 'PASSWORDpassword',
             'password_confirmation' => 'PASSWORDpassword',
         ],['accept'=>'application/json']);
         $this->testResponseAssertion($response,422);
