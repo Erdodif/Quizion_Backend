@@ -33,6 +33,13 @@ class AdminTableSeeder extends Seeder
                 'user_id' => 5,
             ),
         ));
+        DB::table('admin')->insert(array (
+            0 =>
+            array (
+                'id' => 3,
+                'user_id' => 7,
+            ),
+        ));
 
 
     }
