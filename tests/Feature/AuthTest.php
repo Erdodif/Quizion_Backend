@@ -8,20 +8,30 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
-{/*
+{
     use RefreshDatabase;
 
-    //JAVÍT
     public function test_login()
     {
         $this->seed(UsersTableSeeder::class);
-        //$this->seed();
         $response = $this->post("/login", [
-            "login" => "somass",
-            "password" => "123456789",
+            "login" => "test",
+            "password" => "test",
             "remember" => false
         ]);
-        //$this->assertAuthenticated();
+        $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
-    }*/
+    }
+
+    public function test_register()
+    {
+        $response = $this->post('/register', [
+            'name' => 'RegisterTestUser',
+            'email' => 'registertest@test.com',
+            'password' => 'Password123',
+            'password_confirmation' => 'Password123',
+        ]);
+        $this->assertAuthenticated();
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
 }
