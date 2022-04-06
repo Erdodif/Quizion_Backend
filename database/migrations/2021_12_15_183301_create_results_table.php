@@ -15,8 +15,8 @@ class CreateResultsTable extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('user_id')->index('user_id');
-            $table->integer('quiz_id')->index('quiz_id');
+            $table->integer('user_id')->index();
+            $table->integer('quiz_id')->index();
             $table->integer('points')->default(0);
         });
     }
