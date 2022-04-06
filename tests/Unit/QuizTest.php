@@ -6,6 +6,8 @@ use App\Companion\Data;
 use App\Companion\Message;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizQuestionController;
+use Database\Seeders\QuestionTableSeeder;
+use Database\Seeders\QuizTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
