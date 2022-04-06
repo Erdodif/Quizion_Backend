@@ -77,7 +77,7 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => 'e&265d1dac3746eab9acbe7f506d389752b26adb7193a719f4807e33ee4a5035c',
                 'xp' => 0,
             ),
-            5 =>
+            6 =>
             array (
                 'id' => 8,
                 'name' => 'testverified',
