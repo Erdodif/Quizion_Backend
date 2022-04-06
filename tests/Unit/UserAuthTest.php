@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Providers\RouteServiceProvider;
 use Database\Seeders\UsersTableSeeder;
@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Unit\DataTestCase;
 
-class AuthTest extends DataTestCase
+class UserAuthTest extends DataTestCase
 {
 
     public function test_login()
