@@ -57,6 +57,16 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => 'e&260d4edc3746eab9bcbe7f506d37975b11adb7083a719f4807e33ee4a5035b',
                 'xp' => 0,
             ),
+            4 =>
+            array (
+                'id' => 6,
+                'name' => 'test',
+                'email' => 'test@test.com',
+                'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'password' => '$argon2i$v=19$m=16,t=2,p=1$MTIzNDU2Nzg$f0d2gwsV1GILlR7zQjSplw', //test
+                'remember_token' => 'e&264d1dac3746eab9acbe7f506d389752b26adb7193a719f4807e33ee4a5035b',
+                'xp' => 0,
+            ),
         ));
     }
 }
