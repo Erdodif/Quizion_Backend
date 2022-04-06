@@ -28,10 +28,10 @@ class DataTestCase extends TestCase
         }
         $this->assertEquals($responseCode,$response->getCode());
     }
-
-    protected function testResponseAssertion(TestResponse $response,int $responseCode = 200, ?string $responseString = null){
-        if($responseString !== null){
-            $this->assertEquals($responseString,$response->streamedContent);
+    
+    protected function testResponseAssertion(TestResponse $response,int $responseCode = 200, ?array $responseJson = null){
+        if($responseJson !== null){
+            $response->assertExactJson($responseJson);
         }
         $response->assertStatus($responseCode);
     }
