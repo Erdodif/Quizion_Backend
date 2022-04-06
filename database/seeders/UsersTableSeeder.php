@@ -79,7 +79,7 @@ class UsersTableSeeder extends Seeder
             ),
             5 =>
             array (
-                'id' => 7,
+                'id' => 8,
                 'name' => 'testverified',
                 'email' => 'testverified@testverified.com',
                 'email_verified_at' => null,
