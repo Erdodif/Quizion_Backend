@@ -2,19 +2,10 @@
 
 namespace Tests\Unit;
 
-<<<<<<< HEAD
-use App\Http\Controllers\API\QuizAnswerController;
-use App\Http\Controllers\API\QuizController;
-use App\Http\Controllers\API\QuizQuestionController;
-use CreateQuizTable;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-
-
-class QuizTest extends TestCase
-=======
 use App\Companion\Data;
 use App\Companion\Message;
+use App\Http\Controllers\API\QuestionController;
+use App\Http\Controllers\API\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizQuestionController;
 use Database\Seeders\QuestionTableSeeder;
@@ -23,7 +14,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class QuizTest extends DataTestCase
->>>>>>> 2c1da35749c8e731aa4ce7e640086798be42237d
 {
     public function test_first_quiz_count_existing()
     {
@@ -39,14 +29,12 @@ class QuizTest extends DataTestCase
 
     public function test_first_quiz_count_question_warning()
     {
-        $this->seed();
         $this->assertNotEquals('{"count":3}', QuizQuestionController::getCountByQuiz(1)->toResponse()->content());
     }
 
-    /*public function test_quiz()
+    public function test_notEmptyQuizClass()
     {
-        $this->seed();
-        $this->assertEmpty(Quiz::class);
+        $this->assertNotEmpty(Quiz::class);
     }
-    */
+
 }
