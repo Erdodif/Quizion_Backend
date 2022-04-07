@@ -53,7 +53,7 @@
             "@php artisan key:generate --ansi"
         ],
         "test": [
-            "@php artisan config:clear && @php artisan test"
+            "@php artisan config:clear && @php artisan test --without-tty"
         ],
         "test-web": [
             "@php artisan config:clear && @php artisan test --without-tty --testsuite Feature"
