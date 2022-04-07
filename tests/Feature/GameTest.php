@@ -116,7 +116,7 @@ class GameTest extends AuthenticatedTestCase
         assertEquals($response->json("users")["points"], 50);
     }
 
-    public function test_game_full_game_high_score()
+    public function test_game_two_game_high_score()
     {
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
@@ -129,7 +129,7 @@ class GameTest extends AuthenticatedTestCase
         assertEquals($response->json("users")["points"], 300);
     }
 
-    public function test_game_full_game_worse_score()
+    public function test_game_two_game_worse_score()
     {
         $this->play_max_points();
         $response = $this->getWithToken("api/ranking/1");
@@ -139,7 +139,7 @@ class GameTest extends AuthenticatedTestCase
         assertEquals($response->json("users")["points"], 300);
     }
 
-    public function test_game_full_game_same_score()
+    public function test_game_two_game_same_score()
     {
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
