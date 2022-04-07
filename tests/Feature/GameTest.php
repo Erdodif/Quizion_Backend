@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Models\Game;
 use Tests\Unit\Classes\AuthenticatedTestCase;
@@ -20,5 +20,10 @@ class GameTest extends AuthenticatedTestCase
     public function test_game_create_exist(){
         $response = $this->postWithToken("api/play/newgame/1");
         $this->testResponseAssertion($response,500);
+    }
+
+    public function test_game_get_state(){
+        $response = $this->getWithToken("api/play/1/state");
+        $this->testResponseAssertion($response,200);
     }
 }
