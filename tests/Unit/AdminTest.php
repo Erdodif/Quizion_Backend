@@ -65,7 +65,4 @@ class AdminTest extends AuthenticatedAdminTestCase
         $this->testResponseAssertion($response, 404);
     }
 
-   
-
 }
-
