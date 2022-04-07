@@ -2,9 +2,6 @@
 
 namespace Tests\Unit\Classes;
 
-use Database\Seeders\DatabaseSeeder;
-use Illuminate\Testing\TestResponse;
-
 class AuthenticatedAdminTestCase extends AuthenticatedTestCase
 {
     protected $token;
@@ -12,7 +9,7 @@ class AuthenticatedAdminTestCase extends AuthenticatedTestCase
     public function refreshToken()
     {
         $this->token = $this->post("/api/users/login", [
-            "userID" => "test",
+            "userID" => "testadmin",
             "password" => "test"
         ])->json("token");
     }
