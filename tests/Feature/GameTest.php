@@ -123,7 +123,6 @@ class GameTest extends AuthenticatedTestCase
         echo var_export($response->json());
         assertEquals($response->json("users")["points"], 50);
         $this->play_max_points();
-        sleep(2);
         $response = $this->getWithToken("api/ranking/1");
         echo var_export($response->json());
         assertEquals($response->json("users")["points"], 300);
