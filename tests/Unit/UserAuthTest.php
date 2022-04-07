@@ -2,11 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Providers\RouteServiceProvider;
-use Database\Seeders\UsersTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use Tests\Unit\DataTestCase;
+use Tests\Unit\Classes\DataTestCase;
 
 class UserAuthTest extends DataTestCase
 {

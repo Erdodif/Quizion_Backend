@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Classes;
 
 use App\Companion\Data;
 use App\Companion\Message;
