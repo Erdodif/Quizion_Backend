@@ -56,10 +56,13 @@
             "@php artisan config:clear && @php artisan test"
         ],
         "test-web": [
-            "@php artisan config:clear && @php artisan test --testsuite Feature"
+            "@php artisan config:clear && @php artisan test --without-tty --testsuite Feature"
         ],
         "test-database": [ 
-            "@php artisan config:clear && @php artisan test --testsuite Unit"
+            "@php artisan config:clear && @php artisan test --without-tty --testsuite Unit"
+        ],
+        "test-game": [ 
+            "@php artisan config:clear && @php artisan test --without-tty --filter GameTest"
         ]
     },
     "extra": {
