@@ -83,6 +83,7 @@ class GameTest extends AuthenticatedTestCase
     }
 
     private function play_max_points():TestResponse{
+        $this->postWithToken("api/play/newgame/1");
         $this->getWithToken("api/play/1/question");
         $this->postWithToken("api/play/1/choose", ["chosen" => [1,2]]);
         $this->getWithToken("api/play/1/question");
@@ -91,6 +92,7 @@ class GameTest extends AuthenticatedTestCase
     }
 
     private function play_half_points():TestResponse{
+        $this->postWithToken("api/play/newgame/1");
         $this->getWithToken("api/play/1/question");
         $this->postWithToken("api/play/1/choose", ["chosen" => [1]]);
         $this->getWithToken("api/play/1/question");
@@ -120,11 +122,9 @@ class GameTest extends AuthenticatedTestCase
     {
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
-        echo var_export($response->json());
         assertEquals($response->json("users")["points"], 50);
         $this->play_max_points();
         $response = $this->getWithToken("api/ranking/1");
-        echo var_export($response->json());
         assertEquals($response->json("users")["points"], 300);
     }
 
