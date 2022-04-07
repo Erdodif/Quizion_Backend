@@ -13,7 +13,7 @@ use Database\Seeders\QuizTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class QuizTest extends DataTestCase
+class QuizTest extends AuthenticatedTestCase
 {
     public function test_first_quiz_count_existing()
     {
