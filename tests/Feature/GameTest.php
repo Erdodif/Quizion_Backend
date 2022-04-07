@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Game;
+use App\Models\User;
 use Tests\Unit\Classes\AuthenticatedTestCase;
 
 class GameTest extends AuthenticatedTestCase
@@ -24,6 +25,8 @@ class GameTest extends AuthenticatedTestCase
 
     public function test_game_get_state(){
         $response = $this->getWithToken("api/play/1/state");
-        $this->testResponseAssertion($response,200);
+        $this->testResponseAssertion($response,200,["current"=>1]);
     }
+
+    
 }

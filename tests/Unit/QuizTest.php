@@ -29,4 +29,10 @@ class QuizTest extends AuthenticatedTestCase
         $this->assertNotEmpty(Quiz::class);
     }
 
+    public function test_get_quizzes()
+    {
+        $response = $this->getWithToken("api/quizzes");
+        $this->testResponseAssertion($response,200);    
+    }
+
 }
