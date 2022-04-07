@@ -21,4 +21,9 @@ class AuthenticatedTestCase extends DataTestCase
     {
         return $this->post($uri,$data,array_merge($headers,["Authorization"=>"Bearer ".$this->token, "Accept"=>"application/json"]));
     }
+
+    public function getWithToken($uri, array $data = [], array $headers = [])
+    {
+        return $this->get($uri,$data,array_merge($headers,["Authorization"=>"Bearer ".$this->token, "Accept"=>"application/json"]));
+    }
 }
