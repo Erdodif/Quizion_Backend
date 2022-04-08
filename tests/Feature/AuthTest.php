@@ -83,7 +83,7 @@ class AuthTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
     }
 
-    public function test_email_verify_with_invalid_hash()
+    public function test_email_verify_with_wrong_email()
     {
         $this->seed(UsersTableSeeder::class);
         $user = User::where('email_verified_at', "=", null)->first();
@@ -169,7 +169,7 @@ class AuthTest extends TestCase
         });
     }
 
-    public function test_password_with_right_password()
+    public function test_confirm_password_with_right_password()
     {
         $this->seed(UsersTableSeeder::class);
         $user = User::where('name', "=", 'test')->first();
@@ -182,7 +182,7 @@ class AuthTest extends TestCase
         $response->assertSessionHasNoErrors();
     }
 
-    public function test_password_with_wrong_password()
+    public function test_confirm_password_with_wrong_password()
     {
         $this->seed(UsersTableSeeder::class);
         $user = User::where('name', "=", 'test')->first();

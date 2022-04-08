@@ -82,8 +82,8 @@ class GameTest extends AuthenticatedTestCase
         $this->testResponseAssertion($response, 400);
     }
 
-    private function play_max_points():TestResponse{
-        $this->postWithToken("api/play/newgame/1");
+    private function play_max_points() : TestResponse
+    {
         $this->getWithToken("api/play/1/question");
         $this->postWithToken("api/play/1/choose", ["chosen" => [1,2]]);
         $this->getWithToken("api/play/1/question");
@@ -91,8 +91,8 @@ class GameTest extends AuthenticatedTestCase
         return $this->getWithToken("api/play/1/question");
     }
 
-    private function play_half_points():TestResponse{
-        $this->postWithToken("api/play/newgame/1");
+    private function play_half_points() : TestResponse
+    {
         $this->getWithToken("api/play/1/question");
         $this->postWithToken("api/play/1/choose", ["chosen" => [1]]);
         $this->getWithToken("api/play/1/question");
@@ -123,6 +123,7 @@ class GameTest extends AuthenticatedTestCase
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
         assertEquals($response->json("users")["points"], 50);
+        $this->postWithToken("api/play/newgame/1");
         $this->play_max_points();
         $response = $this->getWithToken("api/ranking/1");
         assertEquals($response->json("users")["points"], 300);
@@ -133,6 +134,7 @@ class GameTest extends AuthenticatedTestCase
         $this->play_max_points();
         $response = $this->getWithToken("api/ranking/1");
         assertEquals($response->json("users")["points"], 300);
+        $this->postWithToken("api/play/newgame/1");
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
         assertEquals($response->json("users")["points"], 300);
@@ -143,6 +145,7 @@ class GameTest extends AuthenticatedTestCase
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
         assertEquals($response->json("users")["points"], 50);
+        $this->postWithToken("api/play/newgame/1");
         $this->play_half_points();
         $response = $this->getWithToken("api/ranking/1");
         assertEquals($response->json("users")["points"], 50);
