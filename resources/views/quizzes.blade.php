@@ -25,7 +25,7 @@
                             <p>{{ $message }}</p>
                         @enderror
                     </div>
-                    <input id="play_button" type="submit" value="{{ __('Play') }}">
+                    <input class="play_button" type="submit" value="{{ __('Play') }}">
                 </form>
             </div>
         @endforeach

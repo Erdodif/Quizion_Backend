@@ -10,7 +10,7 @@ input {
     margin: 0 0 1.5rem 0;
     font-size: 1.5rem;
     border: none;
-    border-radius: 10px;
+    border-radius: 0.2ch;
     box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
     background-color: var(--on_primary);
 }
