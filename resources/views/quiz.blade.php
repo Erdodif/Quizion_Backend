@@ -18,15 +18,16 @@
 
     <div id="question" class="quiz_question"></div>
     <div id="answers"></div>
-    <div class="button next_question" id="next_question_button">Next Question</div>
-    <div class="button next_question" id="send_answer_button">Send Answer</div>
+
+    <div class="playing_button" id="next_question_button">Next Question</div>
+    <div class="playing_button" id="send_answer_button">Send Answer</div>
+
+    <div id="out_of_time"></div>
+    <div id="error" class="error_message"></div>
 
     <div id="progress_bar">
         <div id="progress_bar_color"></div>
         <div id="progress_bar_border"></div>
         <div id="progress_bar_text"></div>
     </div>
-
-    <h1 id="out_of_time"></h1>
-    <div id="error"></div>
 @endsection

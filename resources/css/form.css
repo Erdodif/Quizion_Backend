@@ -40,10 +40,6 @@ input::placeholder {
 #forgot_your_password {
     width: fit-content;
 }
-.error_message {
-    font-size: larger;
-    color: var(--warning);
-}
 #error_message_margin_remember_me {
     margin: 0 0 1rem 0;
     text-align: center;

@@ -42,7 +42,20 @@
 .display_none {
     display: none;
 }
-.next_question {
+.playing_button {
+    margin: 1rem;
+    padding: 1rem;
+    width: fit-content;
+    border-radius: 0.5ch;
+    font-size: larger;
+    background-color: var(--secondary_variant);
+    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary_variant);
+}
+.playing_button:hover {
+    margin-top: 1.2rem;
+    padding-bottom: 0.8rem !important;
+    background-color: var(--on_secondary);
+    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary);
     cursor: pointer;
 }
 #time_bar {
@@ -83,6 +96,11 @@
     text-align: center;
     font-weight: bold;
     font-size: larger;
+}
+#out_of_time {
+    text-align: center;
+    font-size: x-large;
+    color: var(--warning);
 }
 .report {
     float: right;

@@ -84,6 +84,10 @@ body {
     border: 2px solid var(--primary_variant);
     background-color: var(--secondary_variant);
 }
+.error_message {
+    font-size: larger;
+    color: var(--warning);
+}
 @media screen and (max-width: 1359px) {
     #container {
         width: 97%;

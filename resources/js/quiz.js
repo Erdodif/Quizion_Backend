@@ -102,7 +102,8 @@ function showAnswers(answers)
     }
 }
 
-function responseAnswer(response, animationTimeBar) {
+function responseAnswer(response, animationTimeBar)
+{
     stopOrContinueTimeBarProgress(animationTimeBar);
     let answers = document.getElementsByClassName("quiz_answer");
     //let selectedAnswers = document.getElementsByClassName("selected");
