@@ -27,11 +27,10 @@ function answerOnClick(selectedAnswerId)
 
 function setQuizSecondsToAnimationTimeBar(seconds)
 {
-    seconds++;
     document.documentElement.style.setProperty('--quiz_seconds', seconds + "s");
 }
 
-function stopContinueTimeBarProgress(animation)
+function stopOrContinueTimeBarProgress(animation)
 {
     animation.classList.toggle("animation_pause");
 }
@@ -76,9 +75,11 @@ function swapButtons(sendAnswerButton, nextQuestionButton)
 function outOfTime(message)
 {
     document.getElementById("out_of_time").innerHTML = message;
-    let answers = document.getElementsByClassName("quiz_answer");
-    for (let i = 0; i < answers.length; i++) {
-        answers[i].classList.toggle("disable");
+    if (message != "") {
+        let answers = document.getElementsByClassName("quiz_answer");
+        for (let i = 0; i < answers.length; i++) {
+            answers[i].classList.toggle("disable");
+        }
     }
 }
 
@@ -98,6 +99,34 @@ function showAnswers(answers)
         answer.setAttribute("id", "answer" + (i + 1) + " " + answers[i].id);
         answer.addEventListener("click", () => answerOnClick("answer" + (i + 1) + " " + answers[i].id));
         document.getElementById("answers").appendChild(answer);
+    }
+}
+
+function responseAnswer(response, animationTimeBar) {
+    stopOrContinueTimeBarProgress(animationTimeBar);
+    let answers = document.getElementsByClassName("quiz_answer");
+    //let selectedAnswers = document.getElementsByClassName("selected");
+    for (let i = 0; i < response.length; i++) {
+        answers[i].classList.toggle("disable");
+        let responseIsRight = response[i].is_right;
+        let responseId = response[i].id;
+        let answerId = answers[i].id.split(" ")[1];
+        for (let j = 1; j < response.length + 1; j++) {
+            if (responseId == answerId && responseIsRight == 0) {
+                try {
+                    document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
+                    document.getElementById("answer" + j + " " + answerId).classList.toggle("is_wrong");
+                }
+                catch (error) {}
+            }
+            else if (responseId == answerId && responseIsRight == 1) {
+                try {
+                    document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
+                    document.getElementById("answer" + j + " " + answerId).classList.toggle("is_right");
+                }
+                catch (error) {}
+            }
+        }
     }
 }
 
@@ -121,30 +150,7 @@ function sendAnswer(id, sendAnswerButton, nextQuestionButton, animationTimeBar, 
         })
         .then((response) => response.json())
         .then((response) => {
-            stopContinueTimeBarProgress(animationTimeBar);
-            let answers = document.getElementsByClassName("quiz_answer");
-            //let selectedAnswers = document.getElementsByClassName("selected");
-            for (let i = 0; i < response.length; i++) {
-                let responseIsRight = response[i].is_right;
-                let responseId = response[i].id;
-                let answerId = answers[i].id.split(" ")[1];
-                for (let j = 1; j < response.length + 1; j++) {
-                    if (responseId == answerId && responseIsRight == 0) {
-                        try {
-                            document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
-                            document.getElementById("answer" + j + " " + answerId).classList.toggle("is_wrong");
-                        }
-                        catch (error) {}
-                    }
-                    else if (responseId == answerId && responseIsRight == 1) {
-                        try {
-                            document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
-                            document.getElementById("answer" + j + " " + answerId).classList.toggle("is_right");
-                        }
-                        catch (error) {}
-                    }
-                }
-            }
+            responseAnswer(response, animationTimeBar);
         })
         .catch((error) => {
             document.getElementById("error").innerHTML = error;
@@ -174,7 +180,7 @@ function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar
                     showQuestion(responseQuestion.content);
                     showAnswers(responseAnswers);
                     nextProgressBar();
-                    stopContinueTimeBarProgress(animationTimeBar);
+                    stopOrContinueTimeBarProgress(animationTimeBar);
                     resetTimeBarProgress(animationTimeBar);
                     swapButtons(sendAnswerButton, nextQuestionButton);
                 }
@@ -191,8 +197,8 @@ function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar
                             setSessionStorageCount(responseCount.count);
                             showQuestion(responseQuestion.content);
                             showAnswers(responseAnswers);
-                            sessionStorage.removeItem("start");
                             swapButtons(sendAnswerButton, nextQuestionButton);
+                            sessionStorage.removeItem("start");
                         });
                     });
                 }
