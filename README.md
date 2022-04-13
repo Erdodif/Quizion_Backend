@@ -1,9 +1,12 @@
 <p align="center"><img src="public/images/logo.png" width="400"></p>
 
+# Quizion Backend
+
 Quizion egy webböngészős, asztali és mobil kliensre készülő kvízalkalmazás, amellyel a felhasználók kvízek formájában mérhetik össze tudásukat, bővíthetik lexikális ismereteiket, valamint figyelemmel kísérhetik eredményeiket az interneten.
 > Az alkalmazás célja, hogy egy, a kvízek köré épült közösség jöhessen létre, valamint, hogy a tanulás és a számonkérés egy új és interaktív formában történhessen. A felhasználóba-rát kialakítás és a személyre szabhatóság fontos és elengedhetetlen részét képezi az alkalma-zásnak.
 
-Szerver kiszolgáló telepítése:
+## Szerver kiszolgáló telepítése:
+
 - Létrehozni egy üres mappát (pl.: az asztalon).
 - Megnyitni a Visual Studio Code-ot és az File->Open Folder gombokkal megnyitni az előbb létrehozott üres mappát.
 - A Source Control fülön létrehozni egy git repót (initialize repository).
@@ -17,6 +20,7 @@ Szerver kiszolgáló telepítése:
 - php artisan migrate:fresh --seed
 - php artisan serve
 
-A backend helyes telepítésének tesztelése:
+### A backend helyes telepítésének tesztelése:
+
 - Thunder client-ben: http://127.0.0.1:8000/api/quizzes/all
 - Ha visszaadja az összes kvízt JSON formátumban akkor helyesen lett telepítve a backend.
