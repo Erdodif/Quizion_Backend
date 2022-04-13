@@ -28,8 +28,19 @@
     cursor: pointer;
 }
 .selected {
+    background-color: #0e988b;
+    color: var(--white);
+}
+.is_right {
     background-color: var(--fine);
     color: var(--white);
+}
+.is_wrong {
+    background-color: var(--warning);
+    color: var(--white);
+}
+.display_none {
+    display: none;
 }
 .next_question {
     cursor: pointer;
@@ -100,4 +111,7 @@
 @keyframes timeBarProgress {
     0% { width: 100%; }
     100% { width: 0%; }
+}
+.animation_pause {
+    animation-play-state: paused !important;
 }

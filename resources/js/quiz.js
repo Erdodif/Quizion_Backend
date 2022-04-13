@@ -25,16 +25,31 @@ function answerOnClick(selectedAnswerId)
     document.getElementById(selectedAnswerId).classList.toggle("selected");
 }
 
-function setQuizSecondsToAnimationTimeBar(seconds) {
+function setQuizSecondsToAnimationTimeBar(seconds)
+{
     seconds++;
     document.documentElement.style.setProperty('--quiz_seconds', seconds + "s");
 }
 
-function setSessionStorageHeader(header) {
+function stopContinueTimeBarProgress(animation)
+{
+    animation.classList.toggle("animation_pause");
+}
+
+function resetTimeBarProgress(animation)
+{
+    animation.style.animation = "none";
+    animation.offsetHeight;
+    animation.style.animation = null;
+}
+
+function setSessionStorageHeader(header)
+{
     sessionStorage.setItem("header", header);
 }
 
-function setSessionStorageCount(count) {
+function setSessionStorageCount(count)
+{
     sessionStorage.setItem("count", count);
 }
 
@@ -44,24 +59,36 @@ function progressBar(currentQuestion, numberOfQuestions)
     document.getElementById("progress_bar_text").innerHTML = currentQuestion + "/" + numberOfQuestions;
 }
 
-function nextProgressBar() {
+function nextProgressBar()
+{
     let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
     currentQuestion = currentQuestion.split("/")[0];
     currentQuestion++;
     progressBar(currentQuestion, sessionStorage.getItem("count"));
 }
 
-function resetTimeBarProgress(animation) {
-    animation.style.animation = "none";
-    animation.offsetHeight;
-    animation.style.animation = null;
+function swapButtons(sendAnswerButton, nextQuestionButton)
+{
+    sendAnswerButton.classList.toggle("display_none");
+    nextQuestionButton.classList.toggle("display_none");
 }
 
-function showQuestion(question) {
+function outOfTime(message)
+{
+    document.getElementById("out_of_time").innerHTML = message;
+    let answers = document.getElementsByClassName("quiz_answer");
+    for (let i = 0; i < answers.length; i++) {
+        answers[i].classList.toggle("disable");
+    }
+}
+
+function showQuestion(question)
+{
     document.getElementById("question").innerHTML = question;
 }
 
-function showAnswers(answers) {
+function showAnswers(answers)
+{
     dataLength = Object.keys(answers).length;
     document.getElementById("answers").innerHTML = "";
     for (let i = 0; i < dataLength; i++) {
@@ -74,26 +101,49 @@ function showAnswers(answers) {
     }
 }
 
-function chooseAnswer(id, nextButton, animationTimeBar, timedOut)
+function sendAnswer(id, sendAnswerButton, nextQuestionButton, animationTimeBar, timedOut)
 {
-    nextButton.classList.toggle("disable");
+    swapButtons(sendAnswerButton, nextQuestionButton);
     let array = idToChosen();
     if (array || timedOut) {
         if (timedOut) {
             array = [0];
+            outOfTime("Out of time!");
         }
         const data = { chosen: array };
         fetch(`${window.url}/api/play/${id}/choose`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Accept: "application/json",
+                "Accept": "application/json",
             },
             body: JSON.stringify(data)
         })
+        .then((response) => response.json())
         .then((response) => {
-            if (response.ok || response.status == 408) {
-                nextQuestion(id, nextButton, animationTimeBar);
+            stopContinueTimeBarProgress(animationTimeBar);
+            let answers = document.getElementsByClassName("quiz_answer");
+            //let selectedAnswers = document.getElementsByClassName("selected");
+            for (let i = 0; i < response.length; i++) {
+                let responseIsRight = response[i].is_right;
+                let responseId = response[i].id;
+                let answerId = answers[i].id.split(" ")[1];
+                for (let j = 1; j < response.length + 1; j++) {
+                    if (responseId == answerId && responseIsRight == 0) {
+                        try {
+                            document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
+                            document.getElementById("answer" + j + " " + answerId).classList.toggle("is_wrong");
+                        }
+                        catch (error) {}
+                    }
+                    else if (responseId == answerId && responseIsRight == 1) {
+                        try {
+                            document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
+                            document.getElementById("answer" + j + " " + answerId).classList.toggle("is_right");
+                        }
+                        catch (error) {}
+                    }
+                }
             }
         })
         .catch((error) => {
@@ -101,11 +151,12 @@ function chooseAnswer(id, nextButton, animationTimeBar, timedOut)
         });
     }
     else {
-        nextButton.classList.toggle("disable");
+        swapButtons(sendAnswerButton, nextQuestionButton);
     }
 }
 
-function nextQuestion(id, nextButton, animationTimeBar) {
+function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar)
+{
     fetch(`${window.url}/api/play/${id}/question`)
     .then((responseQuestion) => responseQuestion.json())
     .then((responseQuestion) => {
@@ -119,11 +170,13 @@ function nextQuestion(id, nextButton, animationTimeBar) {
             .then((responseAnswers) => responseAnswers.json())
             .then((responseAnswers) => {
                 if (!sessionStorage.getItem("start")) {
+                    outOfTime("");
                     showQuestion(responseQuestion.content);
                     showAnswers(responseAnswers);
                     nextProgressBar();
+                    stopContinueTimeBarProgress(animationTimeBar);
                     resetTimeBarProgress(animationTimeBar);
-                    nextButton.classList.toggle("disable");
+                    swapButtons(sendAnswerButton, nextQuestionButton);
                 }
                 else {
                     fetch(`${window.url}/api/quizzes/${id}`)
@@ -139,7 +192,7 @@ function nextQuestion(id, nextButton, animationTimeBar) {
                             showQuestion(responseQuestion.content);
                             showAnswers(responseAnswers);
                             sessionStorage.removeItem("start");
-                            nextButton.classList.toggle("disable");
+                            swapButtons(sendAnswerButton, nextQuestionButton);
                         });
                     });
                 }
@@ -153,13 +206,17 @@ function nextQuestion(id, nextButton, animationTimeBar) {
 
 function init()
 {
-    const nextButton = document.getElementById("quiz_next_button");
+    const sendAnswerButton = document.getElementById("send_answer_button");
+    const nextQuestionButton = document.getElementById("next_question_button");
     const animationTimeBar = document.getElementById("time_bar_progress");
-    nextButton.addEventListener("click", () => chooseAnswer(window.quizId, nextButton, animationTimeBar, false));
-    animationTimeBar.addEventListener("animationend", () => chooseAnswer(window.quizId, nextButton, animationTimeBar, true));
-    nextButton.classList.toggle("disable");
+
+    sendAnswerButton.addEventListener("click", () => sendAnswer(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar, false));
+    nextQuestionButton.addEventListener("click", () => nextQuestion(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar));
+    animationTimeBar.addEventListener("animationend", () => sendAnswer(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar, true));
+
+    swapButtons(sendAnswerButton, nextQuestionButton);
     sessionStorage.setItem("start", 1);
-    nextQuestion(window.quizId, nextButton, animationTimeBar);
+    nextQuestion(window.quizId, sendAnswerButton, animationTimeBar);
 }
 
 document.addEventListener("DOMContentLoaded", init);

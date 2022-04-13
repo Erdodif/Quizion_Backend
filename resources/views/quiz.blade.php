@@ -18,7 +18,8 @@
 
     <div id="question" class="quiz_question"></div>
     <div id="answers"></div>
-    <div class="button next_question" id="quiz_next_button">Next</div>
+    <div class="button next_question" id="next_question_button">Next Question</div>
+    <div class="button next_question" id="send_answer_button">Send Answer</div>
 
     <div id="progress_bar">
         <div id="progress_bar_color"></div>
