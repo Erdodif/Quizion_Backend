@@ -52,7 +52,7 @@ async function loadLeaderboard(id)
         tr.appendChild(addColumn("td", response[i].points));
         tr.appendChild(addColumn("td", response[i].name));
         if (window.username == response[i].name) {
-            document.getElementById("result_user").innerHTML = "Rank: " + response[i].rank + " Points: " + response[i].points;
+            document.getElementById("result_user").innerHTML = "Rank: " + response[i].rank + "<br/ >Points: " + response[i].points;
             tr.classList.add("leaderboard_my_name");
             userHasResult = true;
         }

@@ -43,7 +43,7 @@
     display: none;
 }
 .playing_button {
-    margin: 1rem;
+    margin: 1rem 1rem 1rem auto;
     padding: 1rem;
     width: fit-content;
     border-radius: 0.5ch;
@@ -110,6 +110,9 @@
 .disable {
     pointer-events: none;
 }
+.animation_pause {
+    animation-play-state: paused !important;
+}
 @media screen and (max-width: 1359px) {
     #progress_bar_border, #progress_bar_text {
         width: 97%;
@@ -140,7 +143,4 @@
         width: 0%;
         background-color: var(--warning);
     }
-}
-.animation_pause {
-    animation-play-state: paused !important;
 }
