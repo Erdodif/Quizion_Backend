@@ -40,3 +40,34 @@ tr:hover {
     background-color: var(--on_primary) !important;
     color: var(--primary_variant);
 }
+.long_name {
+    position: relative;
+}
+.long_name_text {
+    position: absolute;
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    z-index: 1;
+    bottom: 75%;
+    left: 29.5%;
+    margin-left: -60px;
+    font-size: small;
+}
+.long_name_text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+.long_name:hover .long_name_text {
+    visibility: visible;
+}

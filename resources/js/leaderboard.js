@@ -22,6 +22,21 @@ function loadResult()
     }
 }
 
+function fixLongName(tr, responseName)
+{
+    let td = document.createElement("td");
+    let span = document.createElement("span");
+    for (let i = 0; i < 11; i++) {
+        td.innerHTML += responseName[i];
+    }
+    td.innerHTML += "...";
+    span.innerHTML = responseName;
+    span.classList.add("long_name_text");
+    td.classList.add("long_name");
+    td.appendChild(span);
+    tr.appendChild(td);
+}
+
 function createTableTh(table)
 {
     let trTh = document.createElement("tr");
@@ -50,7 +65,12 @@ async function loadLeaderboard(id)
         let tr = document.createElement("tr");
         tr.appendChild(addColumn("td", response[i].rank));
         tr.appendChild(addColumn("td", response[i].points));
-        tr.appendChild(addColumn("td", response[i].name));
+        if (response[i].name.length > 11) {
+            fixLongName(tr, response[i].name);
+        }
+        else {
+            tr.appendChild(addColumn("td", response[i].name));
+        }
         if (window.username == response[i].name) {
             document.getElementById("result_user").innerHTML = "Rank: " + response[i].rank + "<br/ >Points: " + response[i].points;
             tr.classList.add("leaderboard_my_name");
