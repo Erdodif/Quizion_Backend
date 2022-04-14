@@ -1,5 +1,6 @@
 
-function loadTitle(id) {
+function loadTitle(id)
+{
     if (sessionStorage.getItem("header")) {
         document.getElementById("title").innerHTML = sessionStorage.getItem("header");
         sessionStorage.removeItem("header");
@@ -13,7 +14,8 @@ function loadTitle(id) {
     }
 }
 
-function loadResult() {
+function loadResult()
+{
     if (sessionStorage.getItem("result")) {
         document.getElementById("result").innerHTML = sessionStorage.getItem("result");
         sessionStorage.removeItem("result");
@@ -38,6 +40,7 @@ function addColumn(htmlThTr, item)
 
 async function loadLeaderboard(id)
 {
+    let userHasResult = false;
     let response = await (await fetch(`${window.url}/api/leaderboard/${id}`)).json();
     document.getElementById("leaderboard").innerHTML = "";
     let rows = Object.keys(response).length;
@@ -49,11 +52,16 @@ async function loadLeaderboard(id)
         tr.appendChild(addColumn("td", response[i].points));
         tr.appendChild(addColumn("td", response[i].name));
         if (window.username == response[i].name) {
+            document.getElementById("result_user").innerHTML = "Rank: " + response[i].rank + " Points: " + response[i].points;
             tr.classList.add("leaderboard_my_name");
+            userHasResult = true;
         }
         table.appendChild(tr);
     }
     document.getElementById("leaderboard").appendChild(table);
+    if (!userHasResult) {
+        document.getElementById("result_user").innerHTML = "You don't have any records.";
+    }
 }
 
 function init()

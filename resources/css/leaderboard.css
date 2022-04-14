@@ -3,7 +3,7 @@
     padding: 0.5rem 0 0 0;
     text-align: center;
 }
-#result {
+#result, #result_user {
     text-align: center;
     font-size: larger;
     margin: 1rem;
