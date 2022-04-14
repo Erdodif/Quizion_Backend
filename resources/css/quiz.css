@@ -71,7 +71,6 @@
     width: 100%;
 }
 #time_bar_progress {
-    background-color: var(--warning);
     animation: timeBarProgress var(--quiz_seconds) ease-out;
     animation-fill-mode: both;
 }
@@ -127,8 +126,20 @@
     }
 }
 @keyframes timeBarProgress {
-    0% { width: 100%; }
-    100% { width: 0%; }
+    0% {
+        width: 100%;
+        background-color: var(--fine);
+    }
+    50% {
+        background-color: var(--alert);
+    }
+    75% {
+        background-color: var(--warning);
+    }
+    100% {
+        width: 0%;
+        background-color: var(--warning);
+    }
 }
 .animation_pause {
     animation-play-state: paused !important;
