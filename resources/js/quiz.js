@@ -66,12 +66,6 @@ function nextProgressBar()
     progressBar(currentQuestion, sessionStorage.getItem("count"));
 }
 
-function swapButtons(sendAnswerButton, nextQuestionButton)
-{
-    sendAnswerButton.classList.toggle("display_none");
-    nextQuestionButton.classList.toggle("display_none");
-}
-
 function outOfTime(message)
 {
     document.getElementById("out_of_time").innerHTML = message;
@@ -106,7 +100,6 @@ function responseAnswer(response, animationTimeBar)
 {
     stopOrContinueTimeBarProgress(animationTimeBar);
     let answers = document.getElementsByClassName("quiz_answer");
-    //let selectedAnswers = document.getElementsByClassName("selected");
     for (let i = 0; i < response.length; i++) {
         answers[i].classList.toggle("disable");
         let responseIsRight = response[i].is_right;
@@ -133,9 +126,9 @@ function responseAnswer(response, animationTimeBar)
 
 function sendAnswer(id, sendAnswerButton, nextQuestionButton, animationTimeBar, timedOut)
 {
-    swapButtons(sendAnswerButton, nextQuestionButton);
     let array = idToChosen();
     if (array || timedOut) {
+        sendAnswerButton.classList.add("disable");
         if (timedOut) {
             array = [0];
             outOfTime("Out of time!");
@@ -152,18 +145,21 @@ function sendAnswer(id, sendAnswerButton, nextQuestionButton, animationTimeBar, 
         .then((response) => response.json())
         .then((response) => {
             responseAnswer(response, animationTimeBar);
+            sendAnswerButton.classList.add("display_none");
+            nextQuestionButton.classList.remove("display_none");
+            nextQuestionButton.classList.remove("disable");
         })
         .catch((error) => {
             document.getElementById("error").innerHTML = error;
         });
     }
-    else {
-        swapButtons(sendAnswerButton, nextQuestionButton);
-    }
 }
 
 function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar)
 {
+    if (!sessionStorage.getItem("start")) {
+        nextQuestionButton.classList.add("disable");
+    }
     fetch(`${window.url}/api/play/${id}/question`)
     .then((responseQuestion) => responseQuestion.json())
     .then((responseQuestion) => {
@@ -183,7 +179,9 @@ function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar
                     nextProgressBar();
                     stopOrContinueTimeBarProgress(animationTimeBar);
                     resetTimeBarProgress(animationTimeBar);
-                    swapButtons(sendAnswerButton, nextQuestionButton);
+                    nextQuestionButton.classList.add("display_none");
+                    sendAnswerButton.classList.remove("display_none");
+                    sendAnswerButton.classList.remove("disable");
                 }
                 else {
                     fetch(`${window.url}/api/quizzes/${id}`)
@@ -198,7 +196,6 @@ function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar
                             setSessionStorageCount(responseCount.count);
                             showQuestion(responseQuestion.content);
                             showAnswers(responseAnswers);
-                            swapButtons(sendAnswerButton, nextQuestionButton);
                             sessionStorage.removeItem("start");
                         });
                     });
@@ -221,7 +218,8 @@ function init()
     nextQuestionButton.addEventListener("click", () => nextQuestion(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar));
     animationTimeBar.addEventListener("animationend", () => sendAnswer(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar, true));
 
-    swapButtons(sendAnswerButton, nextQuestionButton);
+    nextQuestionButton.classList.add("display_none");
+    nextQuestionButton.classList.add("disable");
     sessionStorage.setItem("start", 1);
     nextQuestion(window.quizId, sendAnswerButton, animationTimeBar);
 }
