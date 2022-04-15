@@ -18,9 +18,9 @@ function showPassword() {
 
 function init()
 {
-    let formButton = document.getElementById("button_one_click");
-    formButton.addEventListener("click", () => buttonDisable(formButton));
     try {
+        let formButton = document.getElementById("button-one-click");
+        formButton.addEventListener("click", () => buttonDisable(formButton));
         document.getElementById("show-password").addEventListener("click", () => showPassword());
     }
     catch (error) {}

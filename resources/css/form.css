@@ -84,3 +84,12 @@ input::placeholder {
     text-align: center;
     font-size: larger;
 }
+.verify-email-info {
+    text-align: justify;
+    font-size: larger;
+    max-width: 40em;
+    margin: auto;
+}
+#padding-block {
+    padding-block: 1.5em;
+}

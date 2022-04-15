@@ -25,6 +25,6 @@
             <span>{{ __('Remember me') }}</span>
         </label>
         <a id="forgot-your-password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
-        <input id="button_one_click" type="submit" value="{{ __('Login') }}">
+        <input id="button-one-click" type="submit" value="{{ __('Login') }}">
     </form>
 @endsection

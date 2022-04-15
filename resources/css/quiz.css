@@ -32,11 +32,11 @@
     color: var(--white);
 }
 .is-right {
-    background-color: var(--fine);
+    background-color: var(--right-answer);
     color: var(--white);
 }
 .is-wrong {
-    background-color: var(--warning);
+    background-color: var(--wrong-answer);
     color: var(--white);
 }
 .display-none {
@@ -98,8 +98,9 @@
 }
 #out-of-time {
     text-align: center;
-    font-size: x-large;
+    font-size: xx-large;
     color: var(--warning);
+    margin: 1rem;
 }
 .report {
     float: right;

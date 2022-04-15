@@ -8,6 +8,8 @@
     --warning: #BA0100;
     --alert: #BAA100;
     --fine: #1CBA00;
+    --right-answer: #46aa35;
+    --wrong-answer: #c64d4d;
     --black: #000000;
     --white: #FFFFFF;
 }
