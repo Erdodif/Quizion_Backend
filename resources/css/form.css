@@ -37,14 +37,15 @@ input[type="submit"]:hover {
 input::placeholder {
     color: rgb(135, 135, 135);
 }
-#forgot_your_password {
+#forgot-your-password {
     width: fit-content;
+    margin-top: 0.5rem;
 }
-#error_message_margin_remember_me {
+#error-message-margin-remember-me {
     margin: 0 0 1rem 0;
     text-align: center;
 }
-#remember_me_label {
+#remember-me-label {
     margin: 0rem 0 0.3rem 0;
     font-size: x-large;
     display: flex;
@@ -52,13 +53,13 @@ input::placeholder {
     align-items: center;
     cursor: pointer;
 }
-#remember_me {
+#remember-me {
     margin: 0 0.5rem 0 0;
 }
-.margin_top {
+.margin-top {
     margin-top: 1rem;
 }
-#show_password {
+#show-password {
     width: 2rem;
     cursor: pointer;
 }

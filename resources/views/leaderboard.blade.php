@@ -9,7 +9,7 @@
     </script>
     <script src="{{ mix('js/leaderboard.js') }}"></script>
     <h1 id="title"></h1>
-    <div id="result_user"></div>
+    <div id="result-user"></div>
     <div id="result"></div>
     <div id="leaderboard"></div>
 @endsection

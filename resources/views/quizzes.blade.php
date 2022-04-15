@@ -3,16 +3,16 @@
 @section("title", "Quizzes")
 
 @section("content")
-    <div id="all_quizzes">
+    <div id="all-quizzes">
         @foreach($quizzes as $quiz)
-            <div class="quiz_list_div">
-                <div class="wrapper_quizzes">
-                    <h2 class="quiz_list_header">{{ $quiz->header }}</h2>
-                    <p class="quiz_list_description">{{ $quiz->description }}</p>
+            <div class="quiz-list-div">
+                <div class="wrapper-quizzes">
+                    <h2 class="quiz-list-header">{{ $quiz->header }}</h2>
+                    <p class="quiz-list-description">{{ $quiz->description }}</p>
                 </div>
-                <div class="quizzes_buttons">
-                    <div class="leaderboard_button_div">
-                        <a class="leaderboard_button" href="{{ route('leaderboard', ["quiz_id" => $quiz->id]) }}">{{ __('Leaderboard') }}</a>
+                <div class="quizzes-buttons">
+                    <div class="leaderboard-button-div">
+                        <a class="leaderboard-button" href="{{ route('leaderboard', ["quiz_id" => $quiz->id]) }}">{{ __('Leaderboard') }}</a>
                     </div>
                     <form method="POST" action="{{ route('gaming.store') }}">
                         @csrf
@@ -24,7 +24,7 @@
                         @error("quiz_id")
                             <div>{{ $message }}</div>
                         @enderror
-                        <input class="play_button" type="submit" value="{{ __('Play') }}">
+                        <input class="play-button" type="submit" value="{{ __('Play') }}">
                     </form>
                 </div>
             </div>

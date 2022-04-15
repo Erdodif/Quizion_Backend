@@ -1,9 +1,9 @@
-#header_logo {
+#header-logo {
     width: 1300px;
     margin: 0 auto 0 auto;
 }
-#header_background {
-    background-image: url("../images/header_background.svg");
+#header-background {
+    background-image: url("../images/header-background.svg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: 7.5rem;
@@ -13,10 +13,10 @@
     padding: 0.75rem;
 }
 @media screen and (max-width: 1359px) {
-    #header_logo {
+    #header-logo {
         width: 100%;
     }
-    #header_background {
+    #header-background {
         height: 4.75rem;
     }
     #logo {
@@ -25,7 +25,7 @@
     }
 }
 @media screen and (max-width: 500px) {
-    #header_background {
-        background-image: url("../images/header_background_mobile.svg");
+    #header-background {
+        background-image: url("../images/header-background_mobile.svg");
     }
 }

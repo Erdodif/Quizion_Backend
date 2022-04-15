@@ -71,21 +71,7 @@ body {
     height: calc(100% - 115px);
     min-height: calc(100% - 115px);
 }
-.button {
-    width: 5em;
-    padding: 0.3em;
-    margin: 0.6em;
-    display: inline-block;
-    text-align: center;
-    background-color: var(--primary_variant);
-    border: 2px solid var(--on_secondary);
-    border-radius: 5px;
-}
-.button:hover {
-    border: 2px solid var(--primary_variant);
-    background-color: var(--secondary_variant);
-}
-.error_message {
+.error-message {
     font-size: larger;
     color: var(--warning);
 }

@@ -32,7 +32,7 @@ function setQuizSecondsToAnimationTimeBar(seconds)
 
 function stopOrContinueTimeBarProgress(animation)
 {
-    animation.classList.toggle("animation_pause");
+    animation.classList.toggle("animation-pause");
 }
 
 function resetTimeBarProgress(animation)
@@ -54,13 +54,13 @@ function setSessionStorageCount(count)
 
 function progressBar(currentQuestion, numberOfQuestions)
 {
-    document.getElementById("progress_bar_color").style.width = (currentQuestion / numberOfQuestions * 100) + "%";
-    document.getElementById("progress_bar_text").innerHTML = currentQuestion + "/" + numberOfQuestions;
+    document.getElementById("progress-bar-color").style.width = (currentQuestion / numberOfQuestions * 100) + "%";
+    document.getElementById("progress-bar-text").innerHTML = currentQuestion + "/" + numberOfQuestions;
 }
 
 function nextProgressBar()
 {
-    let currentQuestion = document.getElementById("progress_bar_text").innerHTML;
+    let currentQuestion = document.getElementById("progress-bar-text").innerHTML;
     currentQuestion = currentQuestion.split("/")[0];
     currentQuestion++;
     progressBar(currentQuestion, sessionStorage.getItem("count"));
@@ -68,9 +68,9 @@ function nextProgressBar()
 
 function outOfTime(message)
 {
-    document.getElementById("out_of_time").innerHTML = message;
+    document.getElementById("out-of-time").innerHTML = message;
     if (message != "") {
-        let answers = document.getElementsByClassName("quiz_answer");
+        let answers = document.getElementsByClassName("quiz-answer");
         for (let i = 0; i < answers.length; i++) {
             answers[i].classList.toggle("disable");
         }
@@ -89,7 +89,7 @@ function showAnswers(answers)
     for (let i = 0; i < dataLength; i++) {
         let answer = document.createElement("div");
         answer.innerHTML = answers[i].content;
-        answer.classList.add("quiz_answer");
+        answer.classList.add("quiz-answer");
         answer.setAttribute("id", "answer" + (i + 1) + " " + answers[i].id);
         answer.addEventListener("click", () => answerOnClick("answer" + (i + 1) + " " + answers[i].id));
         document.getElementById("answers").appendChild(answer);
@@ -99,7 +99,7 @@ function showAnswers(answers)
 function responseAnswer(response, animationTimeBar)
 {
     stopOrContinueTimeBarProgress(animationTimeBar);
-    let answers = document.getElementsByClassName("quiz_answer");
+    let answers = document.getElementsByClassName("quiz-answer");
     for (let i = 0; i < response.length; i++) {
         answers[i].classList.toggle("disable");
         let responseIsRight = response[i].is_right;
@@ -109,14 +109,14 @@ function responseAnswer(response, animationTimeBar)
             if (responseId == answerId && responseIsRight == 0) {
                 try {
                     document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
-                    document.getElementById("answer" + j + " " + answerId).classList.toggle("is_wrong");
+                    document.getElementById("answer" + j + " " + answerId).classList.toggle("is-wrong");
                 }
                 catch (error) {}
             }
             else if (responseId == answerId && responseIsRight == 1) {
                 try {
                     document.getElementById("answer" + j + " " + answerId).classList.toggle("selected");
-                    document.getElementById("answer" + j + " " + answerId).classList.toggle("is_right");
+                    document.getElementById("answer" + j + " " + answerId).classList.toggle("is-right");
                 }
                 catch (error) {}
             }
@@ -145,8 +145,8 @@ function sendAnswer(id, sendAnswerButton, nextQuestionButton, animationTimeBar, 
         .then((response) => response.json())
         .then((response) => {
             responseAnswer(response, animationTimeBar);
-            sendAnswerButton.classList.add("display_none");
-            nextQuestionButton.classList.remove("display_none");
+            sendAnswerButton.classList.add("display-none");
+            nextQuestionButton.classList.remove("display-none");
             nextQuestionButton.classList.remove("disable");
         })
         .catch((error) => {
@@ -179,8 +179,8 @@ function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar
                     nextProgressBar();
                     stopOrContinueTimeBarProgress(animationTimeBar);
                     resetTimeBarProgress(animationTimeBar);
-                    nextQuestionButton.classList.add("display_none");
-                    sendAnswerButton.classList.remove("display_none");
+                    nextQuestionButton.classList.add("display-none");
+                    sendAnswerButton.classList.remove("display-none");
                     sendAnswerButton.classList.remove("disable");
                 }
                 else {
@@ -210,15 +210,15 @@ function nextQuestion(id, sendAnswerButton, nextQuestionButton, animationTimeBar
 
 function init()
 {
-    const sendAnswerButton = document.getElementById("send_answer_button");
-    const nextQuestionButton = document.getElementById("next_question_button");
-    const animationTimeBar = document.getElementById("time_bar_progress");
+    const sendAnswerButton = document.getElementById("send-answer-button");
+    const nextQuestionButton = document.getElementById("next-question-button");
+    const animationTimeBar = document.getElementById("time-bar-progress");
 
     sendAnswerButton.addEventListener("click", () => sendAnswer(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar, false));
     nextQuestionButton.addEventListener("click", () => nextQuestion(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar));
     animationTimeBar.addEventListener("animationend", () => sendAnswer(window.quizId, sendAnswerButton, nextQuestionButton, animationTimeBar, true));
 
-    nextQuestionButton.classList.add("display_none");
+    nextQuestionButton.classList.add("display-none");
     nextQuestionButton.classList.add("disable");
     sessionStorage.setItem("start", 1);
     nextQuestion(window.quizId, sendAnswerButton, animationTimeBar);
