@@ -59,9 +59,17 @@ input::placeholder {
 .margin-top {
     margin-top: 1rem;
 }
+.password-div {
+    position: relative;
+}
 #show-password {
+    position: absolute;
     width: 2rem;
     cursor: pointer;
+    right: 1ch;
+    top: 16%;
+    background-color: var(--on-primary);
+    padding-block: 0.275em;
 }
 #info {
     padding: 1rem 0 0.5rem 0;
