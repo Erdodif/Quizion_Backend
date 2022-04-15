@@ -17,4 +17,6 @@ mix
 .js('resources/js/form.js', 'public/js/form.js')
 .js('resources/js/loader.js', 'public/js/loader.js')
 .js('resources/js/variables.js', 'public/js/variables.js')
+.js('resources/js/topButton.js', 'public/js/topButton.js')
+.sass('resources/css/landing.scss','public/scss/app.css')
 .combine('resources/css/*.css','public/css/app.css');

@@ -1,0 +1,99 @@
+html{
+    scroll-behavior: smooth;
+}
+.landing {
+    width: 100%;
+    * {
+        display: block;
+        margin-inline: auto;
+    }
+    .image-holder {
+        z-index: 0;
+        width: min(100%, 35em);
+        margin-inline: auto;
+        padding-block: 2em;
+        position: relative;
+        &::after {
+            font-family: 'Montserrat';
+            font-weight: bold;
+            position: absolute;
+            font-size: 4rem;
+            content: "Devlog";
+            color: var(--on-primary),10%;
+            filter: brightness(85%);
+            top:62%;
+            right: 6%;
+            right: 6%;
+        }
+    }
+    .content {
+        background: var(--on-primary);
+        color: var(--black);
+        max-width: 40em;
+        padding-inline: 2em;
+        padding-block: 1em;
+        text-align: justify;
+    }
+    p {
+        text-indent: 2ch;
+    }
+    h1 {
+        color: var(--primary-variant);
+    }
+    .sub-nav {
+        z-index: 1000 !important;
+        list-style-type: none;
+        margin: 0 auto 0 auto;
+        padding: 0;
+        overflow: hidden;
+        background-color: var(--primary-variant);
+        position: sticky;
+        height: 2.5em;
+        top: 0;
+        ul {
+            height: 100%;
+            margin: unset;
+            padding:unset;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            list-style: none;
+            justify-content: flex-start;
+            li {
+                margin-block:auto;
+                padding:unset;
+            }
+        }
+    }
+    .doc-button {
+        background: var(--on-secondary);
+        width: fit-content;
+        padding-block: 0.2em;
+        padding-inline: 1em;
+        margin: 1rem;
+        cursor: pointer;
+        border-radius: 0.5ch;
+    }
+    .doc-button:hover {
+        background: var(--primary);
+    }
+    #to-top-button{
+        font-size: .8em;
+        font-weight: bold;
+        border: 2px solid var(--primary-variant);
+        user-select: none;
+        position: fixed;
+        background: var(--secondary);
+        color: var(--primary-variant);
+        padding-inline:1em;
+        padding-block:.3em;
+        border-radius: .5em;
+        bottom: 1em;
+        right: 1em;
+        transition: opacity 150ms ease-in-out, bottom 300ms ease-in-out;
+        &:hover{
+            background: var(--secondary-variant);
+            /*color: var(--secondary);*/
+        }
+    }
+}
