@@ -36,12 +36,19 @@ html{
         padding-inline: 2em;
         padding-block: 1em;
         text-align: justify;
-    }
-    p {
-        text-indent: 2ch;
-    }
-    h1 {
-        color: var(--primary-variant);
+        h1,h2 {
+            color: var(--primary-variant);
+        }
+        h3{
+            font-size: 1.125em;
+        }
+        p {
+            text-indent: 2ch;
+        }
+        .center{
+            margin-inline:auto;
+            text-align: center;
+        }
     }
     .doc-button {
         background: var(--on-secondary);
