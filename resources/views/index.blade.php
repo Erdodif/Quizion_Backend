@@ -14,7 +14,7 @@
                 <a href="{{route('documentation',['page'=>'introduction'])}}">Bevezetés</a>
             </li>
             <li>
-                <a href="{{route('documentation',['page'=>'introductionss'])}}">Bevezetésss</a>
+                <a href="{{route('documentation',['page'=>'topic'])}}">Témaválasztás</a>
             </li>
         </ul>
     </div>
