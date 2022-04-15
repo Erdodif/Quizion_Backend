@@ -16,12 +16,20 @@ input {
 }
 input[type="checkbox"] {
     -webkit-appearance: none;
+    position: relative;
     width: 15px;
     height: 15px;
-    background: var(--white);
-    border-radius: 5px;
+    background: var(--on-primary);
+    border-radius: 0.3em;
     border: 2px solid #555;
     cursor: pointer;
+}
+input[type="checkbox"]:checked::after {
+    content: "✔";
+    position: absolute;
+    top: 0;
+    left: 20%;
+    color: var(--on-primary);
 }
 input[type="checkbox"]:checked {
     background: var(--primary-variant);
