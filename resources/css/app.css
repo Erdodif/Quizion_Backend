@@ -77,8 +77,8 @@ body {
 }
 @media screen and (max-width: 1359px) {
     #container {
-        width: 97%;
+        width: auto;
         margin: 0;
-        padding: 10px 1.5% 15px 1.5%;
+        padding: 0;
     }
 }

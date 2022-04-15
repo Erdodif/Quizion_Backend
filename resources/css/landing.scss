@@ -13,6 +13,9 @@ html{
         margin-inline: auto;
         padding-block: 2em;
         position: relative;
+        #doc-logo {
+            width: 100%;
+        }
         &::after {
             font-family: 'Montserrat';
             font-weight: bold;
@@ -39,31 +42,6 @@ html{
     }
     h1 {
         color: var(--primary-variant);
-    }
-    .sub-nav {
-        z-index: 1000 !important;
-        list-style-type: none;
-        margin: 0 auto 0 auto;
-        padding: 0;
-        overflow: hidden;
-        background-color: var(--primary-variant);
-        position: sticky;
-        height: 2.5em;
-        top: 0;
-        ul {
-            height: 100%;
-            margin: unset;
-            padding:unset;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            list-style: none;
-            justify-content: flex-start;
-            li {
-                margin-block:auto;
-                padding:unset;
-            }
-        }
     }
     .doc-button {
         background: var(--on-secondary);

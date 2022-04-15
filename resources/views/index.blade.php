@@ -8,16 +8,14 @@
     <div class="image-holder">
         <img id="doc-logo" src="{{ url('images/logo.png') }}">
     </div>
-    <div class="sub-nav">
-        <ul>
-            <li>
-                <a href="{{route('documentation',['page'=>'introduction'])}}">Bevezetés</a>
-            </li>
-            <li>
-                <a href="{{route('documentation',['page'=>'introductionss'])}}">Bevezetésss</a>
-            </li>
-        </ul>
-    </div>
+    <ul class="navbar-ul">
+        <li class="navbar-li">
+            <a href="{{route('documentation',['page'=>'introduction'])}}">Bevezetés</a>
+        </li>
+        <li class="navbar-li">
+            <a href="{{route('documentation',['page'=>'introductionss'])}}">Bevezetésss</a>
+        </li>
+    </ul>
     <div class="content">
         <?php
         if (isset($page) && $page !== null) {

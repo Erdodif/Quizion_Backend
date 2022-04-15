@@ -1,4 +1,4 @@
-#navbar-ul {
+.navbar-ul {
     z-index: 999 !important;
     list-style-type: none;
     margin: 0 auto 0 auto;
@@ -45,7 +45,7 @@
     float: right;
 }
 @media screen and (max-width: 1359px) {
-    #navbar-ul {
+    .navbar-ul {
         width: 100%;
     }
 }

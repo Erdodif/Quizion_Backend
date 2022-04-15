@@ -26,7 +26,7 @@
                 </div>
             </div>
             @endif
-            <ul id="navbar-ul">
+            <ul class="navbar-ul">
                 @if (Route::is("quiz"))
                 @elseif (Auth::user())
                 <li class="navbar-li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
