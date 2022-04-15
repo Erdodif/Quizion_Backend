@@ -22,7 +22,7 @@
         <?php
         if (isset($page) && $page !== null) {
             try {
-                $out = require(resource_path('static_pages\\' . $page . '.hmtl'));
+                $out = require(resource_path('static_pages\\' . $page . '.html'));
             } catch (Exception | Error $e) {
                 $out = require(resource_path('static_pages\\not_found.php'));
             }
