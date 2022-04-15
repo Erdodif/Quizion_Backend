@@ -7,18 +7,13 @@ function buttonDisable(button)
 }
 
 function showPassword() {
-    try {
-        let password = document.getElementsByClassName("password");
-        if (password[0].type == "password") {
-            password[0].type = "text";
-            password[1].type = "text";
-        }
-        else {
-            password[0].type = "password";
-            password[1].type = "password";
-        }
+    let password = document.getElementById("password");
+    if (password.type == "password") {
+        password.type = "text";
     }
-    catch (error) {}
+    else {
+        password.type = "password";
+    }
 }
 
 function init()

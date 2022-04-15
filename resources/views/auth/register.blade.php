@@ -12,13 +12,13 @@
         <div>
             <input type="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Email') }}">
         </div>
-        <div>
-            <input class="password" type="password" name="password" placeholder="{{ __('Password') }}">
+        <div class="password-div">
+            <input id="password" type="password" name="password" placeholder="{{ __('Password') }}">
+            <img id="show-password" src="{{ url('images/show-password.png') }}" alt="Show Password" title="Show Password">
         </div>
         <div>
-            <input class="password" type="password" name="password_confirmation" placeholder="{{ __('Confirm Password') }}">
+            <input type="password" name="password_confirmation" placeholder="{{ __('Confirm Password') }}">
         </div>
-        <img id="show-password" src="{{ url('images/show-password.png') }}" alt="Show Password" title="Show Password">
         @if ($errors->any())
             @foreach ($errors->all() as $error)
                 <div class="error-message">{{ $error }}</div>
