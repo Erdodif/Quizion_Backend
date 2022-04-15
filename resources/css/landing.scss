@@ -56,6 +56,7 @@ html{
         background: var(--primary);
     }
     #to-top-button{
+        opacity: 0;
         font-size: .8em;
         font-weight: bold;
         border: 2px solid var(--primary-variant);
@@ -70,8 +71,8 @@ html{
         right: 1em;
         transition: opacity 150ms ease-in-out, bottom 300ms ease-in-out;
         &:hover{
-            background: var(--secondary-variant);
-            /*color: var(--secondary);*/
+            background: var(--primary);
+            color: var(--on-primary);
         }
     }
 }
