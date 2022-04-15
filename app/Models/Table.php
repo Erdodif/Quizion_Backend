@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Companion\Data;
 use App\Companion\Message;
 use Error;
-use Exception;
 use App\Companion\ResponseCodes;
 
 abstract class Table extends Model

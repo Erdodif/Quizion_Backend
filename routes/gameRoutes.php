@@ -7,10 +7,6 @@ use App\Companion\Message;
 use App\Models\Game;
 use App\Companion\ResponseCodes;
 
-/**
- * TODO Middleware
- */
-
 Route::prefix('/play')->middleware('auth.token')->group(function () {
     Route::post('/newgame/{quiz_id}', function (Request $request, int $quiz_id) {
         $UID = $request->userID;

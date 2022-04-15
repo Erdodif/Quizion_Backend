@@ -19,6 +19,6 @@
                 <div class="error-message">{{ $error }}</div>
             @endforeach
         @endif
-        <input id="button_one_click" type="submit" value="{{ __('Email Password Reset Link') }}">
+        <input id="button-one-click" type="submit" value="{{ __('Email Password Reset Link') }}">
     </form>
 @endsection

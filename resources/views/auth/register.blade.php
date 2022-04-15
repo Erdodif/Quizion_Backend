@@ -27,6 +27,6 @@
         @if ($userError ?? null)
             <div class="error-message">{{ $userError }}</div>
         @endif
-        <input id="button_one_click" type="submit" value="{{ __('Register') }}">
+        <input id="button-one-click" type="submit" value="{{ __('Register') }}">
     </form>
 @endsection

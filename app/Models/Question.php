@@ -2,14 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Companion\Message;
 use App\Companion\Data;
-use \Error;
-use \Exception;
-use App\Companion\ResponseCodes;
 use Illuminate\Database\Eloquent\Collection;
-use PhpParser\ErrorHandler\Collecting;
 
 class Question extends Table
 {

@@ -2,13 +2,10 @@
 
 namespace App\Companion;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Database\Eloquent\Model;
 use \Error;
-use Exception;
 use App\Companion\ResponseCodes;
 
 class Data
