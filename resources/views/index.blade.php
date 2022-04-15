@@ -18,6 +18,9 @@
         <li class="navbar-li">
             <a href="{{route('documentation',['page'=>'swot'])}}">SWOT analízis</a>
         </li>
+        <li class="navbar-li">
+            <a href="{{route('documentation',['page'=>'sources'])}}">Felhasznált irodalom</a>
+        </li>
     </ul>
     <div class="content">
         <?php
