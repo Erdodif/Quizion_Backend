@@ -8,6 +8,7 @@
         <meta name="description" content="Quizion, the multi platform quiz app.">
         <meta name="author" content="Quizion">
         <link rel="icon" href="{{ url('favicon.ico') }}">
+        <link rel="stylesheet" href="{{ mix('scss/app.css') }}">
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
         <script src="{{ mix('js/loader.js') }}"></script>
         <script src="{{ mix('js/variables.js') }}"></script>
@@ -18,26 +19,28 @@
             <div id="loader-div">
                 <div id="loader"></div>
             </div>
+            @if (!(Route::is("index") || Route::is("documentation")))
             <div id="header-logo">
                 <div id="header-background">
                     <img id="logo" src="{{ url('images/logo.png') }}" alt="Quizion Logo" title="Quizion">
                 </div>
             </div>
+            @endif
             <ul id="navbar-ul">
                 @if (Route::is("quiz"))
                 @elseif (Auth::user())
-                    <li class="navbar-li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
-                    <li class="navbar-li">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <input id="logout" type="submit" value="{{ __('Logout') }}">
-                        </form>
-                    </li>
-                    <li id="navbar-name">{{ Auth::user()->name }}</li>
+                <li class="navbar-li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
+                <li class="navbar-li">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <input id="logout" type="submit" value="{{ __('Logout') }}">
+                    </form>
+                </li>
+                <li id="navbar-name">{{ Auth::user()->name }}</li>
                 @else
-                    <li class="navbar-li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
-                    <li class="navbar-li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                    <li class="navbar-li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                <li class="navbar-li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
+                <li class="navbar-li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                <li class="navbar-li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
                 @endif
             </ul>
             <div id="container">

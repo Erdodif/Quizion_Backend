@@ -25,6 +25,10 @@ Route::get("/index", function () {
     return view("index");
 })->name("index");
 
+Route::get("/documentation/{page}", function (string $page) {
+    return view("index",["page"=>$page]);
+})->name("documentation");
+
 Route::get("/quizzes", function () {
     $quizzes = QuizController::showActive()->getDataRaw();
     return view("quizzes", ["quizzes" => $quizzes]);
