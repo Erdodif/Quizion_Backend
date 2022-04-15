@@ -31,8 +31,8 @@ function fixLongName(tr, responseName)
     }
     td.innerHTML += "...";
     span.innerHTML = responseName;
-    span.classList.add("long_name_text");
-    td.classList.add("long_name");
+    span.classList.add("long-name-text");
+    td.classList.add("long-name");
     td.appendChild(span);
     tr.appendChild(td);
 }
@@ -72,15 +72,15 @@ async function loadLeaderboard(id)
             tr.appendChild(addColumn("td", response[i].name));
         }
         if (window.username == response[i].name) {
-            document.getElementById("result_user").innerHTML = "Rank: " + response[i].rank + "<br/ >Points: " + response[i].points;
-            tr.classList.add("leaderboard_my_name");
+            document.getElementById("result-user").innerHTML = "Rank: " + response[i].rank + "<br/ >Points: " + response[i].points;
+            tr.classList.add("leaderboard-my-name");
             userHasResult = true;
         }
         table.appendChild(tr);
     }
     document.getElementById("leaderboard").appendChild(table);
     if (!userHasResult) {
-        document.getElementById("result_user").innerHTML = "You don't have any records.";
+        document.getElementById("result-user").innerHTML = "You don't have any records.";
     }
 }
 

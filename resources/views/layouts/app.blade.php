@@ -15,29 +15,29 @@
     </head>
     <body>
         <div class="wrapper">
-            <div id="loader_div">
+            <div id="loader-div">
                 <div id="loader"></div>
             </div>
-            <div id="header_logo">
-                <div id="header_background">
+            <div id="header-logo">
+                <div id="header-background">
                     <img id="logo" src="{{ url('images/logo.png') }}" alt="Quizion Logo" title="Quizion">
                 </div>
             </div>
-            <ul id="navbar_ul">
+            <ul id="navbar-ul">
                 @if (Route::is("quiz"))
                 @elseif (Auth::user())
-                    <li class="navbar_li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
-                    <li class="navbar_li">
+                    <li class="navbar-li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
+                    <li class="navbar-li">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <input id="logout" type="submit" value="{{ __('Logout') }}">
                         </form>
                     </li>
-                    <li id="navbar_name">{{ Auth::user()->name }}</li>
+                    <li id="navbar-name">{{ Auth::user()->name }}</li>
                 @else
-                    <li class="navbar_li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
-                    <li class="navbar_li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                    <li class="navbar_li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                    <li class="navbar-li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
+                    <li class="navbar-li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                    <li class="navbar-li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
                 @endif
             </ul>
             <div id="container">

@@ -3,7 +3,7 @@
     padding: 0.5rem 0 0 0;
     text-align: center;
 }
-#result, #result_user {
+#result, #result-user {
     text-align: center;
     font-size: larger;
     margin: 1rem;
@@ -12,7 +12,7 @@
     width: fit-content;
     margin: auto;
 }
-.leaderboard_my_name {
+.leaderboard-my-name {
     background-color: var(--fine) !important;
 }
 table {
@@ -40,10 +40,10 @@ tr:hover {
     background-color: var(--on_primary) !important;
     color: var(--primary_variant);
 }
-.long_name {
+.long-name {
     position: relative;
 }
-.long_name_text {
+.long-name-text {
     position: absolute;
     visibility: hidden;
     width: 200px;
@@ -58,7 +58,7 @@ tr:hover {
     margin-left: -60px;
     font-size: small;
 }
-.long_name_text::after {
+.long-name-text::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -68,6 +68,6 @@ tr:hover {
     border-style: solid;
     border-color: black transparent transparent transparent;
 }
-.long_name:hover .long_name_text {
+.long-name:hover .long-name-text {
     visibility: visible;
 }

@@ -1,7 +1,7 @@
 :root {
     --quiz_seconds: "";
 }
-.quiz_question {
+.quiz-question {
     margin: auto;
     font-size: xx-large;
     font-weight: bold;
@@ -9,7 +9,7 @@
     padding: 0.5rem 0 0.5rem 1.5rem;
     margin: 0 0 1rem 0;
 }
-.quiz_answer {
+.quiz-answer {
     width: 90%;
     text-align: center;
     margin: auto auto 1rem auto;
@@ -22,7 +22,7 @@
     background-color: var(--on_primary);
     border-radius: 1rem;
 }
-.quiz_answer:hover {
+.quiz-answer:hover {
     background-image: linear-gradient(var(--primary), var(--primary_variant));
     color: var(--on_primary);
     cursor: pointer;
@@ -31,18 +31,18 @@
     background-color: #0e988b;
     color: var(--white);
 }
-.is_right {
+.is-right {
     background-color: var(--fine);
     color: var(--white);
 }
-.is_wrong {
+.is-wrong {
     background-color: var(--warning);
     color: var(--white);
 }
-.display_none {
+.display-none {
     display: none;
 }
-.playing_button {
+.playing-button {
     margin: 1rem 1rem 1rem auto;
     padding: 1rem;
     width: fit-content;
@@ -51,44 +51,44 @@
     background-color: var(--secondary_variant);
     box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary_variant);
 }
-.playing_button:hover {
+.playing-button:hover {
     margin-top: 1.2rem;
     padding-bottom: 0.8rem !important;
     background-color: var(--on_secondary);
     box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary);
     cursor: pointer;
 }
-#time_bar {
+#time-bar {
     height: 0.5rem;
     position: relative;
     overflow: hidden;
 }
-#time_bar span {
+#time-bar span {
     display: block;
     height: 100%;
 }
-#time_bar_span_width_100 {
+#time-bar-span-width-100 {
     width: 100%;
 }
-#time_bar_progress {
+#time-bar-progress {
     animation: timeBarProgress var(--quiz_seconds) ease-out;
     animation-fill-mode: both;
 }
-#progress_bar {
+#progress-bar {
     display: flex;
 }
-#progress_bar_color {
+#progress-bar-color {
     position: relative;
     height: 2rem;
     background-image: linear-gradient(var(--primary), var(--primary_variant));
 }
-#progress_bar_border {
+#progress-bar-border {
     position: absolute;
     width: 1299px;
     height: 1.9rem;
     border: solid var(--primary_variant) 1px;
 }
-#progress_bar_text {
+#progress-bar-text {
     position: absolute;
     width: 1299px;
     padding: 0.16rem 0 0 0;
@@ -96,7 +96,7 @@
     font-weight: bold;
     font-size: larger;
 }
-#out_of_time {
+#out-of-time {
     text-align: center;
     font-size: x-large;
     color: var(--warning);
@@ -110,11 +110,11 @@
 .disable {
     pointer-events: none;
 }
-.animation_pause {
+.animation-pause {
     animation-play-state: paused !important;
 }
 @media screen and (max-width: 1359px) {
-    #progress_bar_border, #progress_bar_text {
+    #progress-bar-border, #progress-bar-text {
         width: 97%;
     }
     .report {
@@ -124,7 +124,7 @@
     }
 }
 @media screen and (max-width: 650px) {
-    .quiz_question, .quiz_answer {
+    .quiz-question, .quiz-answer {
         text-align: center;
     }
 }

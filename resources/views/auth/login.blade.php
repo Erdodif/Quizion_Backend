@@ -6,25 +6,25 @@
     <script src="{{ mix('js/form.js') }}"></script>
     <form method="POST" action="{{ route('login') }}">
         @csrf
-        <div class="margin_top">
+        <div class="margin-top">
             <input type="text" name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Email') }}">
         </div>
         <div>
             <input class="password" type="password" name="password" placeholder="{{ __('Password') }}">
         </div>
-        <img id="show_password" src="{{ url('images/show_password.png') }}" alt="Show Password" title="Show Password">
+        <img id="show-password" src="{{ url('images/show-password.png') }}" alt="Show Password" title="Show Password">
         @if ($errors->any())
-            <div id="error_message_margin_remember_me">
+            <div id="error-message-margin-remember-me">
                 @foreach ($errors->all() as $error)
-                    <div class="error_message">{{ $error }}</div>
+                    <div class="error-message">{{ $error }}</div>
                 @endforeach
             </div>
         @endif
-        <label id="remember_me_label" for="remember_me">
-            <input id="remember_me" type="checkbox" name="remember">
+        <label id="remember-me-label" for="remember-me">
+            <input id="remember-me" type="checkbox" name="remember">
             <span>{{ __('Remember me') }}</span>
         </label>
+        <a id="forgot-your-password" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
         <input id="button_one_click" type="submit" value="{{ __('Login') }}">
-        <a id="forgot_your_password" class="button" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
     </form>
 @endsection

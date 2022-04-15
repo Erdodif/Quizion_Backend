@@ -8,26 +8,26 @@
     </script>
     <script src="{{ mix('js/quiz.js') }}"></script>
 
-    <div id="time_bar">
-        <span id="time_bar_span_width_100">
-            <span id="time_bar_progress"></span>
+    <div id="time-bar">
+        <span id="time-bar-span-width-100">
+            <span id="time-bar-progress"></span>
         </span>
     </div>
 
     <div class="report">Report</div>
 
-    <div id="question" class="quiz_question"></div>
+    <div id="question" class="quiz-question"></div>
     <div id="answers"></div>
 
-    <div class="playing_button" id="next_question_button">Next Question</div>
-    <div class="playing_button" id="send_answer_button">Send Answer</div>
+    <div class="playing-button" id="next-question-button">Next Question</div>
+    <div class="playing-button" id="send-answer-button">Send Answer</div>
 
-    <div id="out_of_time"></div>
-    <div id="error" class="error_message"></div>
+    <div id="out-of-time"></div>
+    <div id="error" class="error-message"></div>
 
-    <div id="progress_bar">
-        <div id="progress_bar_color"></div>
-        <div id="progress_bar_border"></div>
-        <div id="progress_bar_text"></div>
+    <div id="progress-bar">
+        <div id="progress-bar-color"></div>
+        <div id="progress-bar-border"></div>
+        <div id="progress-bar-text"></div>
     </div>
 @endsection

@@ -26,7 +26,7 @@ function init()
     let formButton = document.getElementById("button_one_click");
     formButton.addEventListener("click", () => buttonDisable(formButton));
     try {
-        document.getElementById("show_password").addEventListener("click", () => showPassword());
+        document.getElementById("show-password").addEventListener("click", () => showPassword());
     }
     catch (error) {}
 }
