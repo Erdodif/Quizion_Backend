@@ -22,12 +22,12 @@
         <?php
         if (isset($page) && $page !== null) {
             try {
-                $out = require(resource_path('static_pages\\' . $page . '.php'));
+                $out = require(resource_path('static_pages\\' . $page . '.hmtl'));
             } catch (Exception | Error $e) {
                 $out = require(resource_path('static_pages\\not_found.php'));
             }
         } else {
-            $out = require(resource_path('static_pages\\introduction.php'));
+            $out = require(resource_path('static_pages\\introduction.html'));
         }
         ?>
     </div>
