@@ -6,7 +6,6 @@ use App\Companion\ResponseCodes;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Token;

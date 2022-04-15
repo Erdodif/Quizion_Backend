@@ -26,7 +26,7 @@ Route::get("/index", function () {
 })->name("index");
 
 Route::get("/documentation/{page}", function (string $page) {
-    return view("index",["page"=>$page]);
+    return view("index", ["page" => $page]);
 })->name("documentation");
 
 Route::get("/quizzes", function () {

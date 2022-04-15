@@ -7,7 +7,6 @@ use App\Companion\Data;
 use App\Companion\Message;
 use \Error;
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Companion\ResponseCodes;
 

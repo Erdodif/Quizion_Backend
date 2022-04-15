@@ -6,12 +6,9 @@ use App\Companion\Data;
 use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Http\Controllers\Controller;
-use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\QuizQuestionController;
 use App\Http\Controllers\API\AnswerController;
-use App\Models\Answer;
-use Illuminate\Support\Facades\DB;
 
 class QuizAnswerController extends Controller
 {

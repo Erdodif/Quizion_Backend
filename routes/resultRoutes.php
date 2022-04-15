@@ -1,11 +1,8 @@
 <?php
 
-use App\Companion\Data;
-use App\Companion\Message;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Result;
-use PhpParser\Node\Stmt\Catch_;
 
 Route::get('/leaderboard/{quiz_id}', function (int $quiz_id) {
     return Result::getRankingsAll($quiz_id)->toResponse();

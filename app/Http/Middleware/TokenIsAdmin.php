@@ -6,10 +6,8 @@ use App\Companion\Data;
 use App\Companion\Message;
 use App\Companion\ResponseCodes;
 use App\Models\Admin;
-use App\Models\Token;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class TokenIsAdmin
 {
@@ -21,7 +19,8 @@ class TokenIsAdmin
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    { // Használat csak a TokenIsValid midlleware-el együtt(biztonsági okokból!)
+    {
+        // Használat csak a TokenIsValid midlleware-el együtt(biztonsági okokból!)
         $id = $request->userID;
         if(!Admin::isAdmin($id)){
             return (new Data(

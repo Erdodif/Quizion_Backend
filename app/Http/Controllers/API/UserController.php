@@ -11,7 +11,6 @@ use App\Models\Token;
 use App\Models\User;
 use Error;
 use Exception;
-use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
