@@ -20,14 +20,14 @@ table {
     cursor: default;
 }
 tr {
-    box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
+    box-shadow: 0 0.1rem 1.4rem 0 var(--primary-variant);
 }
 th {
     background-color: var(--secondary);
-    color: var(--on_primary);
+    color: var(--on-primary);
 }
 th, td {
-    border: 2px solid var(--primary_variant);
+    border: 2px solid var(--primary-variant);
     padding: 1rem;
     letter-spacing: 1px;
     font-weight: bold;
@@ -37,8 +37,8 @@ tr:nth-child(even) {
     background-color: var(--primary);
 }
 tr:hover {
-    background-color: var(--on_primary) !important;
-    color: var(--primary_variant);
+    background-color: var(--on-primary) !important;
+    color: var(--primary-variant);
 }
 .long-name {
     position: relative;

@@ -1,10 +1,10 @@
 :root {
     --primary: #50508E;
-    --primary_variant: #211A52;
+    --primary-variant: #211A52;
     --secondary: #7985C1;
-    --secondary_variant: #5B6AB0;
-    --on_primary: #E8E7F5;
-    --on_secondary: #4053A0;
+    --secondary-variant: #5B6AB0;
+    --on-primary: #E8E7F5;
+    --on-secondary: #4053A0;
     --warning: #BA0100;
     --alert: #BAA100;
     --fine: #1CBA00;
@@ -40,7 +40,7 @@ a {
     text-decoration: none;
 }
 a:link, a:visited {
-    color: var(--on_primary);
+    color: var(--on-primary);
 }
 a:hover {
     color: var(--white);
@@ -56,7 +56,7 @@ body {
     font-size: larger;
     width: 100%;
     margin: auto;
-    color: var(--on_primary);
+    color: var(--on-primary);
     font-family: Montserrat;
     height: 100%;
 }

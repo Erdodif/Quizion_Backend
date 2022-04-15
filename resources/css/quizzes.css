@@ -4,11 +4,11 @@
     padding: 1rem;
 }
 .quiz-list-div {
-    background-color: var(--on_primary);
+    background-color: var(--on-primary);
     border-radius: 0.5ch;
     padding: 0 0.6rem 1.2rem 0.6rem;
     margin: 1rem;
-    color: var(--primary_variant);
+    color: var(--primary-variant);
 }
 .quiz-list-header, .quiz-list-description {
     overflow: hidden;
@@ -37,16 +37,16 @@
     margin: 0 !important;
     padding: 0.5rem 0 0.5rem 0;
     width: 11rem;
-    color: var(--on_primary);
-    background-color: var(--secondary_variant);
-    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary_variant);
+    color: var(--on-primary);
+    background-color: var(--secondary-variant);
+    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary-variant);
     font-family: Montserrat;
     font-size: larger;
 }
 .play-button:hover {
     margin-top: 0.2rem !important;
     padding-bottom: 0.3rem;
-    background-color: var(--on_secondary) !important;
+    background-color: var(--on-secondary) !important;
     box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary);
 }
 .leaderboard-button-div {
@@ -56,12 +56,12 @@
     width: 11rem;
     border-radius: 0.5ch;
     font-size: larger;
-    background-color: var(--secondary_variant);
-    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary_variant);
+    background-color: var(--secondary-variant);
+    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary-variant);
 }
 .leaderboard-button-div:hover {
     margin-top: 0.2rem;
-    background-color: var(--on_secondary) !important;
+    background-color: var(--on-secondary) !important;
     box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary);
     cursor: pointer;
 }

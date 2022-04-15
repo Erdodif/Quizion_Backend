@@ -5,7 +5,7 @@
     margin: auto;
     font-size: xx-large;
     font-weight: bold;
-    background-color: var(--secondary_variant);
+    background-color: var(--secondary-variant);
     padding: 0.5rem 0 0.5rem 1.5rem;
     margin: 0 0 1rem 0;
 }
@@ -19,12 +19,12 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     color: var(--primary);
-    background-color: var(--on_primary);
+    background-color: var(--on-primary);
     border-radius: 1rem;
 }
 .quiz-answer:hover {
-    background-image: linear-gradient(var(--primary), var(--primary_variant));
-    color: var(--on_primary);
+    background-image: linear-gradient(var(--primary), var(--primary-variant));
+    color: var(--on-primary);
     cursor: pointer;
 }
 .selected {
@@ -48,13 +48,13 @@
     width: fit-content;
     border-radius: 0.5ch;
     font-size: larger;
-    background-color: var(--secondary_variant);
-    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary_variant);
+    background-color: var(--secondary-variant);
+    box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary-variant);
 }
 .playing-button:hover {
     margin-top: 1.2rem;
     padding-bottom: 0.8rem !important;
-    background-color: var(--on_secondary);
+    background-color: var(--on-secondary);
     box-shadow: 0.5rem 0.5rem 1rem 0.1rem var(--primary);
     cursor: pointer;
 }
@@ -80,13 +80,13 @@
 #progress-bar-color {
     position: relative;
     height: 2rem;
-    background-image: linear-gradient(var(--primary), var(--primary_variant));
+    background-image: linear-gradient(var(--primary), var(--primary-variant));
 }
 #progress-bar-border {
     position: absolute;
     width: 1299px;
     height: 1.9rem;
-    border: solid var(--primary_variant) 1px;
+    border: solid var(--primary-variant) 1px;
 }
 #progress-bar-text {
     position: absolute;

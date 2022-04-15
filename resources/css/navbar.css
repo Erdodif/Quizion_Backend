@@ -3,7 +3,7 @@
     margin: 0 auto 0 auto;
     padding: 0;
     overflow: hidden;
-    background-color: var(--primary_variant);
+    background-color: var(--primary-variant);
     position: sticky;
     top: 0;
     width: 1300px;
@@ -13,7 +13,7 @@
 }
 .navbar-li a {
     display: block;
-    color: var(--on_primary);
+    color: var(--on-primary);
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -25,7 +25,7 @@
 #logout {
     width: fit-content;
     background-color: transparent;
-    color: var(--on_primary);
+    color: var(--on-primary);
     margin: 0;
     padding: 14px 16px;
     font-family: Montserrat;

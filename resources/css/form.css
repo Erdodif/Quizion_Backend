@@ -11,8 +11,8 @@ input {
     font-size: 1.5rem;
     border: none;
     border-radius: 0.2ch;
-    box-shadow: 0 0.1rem 1.4rem 0 var(--primary_variant);
-    background-color: var(--on_primary);
+    box-shadow: 0 0.1rem 1.4rem 0 var(--primary-variant);
+    background-color: var(--on-primary);
 }
 input[type="checkbox"] {
     -webkit-appearance: none;
@@ -24,7 +24,7 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 input[type="checkbox"]:checked {
-    background: var(--primary_variant);
+    background: var(--primary-variant);
 }
 input[type="submit"] {
     margin: 1rem;
