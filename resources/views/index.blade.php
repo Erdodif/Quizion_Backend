@@ -15,6 +15,9 @@
         <li class="navbar-li">
             <a href="{{route('documentation',['page'=>'topic'])}}">Témaválasztás</a>
         </li>
+        <li class="navbar-li">
+            <a href="{{route('documentation',['page'=>'swot'])}}">SWOT analízis</a>
+        </li>
     </ul>
     <div class="content">
         <?php
