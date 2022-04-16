@@ -22,5 +22,5 @@ Quizion egy webböngészős, asztali és mobil kliensre készülő kvízalkalmaz
 
 ### A backend helyes telepítésének tesztelése:
 
-- Thunder client-ben: http://127.0.0.1:8000/api/quizzes/all
+- Thunder Client-ben: http://127.0.0.1:8000/api/quizzes/all
 - Ha visszaadja az összes kvízt JSON formátumban akkor helyesen lett telepítve a backend.
