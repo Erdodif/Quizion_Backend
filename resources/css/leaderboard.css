@@ -11,6 +11,7 @@
 #leaderboard {
     width: fit-content;
     margin: auto;
+    padding-bottom: 1rem;
 }
 .leaderboard-my-name {
     background-color: var(--fine) !important;

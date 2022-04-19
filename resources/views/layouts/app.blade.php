@@ -20,36 +20,38 @@
                 <div id="loader"></div>
             </div>
             @if (!(Route::is("index") || Route::is("documentation")))
-            <div id="header-logo">
+            <header>
                 <div id="header-background">
                     <img id="logo" src="{{ url('images/logo.png') }}" alt="Quizion Logo" title="Quizion">
                 </div>
-            </div>
+            </header>
             @endif
-            <ul class="navbar-ul">
-                @if (Route::is("quiz"))
-                @elseif (Auth::user())
-                <li class="navbar-li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
-                <li class="navbar-li">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <input id="logout" type="submit" value="{{ __('Logout') }}">
-                    </form>
-                </li>
-                <li id="navbar-name">{{ Auth::user()->name }}</li>
-                @else
-                <li class="navbar-li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
-                <li class="navbar-li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                <li class="navbar-li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
-                @endif
-            </ul>
-            <div id="container">
+            <nav>
+                <ul class="navbar-ul">
+                    @if (Route::is("quiz"))
+                    @elseif (Auth::user())
+                    <li class="navbar-li"><a href="{{ route('quizzes') }}">{{ __('Quizzes') }}</a></li>
+                    <li class="navbar-li">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <input id="logout" type="submit" value="{{ __('Logout') }}">
+                        </form>
+                    </li>
+                    <li id="navbar-name">{{ Auth::user()->name }}</li>
+                    @else
+                    <li class="navbar-li"><a href="{{ route('index') }}">{{ __('Index') }}</a></li>
+                    <li class="navbar-li"><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                    <li class="navbar-li"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                    @endif
+                </ul>
+            </nav>
+            <main>
                 @yield("content")
-            </div>
+            </main>
         </div>
-        <div id="footer">
+        <footer>
             <h4>© Copyright - quizion.hu - All rights reserved.</h4>
-            <a href="" target="copyright">Legal and data protection statement.</a>
-        </div>
+            <a href="">Legal and data protection statement.</a>
+        </footer>
     </body>
 </html>

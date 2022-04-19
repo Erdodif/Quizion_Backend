@@ -62,7 +62,7 @@ body {
     font-family: Montserrat;
     height: 100%;
 }
-#container {
+main {
     width: 1300px;
     margin: 0 auto 30px auto;
     padding: 0 0 1em 0;
@@ -78,7 +78,7 @@ body {
     color: var(--warning);
 }
 @media screen and (max-width: 1359px) {
-    #container {
+    main {
         width: auto;
         margin: 0;
         padding: 0;
