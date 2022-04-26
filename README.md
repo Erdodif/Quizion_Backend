@@ -27,4 +27,6 @@ Quizion egy webböngészős, asztali és mobil kliensre készülő kvízalkalmaz
 
 ## Készítők
 
-> A backend Solti Soma, Nagy Bendegúz és Erdődi Fülöp közös munkájának eredménye
+> A backend Solti Soma, Nagy Bendegúz és Erdődi Fülöp közös munkájának eredménye.
+>
+> A webes alkalmazás Nagy Bendegúz munkája.
